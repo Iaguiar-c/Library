@@ -33,7 +33,7 @@ mongoose
     `mongodb+srv://${dbUser}:${dbPassword}@cluster0.s4ttksz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
   )
   .then(() => {
-    app.listen(3000);
+    app.listen(3001);
     console.log("Conectado");
   })
   .catch((err) => console.log(err));
