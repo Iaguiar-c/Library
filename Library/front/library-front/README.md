@@ -4,7 +4,7 @@
 
 1) Vá até o projeto no Github através do Link 
 
-[<img align="left" height="120px" width="120px" alt="logogithub" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FGitHub&psig=AOvVaw2kiuVYakRn-_4CImA9wuNJ&ust=1711675678073000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCKjdtPnmlYUDFQAAAAAdAAAAABAE"/>](https://github.com/Iaguiar-c/Library)
+[<img align="left" height="120px" width="120px" alt="logogithub" src="./src/assets/github.webp"/>](https://github.com/Iaguiar-c/Library)
 
 2) Copie o Link HTTPs
 ![HTTPS](./src/assets/1.png)
