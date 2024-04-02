@@ -5,142 +5,159 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 require("dotenv").config();
 
-//BEGIN: CRUD usuário 
-
+//BEGIN: CRUD usuário
 //Rota Publica
 router.get("/", (req, res) => {
-    res.status(200).json({ msg: "Opa Bão" });
-  });
-  
-  //Rota Privada
-  router.get("/:id", checkToken, async (req, res) => {
-    const id = req.params.id;
-  
-    //verificar se o usuario existe
+  res.status(200).json({ msg: "Servidor está funcionando corretamente." });
+});
+
+//Rota Privada
+router.get("/:id", checkToken, async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Verifica se o usuário existe no banco de dados
     const user = await User.findById(id, "-password");
-  
+
     if (!user) {
       return res.status(404).json({ msg: "Usuário não encontrado!" });
     }
-  
+
     res.status(200).json({ user });
-  });
-  
-  function checkToken(req, res, next) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-  
-    if (!token) {
-      return res.status(401).json({ msg: "Acesso negado!" });
-    }
-  
-    try {
-      const secret = process.env.secret;
-  
-      jwt.verify(token, secret);
-  
-      next();
-    } catch (error) {
-      res.status(400).json({ msg: "Token inválido!" });
-    }
+  } catch (error) {
+    console.error("Erro ao buscar usuário:", error.message);
+    res.status(500).json({ msg: "Erro ao buscar usuário." });
   }
-  
-  //Registrar usuario
-  router.post("/register", async (req, res) => {
-    const { name, email, password, confirmpassword } = req.body;
-  
-    //validações
-    if (!name) {
-      return res.status(422).json({ msg: "Nome obrigatório" });
-    }
-  
-    if (!email) {
-      return res.status(422).json({ msg: "Email obrigatório" });
-    }
-  
-    if (!password) {
-      return res.status(422).json({ msg: "Senha obrigatória" });
-    }
-  
-    if (password !== confirmpassword) {
-      return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
-    }
-  
-    //ver se o usuario existe
+});
+
+// Função para verificar o token de autenticação
+function checkToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ msg: "Acesso negado! Token de autenticação não fornecido." });
+  }
+
+  try {
+    const secret = process.env.secret;
+
+    jwt.verify(token, secret);
+
+    next();
+  } catch (error) {
+    console.error("Token inválido:", error.message);
+    res.status(400).json({ msg: "Token inválido!" });
+  }
+}
+
+// Registrar um novo usuário
+router.post("/register", async (req, res) => {
+  const { name, email, password, confirmpassword } = req.body;
+
+  // Validações dos campos obrigatórios
+  if (!name || !email || !password) {
+    return res
+      .status(422)
+      .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+  }
+
+  // Validar formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(422).json({ msg: "Formato de email inválido." });
+  }
+
+  // Validar a força da senha
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(422).json({
+      msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+    });
+  }
+
+  if (password !== confirmpassword) {
+    return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
+  }
+
+  try {
+    // Verifica se o usuário já existe no banco de dados
     const userExists = await User.findOne({ email: email });
-  
+
     if (userExists) {
-      return res.status(422).json({ msg: "Email já cadastrado!" });
+      return res.status(422).json({
+        msg: "Este email já está cadastrado. Por favor, use outro email.",
+      });
     }
-  
-    //criar senha
+
+    // Gera um hash da senha
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
-  
-    //criar usuario
+
+    // Cria um novo usuário
     const user = new User({
       name,
       email,
       password: passwordHash,
     });
-  
-    try {
-      await user.save();
-  
-      res.status(201).json({ msg: "Usuario criado com sucesso!" });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: "Erro no servidor" });
-    }
-  });
-  
-  //Login User
-  router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-  
-    //validações
-    if (!email) {
-      return res.status(422).json({ msg: "Email obrigatório" });
-    }
-  
-    if (!password) {
-      return res.status(422).json({ msg: "Senha obrigatória" });
-    }
-  
-    //verificar se o usuario existe
+
+    // Salva o usuário no banco de dados
+    await user.save();
+
+    res.status(201).json({ msg: "Usuário registrado com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error.message);
+    res.status(500).json({
+      msg: "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
+    });
+  }
+});
+
+// Login de usuário
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validações dos campos obrigatórios
+  if (!email || !password) {
+    return res
+      .status(422)
+      .json({ msg: "Por favor, forneça o email e a senha." });
+  }
+
+  try {
+    // Verifica se o usuário existe no banco de dados
     const user = await User.findOne({ email: email });
-  
+
+    // Retorna uma mensagem genérica em vez de "Usuário não encontrado" para evitar vazamento de informações
     if (!user) {
-      return res.status(404).json({ msg: "Usuário não encontrado" });
+      return res.status(401).json({ msg: "Credenciais inválidas." });
     }
-  
-    //verificar se a senha está correta
+
+    // Verifica se a senha está correta
     const checkPassword = await bcrypt.compare(password, user.password);
-  
+
     if (!checkPassword) {
-      return res.status(422).json({ msg: "Senha inválida!" });
+      return res.status(401).json({ msg: "Credenciais inválidas." });
     }
-  
-    try {
-      const secret = process.env.secret;
-  
-      const token = jwt.sign(
-        {
-          id: user._id,
-        },
-        secret
-      );
-  
-      res.status(200).json({ msg: "Usuário autenticado!", token });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: "Erro no servidor" });
-    }
-  });
-  
-  // Logout User
-  router.post("/logout/:Id", async (req, res) => {
-    const Id = req.params.Id;
+
+    const secret = process.env.secret;
+
+    // Gera um token de autenticação
+    const token = jwt.sign({ id: user._id }, secret);
+
+    res.status(200).json({ msg: "Usuário autenticado!", token });
+  } catch (error) {
+    console.error("Erro ao fazer login:", error.message);
+    res.status(500).json({ msg: "Erro no servidor ao fazer login." });
+  }
+});
+
+// Logout de usuário
+router.post("/logout/:Id", async (req, res) => {
+  res.status(200).json({ msg: "Usuário desconectado com sucesso!" });
+  /*const Id = req.params.Id;
   
     try {
       // Verificar se o usuário existe antes de realizar o logout
@@ -154,86 +171,85 @@ router.get("/", (req, res) => {
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Erro no servidor" });
+    }*/
+});
+
+// Atualização de usuário
+router.put("/update/:Id", async (req, res) => {
+  const Id = req.params.Id;
+  const { name, email, password, confirmpassword } = req.body;
+
+  // Validação dos campos obrigatórios
+  if (!name || !email || !password) {
+    return res
+      .status(422)
+      .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+  }
+
+  // Validação do formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(422).json({ msg: "Formato de email inválido." });
+  }
+
+  // Validar a força da senha
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(422).json({
+      msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+    });
+  }
+
+  // Verificar se o usuário existe antes de tentar atualizar
+  try {
+    const user = await User.findById(Id);
+    if (!user) {
+      return res.status(404).json({ msg: "Usuário não encontrado." });
     }
-  });
-  
-  //Update User
-  router.put("/update/:Id", async (req, res) => {
-    const Id = req.params.Id;
-    const { name, email, password, confirmpassword } = req.body;
-  
-    // Validação dos campos
-    if (!name) {
-      return res.status(422).json({ msg: "Nome obrigatório" });
+  } catch (error) {
+    console.error("Erro ao buscar usuário:", error.message);
+    return res.status(500).json({ msg: "Erro no servidor ao buscar usuário." });
+  }
+
+  // Validar se a senha e a confirmação são iguais
+  if (password !== confirmpassword) {
+    return res.status(422).json({ msg: "As senhas precisam ser iguais." });
+  }
+
+  try {
+    // Criar um hash da nova senha
+    const salt = await bcrypt.genSalt(12);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    // Atualizar o usuário com os novos dados
+    await User.findByIdAndUpdate(Id, { name, email, password: passwordHash });
+
+    res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao atualizar usuário:", error.message);
+    res.status(500).json({ msg: "Erro no servidor ao atualizar usuário." });
+  }
+});
+
+//Exclusão de usuário
+router.delete("/delete/:Id", async (req, res) => {
+  const Id = req.params.Id;
+
+  try {
+    // Deleta o usuário diretamente pelo Id
+    const deletedUser = await User.findByIdAndDelete(Id);
+
+    // Verifica se o usuário foi encontrado e deletado com sucesso
+    if (!deletedUser) {
+      return res.status(404).json({ msg: "Usuário não encontrado." });
     }
-  
-    if (!email) {
-      return res.status(422).json({ msg: "Email obrigatório" });
-    }
-  
-    if (!password) {
-      return res.status(422).json({ msg: "Senha obrigatória" });
-    }
-  
-    // Verificar se o usuário existe antes de tentar atualizar
-    try {
-      const user = await User.findById(Id);
-      if (!user) {
-        return res.status(404).json({ msg: "Usuário não encontrado" });
-      }
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ msg: "Erro no servidor" });
-    }
-  
-    // Lógica para atualizar o usuário
-    try {
-      // Atualizar apenas os campos que foram fornecidos
-      const updatedFields = {};
-      if (name) updatedFields.name = name;
-      if (email) updatedFields.email = email;
-      if (password) {
-        // Validar se a senha e a confirmação são iguais
-        //Não esquecer de passar no Body-->raw ambos os campos password e confirmpassword
-        if (password !== confirmpassword) {
-          return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
-        }
-        const salt = await bcrypt.genSalt(12);
-        const passwordHash = await bcrypt.hash(password, salt);
-        updatedFields.password = passwordHash;
-      }
-  
-      //Atualizando o usuário
-      await User.findByIdAndUpdate(Id, updatedFields);
-  
-      res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: "Erro no servidor" });
-    }
-  });
-  
-  //Delete User
-  router.delete("/delete/:Id", async (req, res) => {
-    const Id = req.params.Id;
-  
-    try {
-      // Verificar se o usuário existe antes de tentar deletar
-      const user = await User.findById(Id);
-      if (!user) {
-        return res.status(404).json({ msg: "Usuário não encontrado" });
-      }
-  
-      // Lógica para que o usuário seja deletado
-      await User.findByIdAndDelete(Id);
-  
-      res.status(200).json({ msg: "Usuário deletado com sucesso!" });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: "Erro no servidor" });
-    }
-  });
-  
-  // END: CRUD Usuário
+
+    res.status(200).json({ msg: "Usuário deletado com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao deletar usuário:", error.message);
+    res.status(500).json({ msg: "Erro no servidor ao deletar usuário." });
+  }
+});
+// END: CRUD Usuário
 
 module.exports = router;
