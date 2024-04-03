@@ -34,3 +34,9 @@
 10) Caso o projeto não abra, você pode visualizar as telas digitando "localhost:3000" em seu navegador 
 ![HTTPS](./src/assets/8.png)
 
+# Como Commitar 
+
+Após todo o seu desenvolvimento, commite seus arquivos e sempre certifique de colocá-los no Github 
+
+
+
