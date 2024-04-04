@@ -1,4 +1,4 @@
-import JWT_decote from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 
 export async function  setUsuarioNoLocalStorage(usuario, token) {
     await localStorage.setItem('u', JSON.stringify(usuario)); 
@@ -24,7 +24,7 @@ export  function decodificador(){
     const token = localStorage.getItem('u'); 
     
     if(token){
-        const usuarioToken = JWT_decote(token); 
+        const usuarioToken = jwt_decode(token); 
         const nomeDoUsuario = usuarioToken.nome; 
         const permissaoDoUsuario = usuarioToken.role; 
 

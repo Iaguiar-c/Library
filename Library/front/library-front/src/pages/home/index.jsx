@@ -1,14 +1,6 @@
 import { useTraducao } from "../../contextos/Traducao/TraducaoProvider";
 import { useTranslation } from "react-i18next";
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { AiOutlineEdit } from "react-icons/ai";
-import { BsInfoCircle } from "react-icons/bs";
-import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-
 export default function Home() {
   const { toggleTraducao } = useTraducao();
   const { t } = useTranslation();
