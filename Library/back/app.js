@@ -12,17 +12,24 @@ const app = express();
 // Config JSON response
 app.use(express.json());
 
+
+
 // Models
 const User = require("./models/User");
 
 // Controllers
 const userController = require("./controllers/UsuarioController");
 const senhaController = require("./controllers/SenhaController");
+const livroController = require("./controllers/LivroController")
+
 
 // Use as controllers como middlewares
 app.use("/password", senhaController);
 app.use("/auth", userController);
 app.use("/user", userController);
+app.use("/book", livroController);
+
+
 
 // Credenciais
 const dbUser = process.env.DB_USER;
