@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const sgTransport = require("nodemailer-sendgrid-transport");
 const crypto = require("crypto");
+const cors = require('cors');
+
 
 const app = express();
 
@@ -23,12 +25,14 @@ const senhaController = require("./controllers/SenhaController");
 const livroController = require("./controllers/LivroController")
 
 
+// CORS
+app.use(cors());
+
 // Use as controllers como middlewares
 app.use("/password", senhaController);
 app.use("/auth", userController);
 app.use("/user", userController);
 app.use("/book", livroController);
-
 
 
 // Credenciais

@@ -62,7 +62,7 @@ router.post("/forgot-password", async (req, res) => {
 
   const mailOptions = {
     from: "isaaholiveira15@gmail.com",
-    to: "kmulti2020@gmail.com",
+    to: `${user.email}`,
     subject: "Recuperação de Senha",
     html: `<p>Olá ${user.name},</p>
                 <p>Clique no link abaixo para redefinir sua senha:</p>

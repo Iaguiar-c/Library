@@ -3,6 +3,7 @@ import Home from '../src/pages/home';
 import { TraducaoProvider } from "./contextos/Traducao/TraducaoProvider";
 import TraducaoI18nProvider from "./contextos/Traducao/Traducaoi18nProvider";
 import Header from './components/Header';
+import LoginUsuario from './pages/LoginUsuario'
 
 function AppRoutes() {
   return (
@@ -11,7 +12,8 @@ function AppRoutes() {
         <TraducaoI18nProvider>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/teste" element={<Header />} />
+            <Route path="/perfil" element={<Header />} />
+            <Route path="/login" element={<LoginUsuario />} />
           </Routes>
         </TraducaoI18nProvider>
       </TraducaoProvider>

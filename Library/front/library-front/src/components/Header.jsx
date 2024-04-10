@@ -32,7 +32,7 @@ export default function Header(){
     };
 
     return (
-        <div>oi</div>
+        <div>usuário logado</div>
     //     <>
     //     <div>oii</div>
     //     <header className="bg-white">

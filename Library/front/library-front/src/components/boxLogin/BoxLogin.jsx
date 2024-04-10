@@ -1,5 +1,5 @@
-import { useState, useNavigate } from 'react'
-import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticacao";
+import { useState } from 'react'
+import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { http } from "../../services/api";
 import { message } from "antd";
 
@@ -10,7 +10,7 @@ export default function BoxLogin() {
 	// const [carregando, setCarregando] = useState(false);
 	const { login, usuario } = useAutenticacao();
 
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 
 	async function aoFinalizar(email, senha, evento) {
 		evento.preventDefault();
@@ -18,8 +18,8 @@ export default function BoxLogin() {
 		// setCarregando(true);
 		try {
 			await login(email, senha);
-			await http.pegaToken();
-			navigate("/perfil");
+			// await http.pegaToken();
+			// navigate("/");
 		} catch (error) {
 			console.log(error);
 			message.error("Email ou senha inválidos");
