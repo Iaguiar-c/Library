@@ -5,6 +5,8 @@ import TraducaoI18nProvider from "./contextos/TraducaoProvider/Traducaoi18nProvi
 import Header from './components/Header/Header';
 import Home from './pages/home';
 import LoginUsuario from './pages/login'
+import { UsuarioProvider } from './contextos/UsuarioProvider/UsuarioProvider';
+import UserRegister from './pages/register';
 
 function AppRoutes() {
   return (
@@ -12,13 +14,16 @@ function AppRoutes() {
       <TraducaoProvider>
         <TraducaoI18nProvider>
           <LivrosProvider>
-            <Routes>
-              <Route path="/" element={<LoginUsuario />} />
-              <Route path="/login" element={<LoginUsuario />} />
-              <Route path="/" element={<Header />} >
-                <Route path="/home" element={<Home />} />
-              </Route>
-            </Routes>
+            <UsuarioProvider>
+              <Routes>
+                <Route path="/" element={<LoginUsuario />} />
+                <Route path="/login" element={<LoginUsuario />} />
+                <Route path="/register" element={<UserRegister />} />
+                <Route path="/" element={<Header />} >
+                  <Route path="/home" element={<Home />} />
+                </Route>
+              </Routes>
+            </UsuarioProvider>
           </LivrosProvider>
         </TraducaoI18nProvider>
       </TraducaoProvider>

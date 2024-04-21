@@ -122,7 +122,7 @@ const LoginUsuario = () => {
               <p className="mt-10 text-center text-sm text-gray-500">
                 Não tem uma conta ainda?{" "}
                 <a
-                  href="/api/user/register"
+                  href="/register"
                   className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                 >
                   {/* onClick={handleRegisterClick} */}

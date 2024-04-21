@@ -1,7 +1,7 @@
 import { useAutenticacao } from "../AutenticacaoProvider/AutenticacaoProvider";
 import { createContext, useContext, useState } from "react";
-import googleBooksApiKey from "./apikeys";
 import { Api } from "../../services/api";
+import googleBooksApiKey from "./apikeys";
 
 export function useLivros() {
   const contextoLivros = useContext(LivrosContext);
@@ -13,12 +13,16 @@ LivrosContext.displayName = "Livros Context";
 
 export function LivrosProvider({ children }) {
   const [livros, setLivros] = useState([]);
+  const [search, setSearch] = useState("");
   const { config } = useAutenticacao();
 
   async function pegarLivrosApiGoogle() {
     try {
       const resposta = await Api.get(
-        `https://www.googleapis.com/books/v1/volumes?key=${googleBooksApiKey}`,
+        `https://www.googleapis.com/books/v1/volumes?q=` +
+          search +
+          `&key=${googleBooksApiKey}` +
+          "&maxResults=40",
         config
       );
       console.log("contexto livros:", resposta);
