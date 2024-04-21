@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { useSnackbar } from "notistack";
-import { useAutenticacao } from "../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { http } from "../services/api";
+import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
+import { http } from "../../services/api";
 
 const LoginUsuario = () => {
   const [email, setEmail] = useState("");
@@ -23,24 +23,18 @@ const LoginUsuario = () => {
       navigate("/home");
     } catch (error) {
       setLoading(false);
-      console.log(error)
+      console.log(error);
       // enqueueSnackbar("Erro ao fazer login", { variant: "error" });
     } finally {
       setLoading(false);
     }
 
     setLoading(false);
-    //   enqueueSnackbar("Usuário Logado com Sucesso!", {
-    //     variant: "success",
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
   }
 
   if (usuario) {
-		window.location.pathname = "/home";
-	}
+    window.location.pathname = "/home";
+  }
 
   // const handleRegisterClick = () => {
   //   navigate("/api/user/register");

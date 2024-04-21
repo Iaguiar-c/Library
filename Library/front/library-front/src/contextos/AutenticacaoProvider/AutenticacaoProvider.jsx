@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { createContext, useState, useEffect, useContext } from "react";
 import { Api, http } from "../../services/api";
+import { useNavigate } from 'react-router-dom'
 import { getUsuarioNoLocalStorage, setUsuarioNoLocalStorage } from "./util";
 
 export const UsuarioContext = createContext({});
@@ -13,7 +14,7 @@ export const useAutenticacao = () => {
 
 export const AutenticacaoProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [token, setToken] = useState(localStorage.getItem('token') || '' || null || undefined);
   const [config, setConfig] = useState({});
 
   useEffect(() => {
@@ -33,18 +34,16 @@ export const AutenticacaoProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    const usuario = getUsuarioNoLocalStorage();
-
     if (usuario) {
+      const usuario = getUsuarioNoLocalStorage();
       setUsuario(usuario);
     }
   }, []);
 
   async function login(email, password) {
     try {
-      console.log('estou no contexto')
       const response = await Api.post("auth/login", { email, password }, config);
-      const user = response.data.usuario;
+      const user = response.data.user;
       const token = response.data.token;
       setUsuario(user);
       setToken(token);

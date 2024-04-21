@@ -7,11 +7,15 @@ const UserRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
 
     try {
       const response = await axios.post(
