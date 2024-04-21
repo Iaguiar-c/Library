@@ -1,7 +1,5 @@
-import { AxiosRequestConfig } from "axios";
 import { createContext, useState, useEffect, useContext } from "react";
 import { Api, http } from "../../services/api";
-import { useNavigate } from 'react-router-dom'
 import { getUsuarioNoLocalStorage, setUsuarioNoLocalStorage } from "./util";
 
 export const UsuarioContext = createContext({});

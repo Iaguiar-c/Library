@@ -7,6 +7,7 @@ import Home from './pages/home';
 import LoginUsuario from './pages/login'
 import { UsuarioProvider } from './contextos/UsuarioProvider/UsuarioProvider';
 import UserRegister from './pages/register';
+import Profile from './pages/profile';
 
 function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ function AppRoutes() {
                 <Route path="/register" element={<UserRegister />} />
                 <Route path="/" element={<Header />} >
                   <Route path="/home" element={<Home />} />
+                  <Route path="/profile" element={<Profile />} />
                 </Route>
               </Routes>
             </UsuarioProvider>

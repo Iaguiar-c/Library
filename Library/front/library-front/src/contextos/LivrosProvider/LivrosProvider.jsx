@@ -13,7 +13,7 @@ LivrosContext.displayName = "Livros Context";
 
 export function LivrosProvider({ children }) {
   const [livros, setLivros] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("React");
   const { config } = useAutenticacao();
 
   async function pegarLivrosApiGoogle() {

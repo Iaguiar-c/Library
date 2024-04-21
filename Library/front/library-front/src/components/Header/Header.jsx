@@ -9,17 +9,17 @@ export default function Header() {
   const { usuario, logout } = useAutenticacao();
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   function openCloseUserMenu() {
     setOpen(!open);
   }
 
-  function doLogout(){
+  function doLogout() {
     logout();
     navigate("/login");
   }
-  
+
   return (
     <>
       <div className="min-h-full">
@@ -123,7 +123,7 @@ export default function Header() {
                         tabIndex="-1"
                       >
                         <a
-                          href="#"
+                          href="profile"
                           className="block px-4 py-2 text-sm text-gray-700"
                           role="menuitem"
                           tabIndex="-1"
@@ -132,7 +132,7 @@ export default function Header() {
                           Your Profile
                         </a>
                         <a
-                          href="#"
+                          href="settings"
                           className="block px-4 py-2 text-sm text-gray-700"
                           role="menuitem"
                           tabIndex="-1"
@@ -140,16 +140,13 @@ export default function Header() {
                         >
                           Settings
                         </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-700"
-                          role="menuitem"
-                          tabIndex="-1"
-                          id="user-menu-item-2"
+                        <button 
                           onClick={doLogout}
-                        >
-                          Sign out
-                        </a>
+                          className="block px-4 py-2 text-sm text-gray-700"
+                            >
+                          
+                            Sign out
+                        </button>
                       </div>
                     ) : (
                       ""
