@@ -147,7 +147,7 @@ router.post("/login", async (req, res) => {
     // Gera um token de autenticação
     const token = jwt.sign({ id: user._id }, secret);
 
-    res.status(200).json({ msg: "Usuário autenticado!", token });
+    res.status(200).json({ msg: "Usuário autenticado!", token, user });
   } catch (error) {
     console.error("Erro ao fazer login:", error.message);
     res.status(500).json({ msg: "Erro no servidor ao fazer login." });
