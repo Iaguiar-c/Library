@@ -1,33 +1,20 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const Book = mongoose.model('Book', {
-    title:  String,
-
-    author: String,
-    
-    publishYear: Number,
-    
-    category: String,
-     
-    bookDescription: String,
-     
-    imageURL:  String,
-     
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["Não lido", "Lido", "Lendo"],
-      default: "Não lido",
-    },
-  },
-
+const bookSchema = new Schema(
   {
-    timestamps: true,
-  }
+    title: { type: String, required: true },
+    author: { type: String },
+    publicationYear: { type: Number },
+    category: { type: String },
+    description: { type: String },
+    imageURL: { type: String },
+    status: { type: String },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  },
+  { timestamps: true }
 );
 
-module.exports = Book
+const Book = mongoose.model("Book", bookSchema);
+
+module.exports = Book;

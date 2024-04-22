@@ -1,4 +1,4 @@
-require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -7,12 +7,12 @@ const nodemailer = require("nodemailer");
 const sgTransport = require("nodemailer-sendgrid-transport");
 const crypto = require("crypto");
 
+require("dotenv").config(); 
+
 const app = express();
 
 // Config JSON response
 app.use(express.json());
-
-
 
 // Models
 const User = require("./models/User");
@@ -20,14 +20,14 @@ const User = require("./models/User");
 // Controllers
 const userController = require("./controllers/UsuarioController");
 const senhaController = require("./controllers/SenhaController");
-const livroController = require("./controllers/LivroController")
+const { bookRoutes } = require('./controllers/LivroController');
 
 
 // Use as controllers como middlewares
 app.use("/password", senhaController);
 app.use("/auth", userController);
 app.use("/user", userController);
-app.use("/book", livroController);
+bookRoutes(app);  
 
 
 

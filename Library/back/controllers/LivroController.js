@@ -1,55 +1,170 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Book = require("../models/bookModel");
 
-const { validationResult } = require("express-validator");
-
 require("dotenv").config();
 
-//BEGIN: CRUD livro
-// Função para criar um novo livro
-router.post("/upload-book", async (request, response) => {
-    try {
-      // Certifique-se de que o ID do usuário está disponível na solicitação
-      const userId = request.body.userId; // Supondo que você envie o ID do usuário no corpo da solicitação
-      console.log(userId)
-      // Verifique se o userId é válido, dependendo da lógica do seu aplicativo
-  
-      const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        return response.status(400).json({ errors: errors.array() });
-      }
-  
-      // Criar um novo livro
-      const newBook = {
-        title: request.body.title,
-        author: request.body.author,
-        publishYear: request.body.publishYear,
-        category: request.body.category,
-        bookDescription: request.body.bookDescription,
-        imageURL: request.body.imageURL,
-        status: request.body.status,
-        user: userId,
-      };
-  
-      const book = await Book.create(newBook);
-  
-      // Adicione o ID do livro ao array de livros do usuário
-      await User.findByIdAndUpdate(
-        userId,
-        { $push: { books: book._id } },
-        { new: true }
-      );
-  
-      return response.status(201).json(book);
-    } catch (error) {
-      console.error(error);
-      response.status(500).json({ message: "Internal server error", error: error.message });
+const { validationResult } = require("express-validator");
+
+const handleErrors = (res, message) => {
+  console.error(message);
+  return res.status(500).send('Server Error');
+};
+
+exports.createBook = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-  });
 
+    const { title, author, publicationYear, category, description, imageURL, status, userId } = req.body;
 
-module.exports = router;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const book = new Book({
+      title,
+      author,
+      publicationYear,
+      category,
+      description,
+      imageURL,
+      status,
+      user: userId
+    });
+
+    const session = await Book.startSession();
+    session.startTransaction();
+
+    try {
+      await book.save({ session });
+      user.books.push(book);
+      await user.save({ session });
+      await session.commitTransaction();
+    } catch (error) {
+      await session.abortTransaction();
+      throw new Error('Failed to create book. Please try again later.');
+    } finally {
+      session.endSession();
+    }
+
+    res.status(201).json(book);
+  } catch (err) {
+    return handleErrors(res, err.message);
+  }
+};
+
+exports.getAllBooks = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+
+    if (!userId) {
+      return res.status(400).json({ msg: 'User ID is required' });
+    }
+
+    const user = await User.findById(userId).populate('books');
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalBooks = user.books.length;
+    const books = user.books.slice(startIndex, endIndex);
+
+    const pagination = {
+      currentPage: page,
+      totalPages: Math.ceil(totalBooks / limit),
+      totalBooks
+    };
+
+    res.status(200).json({ pagination, books });
+  } catch (err) {
+    return handleErrors(res, err);
+  }
+};
+
+exports.getBookById = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+
+    if (!book) {
+      return res.status(404).json({ msg: 'Book not found' });
+    }
+
+    res.status(200).json(book);
+  } catch (err) {
+    return handleErrors(res, err);
+  }
+};
+
+exports.updateBook = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { title, author, publicationYear, category, description, imageURL, status } = req.body;
+
+    const book = await Book.findById(req.params.bookId);
+
+    if (!book) {
+      return res.status(404).json({ msg: 'Book not found' });
+    }
+
+    if (book.user.toString() !== req.params.userId) {
+      return res.status(401).json({ msg: 'Unauthorized' });
+    }
+
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.bookId,
+      { title, author, publicationYear, category, description, imageURL, status },
+      { new: true }
+    );
+
+    if (!updatedBook) {
+      return res.status(404).json({ msg: 'Book not found' });
+    }
+
+    res.status(200).json(updatedBook);
+  } catch (err) {
+    return handleErrors(res, err);
+  }
+};
+
+exports.deleteBook = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.bookId);
+
+    if (!book) {
+      return res.status(404).json({ msg: 'Book not found' });
+    }
+
+    if (book.user.toString() !== req.params.userId) {
+      return res.status(401).json({ msg: 'Unauthorized' });
+    }
+
+    await Book.findByIdAndDelete(req.params.bookId);
+
+    res.status(200).json({ msg: 'Book deleted' });
+  } catch (err) {
+    return handleErrors(res, err);
+  }
+};
+
+exports.bookRoutes = (app) => {
+  app.post('/books/create', this.createBook);
+  app.get('/books/', this.getAllBooks);
+  app.get('/books/:id', this.getBookById);
+  app.put('/:userId/books/:bookId', this.updateBook);
+  app.delete('/:userId/books/:bookId', this.deleteBook);
+};
