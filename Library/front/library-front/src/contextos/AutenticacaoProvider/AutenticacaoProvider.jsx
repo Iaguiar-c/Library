@@ -1,25 +1,24 @@
-import { AxiosRequestConfig } from "axios";
 import { createContext, useState, useEffect, useContext } from "react";
 import { Api, http } from "../../services/api";
 import { getUsuarioNoLocalStorage, setUsuarioNoLocalStorage } from "./util";
 
-export const CriaUsuarioContext = createContext({});
-CriaUsuarioContext.displayName = "Cria Usuario Context";
+export const UsuarioContext = createContext({});
+UsuarioContext.displayName = "Cria Usuario Context";
 
 export const useAutenticacao = () => {
-  const contexto = useContext(CriaUsuarioContext);
+  const contexto = useContext(UsuarioContext);
   return contexto;
 };
 
-export const AutenticadoProvider = ({ children }) => {
+export const AutenticacaoProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem('token') || '' || null || undefined);
   const [config, setConfig] = useState({});
 
   useEffect(() => {
     async function pegaToken() {
       const res = await http.pegaToken();
-      setToken(res);
+      setToken(res || '');
     }
     pegaToken();
   }, []);
@@ -33,17 +32,16 @@ export const AutenticadoProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    const usuario = getUsuarioNoLocalStorage();
-
     if (usuario) {
+      const usuario = getUsuarioNoLocalStorage();
       setUsuario(usuario);
     }
   }, []);
 
-  async function login(email, senha) {
+  async function login(email, password) {
     try {
-      const response = await Api.post("login", { email, senha }, config);
-      const user = response.data.usuario;
+      const response = await Api.post("auth/login", { email, password }, config);
+      const user = response.data.user;
       const token = response.data.token;
       setUsuario(user);
       setToken(token);
@@ -60,8 +58,8 @@ export const AutenticadoProvider = ({ children }) => {
   }
 
   return (
-    <CriaUsuarioContext.Provider value={{ usuario, login, logout, config, token }}>
+    <UsuarioContext.Provider value={{ usuario, login, logout, config, token }}>
       {children}
-    </CriaUsuarioContext.Provider>
+    </UsuarioContext.Provider>
   );
 };

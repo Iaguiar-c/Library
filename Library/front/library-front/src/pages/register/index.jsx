@@ -1,42 +1,62 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "notistack";
+// import { useSnackbar } from "notistack";
 import axios from "axios";
+import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
+  const { postUsuario } = useUsuario();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    // essa verificação deve ser feita só no front
+    confirmpassword: "",
+  });
 
-  const handleRegister = async (e) => {
+    const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  async function handleSubmit(name, email, password, confirmpassword, e){
     e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5555/api/user/register",
-        {
-          email,
-          username,
-          password,
-        }
-      );
+    setLoading(true);
 
-      if (response.data.success) {
-        enqueueSnackbar("Usuário registrado com sucesso!", {
-          variant: "success",
-        });
-        navigate("/");
-      } else {
-        enqueueSnackbar(response.data.message || "Erro ao registrar usuário", {
-          variant: "error",
-        });
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      enqueueSnackbar("Erro ao registrar usuário", { variant: "error" });
+    if (formData.password !== formData.confirmpassword) {
+      return;
     }
+
+    try {
+      await postUsuario(name, email, password, confirmpassword);
+      navigate("/login");
+    } catch {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+
+    // if (response.data.success) {
+    //   enqueueSnackbar("Usuário registrado com sucesso!", {
+    //     variant: "success",
+    //   });
+    //   navigate("/");
+    // } else {
+    //   enqueueSnackbar(response.data.message || "Erro ao registrar usuário", {
+    //     variant: "error",
+    //   });
+    // }
   };
 
   const handleLoginClick = () => {
@@ -54,7 +74,7 @@ const UserRegister = () => {
             <form
               className="space-y-4 md:space-y-6"
               action="#"
-              onSubmit={handleRegister}
+              onSubmit={(e) => handleSubmit(username, email, password, confirmpassword, e)}
             >
               <div>
                 <label
@@ -99,6 +119,22 @@ const UserRegister = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required=""
+                ></input>
+              </div>
+              <div>
+                <label
+                  htmlFor="confirmpassword"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Confirmar Senha
+                </label>
+                <input
+                  type="confirmpassword"
+                  value={confirmpassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""

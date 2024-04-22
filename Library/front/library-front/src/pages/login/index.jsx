@@ -1,49 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "notistack";
-import axios from "axios";
+// import { useSnackbar } from "notistack";
+import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
+import { http } from "../../services/api";
 
-const UserLogin = () => {
+const LoginUsuario = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
+  const { login, usuario } = useAutenticacao();
 
-  const handleLogin = async (e) => {
+  async function handleLogin(email, password, e) {
     e.preventDefault();
-
-    const data = {
-      email,
-      password,
-    };
 
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5555/api/user/login",
-        data
-      );
-      const userId = response.data.userId;
-
-      localStorage.setItem("userId", userId);
-
-      setLoading(false);
-      enqueueSnackbar("Usuário Logado com Sucesso!", {
-        variant: "success",
-      });
+      await login(email, password);
+      await http.pegaToken();
       navigate("/home");
     } catch (error) {
       setLoading(false);
-      enqueueSnackbar("Erro ao fazer login", { variant: "error" });
       console.log(error);
+      // enqueueSnackbar("Erro ao fazer login", { variant: "error" });
+    } finally {
+      setLoading(false);
     }
-  };
 
-  const handleRegisterClick = () => {
-    navigate("/api/user/register");
-  };
+    setLoading(false);
+  }
+
+  if (usuario) {
+    window.location.pathname = "/home";
+  }
+
+  // const handleRegisterClick = () => {
+  //   navigate("/api/user/register");
+  // };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -57,7 +52,10 @@ const UserLogin = () => {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form className="space-y-6" onSubmit={handleLogin}>
+              <form
+                className="space-y-6"
+                onSubmit={(e) => handleLogin(email, password, e)}
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -124,10 +122,10 @@ const UserLogin = () => {
               <p className="mt-10 text-center text-sm text-gray-500">
                 Não tem uma conta ainda?{" "}
                 <a
-                  href="/api/user/register"
+                  href="/register"
                   className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                  onClick={handleRegisterClick}
                 >
+                  {/* onClick={handleRegisterClick} */}
                   Cadastre-se!
                 </a>
               </p>
@@ -139,4 +137,4 @@ const UserLogin = () => {
   );
 };
 
-export default UserLogin;
+export default LoginUsuario;
