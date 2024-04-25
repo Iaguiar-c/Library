@@ -15,7 +15,8 @@ export default function Header() {
     setOpen(!open);
   }
 
-  function doLogout() {
+  function doLogout(event) {
+    event.preventDefault();
     logout();
     navigate("/login");
   }
@@ -140,12 +141,12 @@ export default function Header() {
                         >
                           Settings
                         </a>
-                        <button 
-                          onClick={doLogout}
+                        <button
+                          onClick={(event) => doLogout(event)}
                           className="block px-4 py-2 text-sm text-gray-700"
-                            >
-                          
-                            Sign out
+                        >
+
+                          Sign out
                         </button>
                       </div>
                     ) : (

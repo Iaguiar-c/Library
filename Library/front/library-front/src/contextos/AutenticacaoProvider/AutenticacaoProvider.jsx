@@ -52,7 +52,7 @@ export const AutenticacaoProvider = ({ children }) => {
   }
 
   function logout() {
-    setUsuario({});
+    setUsuario(null);
     setToken('');
     localStorage.clear();
   }
