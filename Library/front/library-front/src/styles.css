@@ -1,0 +1,14 @@
+.dark-mode {
+    background-color: #222;
+    color: #fff;
+}
+
+.light-mode {
+    background-color: #fff;
+    color: #222;
+}
+
+.bg-gray-800-dark {
+    --tw-bg-opacity: 1;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
