@@ -1,3 +1,4 @@
+// TODO: aplicar o contexto de internacionalização
 import { useTheme } from "../../contextos/ThemeProvider/ThemeProvider";
 import Sol from '../../assets/DARK_MODE_-_SOL-removebg-preview (1).png'
 import Lua from '../../assets/lua.png'
