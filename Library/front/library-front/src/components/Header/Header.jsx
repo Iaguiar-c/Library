@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+// TODO: aplicar o contexto de internacionalização
+import { useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import ThemeButton from "../ThemeButton/ThemeButton";
+import { useTheme } from '../../contextos/ThemeProvider/ThemeProvider';
 
 export default function Header() {
   const [loading, setLoading] = useState(false);
@@ -10,6 +12,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { darkMode, toggleDarkMode } = useTheme();
 
   function openCloseUserMenu() {
     setOpen(!open);
@@ -23,8 +26,9 @@ export default function Header() {
 
   return (
     <>
+    
       <div className="min-h-full">
-        <nav className="bg-gray-800">
+        <nav className={`bg-gray-800-${darkMode ? 'dark' : ''}`} >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
@@ -94,7 +98,7 @@ export default function Header() {
                       />
                     </svg>
                   </button>
-
+                  <ThemeButton/>
                   <div className="relative ml-3">
                     <div>
                       <button

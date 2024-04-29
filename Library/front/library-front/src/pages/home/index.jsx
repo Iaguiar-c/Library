@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <>
-      {/* <div>
+      <div>
         Olá, {usuario?.name} bem-vindo(a) ao Bookster!
         {t("ola_mundo")}
         <button type="submit" onClick={() => toggleTraducao("pt")}>
@@ -28,7 +28,7 @@ export default function Home() {
         <button type="submit" onClick={() => toggleTraducao("es")}>
           Espanhol
         </button>
-      </div> */}
+      </div>
     </>
   );
 }
