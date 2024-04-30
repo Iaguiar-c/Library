@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { http } from "../../services/api";
-import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
 import { useTranslation } from "react-i18next";
 
 const LoginUsuario = () => {
   const [password, setPassword] = useState("");
   const { t } = useTranslation();
-  // const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const { login, usuario } = useAutenticacao();
   const navigate = useNavigate();
   const passwordRef = useRef(null);
@@ -19,18 +18,18 @@ const LoginUsuario = () => {
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
-    setError(null); // Limpa qualquer erro existente
+    setError(null); 
     navigate('/home');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); // Limpa o estado de erro ao iniciar o login
+    setError(null); 
 
     try {
       await login(email, passwordRef.current.value);
-      await Api.pegaToken();
+      await http.pegaToken();
       handleSuccess();
     } catch (error) {
       setError("Credenciais inválidas. Por favor, tente novamente.");
