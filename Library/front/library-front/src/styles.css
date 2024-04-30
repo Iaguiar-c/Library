@@ -1,11 +1,13 @@
 .dark-mode {
     background-color: #222;
     color: #fff;
+    padding-left: 10px;
 }
 
 .light-mode {
     background-color: #fff;
     color: #222;
+    padding-left: 10px;
 }
 
 .bg-gray-800-dark {
