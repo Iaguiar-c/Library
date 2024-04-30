@@ -10,7 +10,6 @@ export default function Header() {
   const [userData, setUserData] = useState({});
   const { usuario, logout } = useAutenticacao();
   const [open, setOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
 
@@ -127,24 +126,20 @@ export default function Header() {
                         aria-labelledby="user-menu-button"
                         tabIndex="-1"
                       >
-                        <a
-                          href="profile"
+                        <button
+                          onClick={() => navigate("/profile")}
                           className="block px-4 py-2 text-sm text-gray-700"
-                          role="menuitem"
-                          tabIndex="-1"
-                          id="user-menu-item-0"
-                        >
+                          >
                           Your Profile
-                        </a>
-                        <a
+                        </button>
+                        {/* <a
                           href="settings"
-                          className="block px-4 py-2 text-sm text-gray-700"
                           role="menuitem"
                           tabIndex="-1"
                           id="user-menu-item-1"
                         >
                           Settings
-                        </a>
+                        </a> */}
                         <button
                           onClick={(event) => doLogout(event)}
                           className="block px-4 py-2 text-sm text-gray-700"

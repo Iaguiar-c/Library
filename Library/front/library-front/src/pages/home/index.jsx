@@ -11,6 +11,7 @@ import Card from "../../components/Card";
 export default function Home() {
   const { toggleTraducao } = useTraducao();
   const { t } = useTranslation();
+
   const { getSearch, getBook } = useLivros();
   const { usuario } = useAutenticacao();
   const [search, setSearch] = useState("");
@@ -28,12 +29,8 @@ export default function Home() {
         .catch((err) => console.log(err));
     }
   };
-  /*
-  useEffect(() => {
-    pegarLivrosApiGoogle();
-  }, []);
+  
 
-  */
 
   return (
     <>

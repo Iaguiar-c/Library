@@ -157,21 +157,21 @@ router.post("/login", async (req, res) => {
 // Logout de usuário
 router.post("/logout/:Id", async (req, res) => {
   res.status(200).json({ msg: "Usuário desconectado com sucesso!" });
-  /*const Id = req.params.Id;
+  const Id = req.params.Id;
   
     try {
-      // Verificar se o usuário existe antes de realizar o logout
+     // Verificar se o usuário existe antes de realizar o logout
       const user = await User.findById(Id);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado" });
       }
       
-      //Deslogar o usuário
+     // Deslogar o usuário
       res.status(200).json({ msg: "Usuário desconectado com sucesso!" });
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Erro no servidor" });
-    }*/
+    }
 });
 
 // Atualização de usuário
