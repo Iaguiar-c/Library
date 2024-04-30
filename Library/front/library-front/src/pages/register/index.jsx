@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 
 const UserRegister = () => {
@@ -10,6 +11,7 @@ const UserRegister = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
   // const { enqueueSnackbar } = useSnackbar();
   const { postUsuario } = useUsuario();
   const [formData, setFormData] = useState({
