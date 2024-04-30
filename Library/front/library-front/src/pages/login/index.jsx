@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { http } from "../../services/api";
-import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
+import { Api } from "../../services/api";
 import { useTranslation } from "react-i18next";
+import PasswordField from '../../components/PasswordField/PasswordField';
 
 const LoginUsuario = () => {
-  const [password, setPassword] = useState("");
   const { t } = useTranslation();
-  // const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const { login, usuario } = useAutenticacao();
   const navigate = useNavigate();
   const passwordRef = useRef(null);
@@ -46,7 +45,7 @@ const LoginUsuario = () => {
   }, [usuario]);
 
   useEffect(() => {
-    if (error && !usuario) { // Exibe a mensagem de erro apenas se não houver sucesso de login
+    if (error && !usuario) {
       enqueueSnackbar(error, { variant: "error" });
     }
   }, [error, enqueueSnackbar, usuario]);
@@ -64,13 +63,12 @@ const LoginUsuario = () => {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
               <form className="space-y-6" onSubmit={handleSubmit}>
-                {/* Input para o email */}
                 <div>
                   <label
                     htmlFor="email"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                     {t("email")}
+                    {t("email")}
                   </label>
                   <div className="mt-2">
                     <input
@@ -86,38 +84,30 @@ const LoginUsuario = () => {
                   </div>
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                        {t("senha")}
-                    </label>
-                    <div className="text-sm">
-                      <a
-                        href="#"
-                        className="font-semibold text-indigo-600 hover:text-indigo-500"
-                      >
-                          {t("esqueceu_a_senha")}
-                      </a>
-                    </div>
-                  </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    {t("senha")}
+                  </label>
                   <div className="mt-2">
-                    <input
+                    <PasswordField
                       id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
+                      label="Senha"
+                      passwordRef={passwordRef}
+                    />
+                  </div>
+                  <div className="text-sm">
+                    <a
+                      href="#"
+                      className="font-semibold text-indigo-600 hover:text-indigo-500"
+                    >
+                      {t("esqueceu_a_senha")}
+                    </a>
                   </div>
                 </div>
 
-                {/* Botão de submit */}
                 <div className="mt-6">
                   <button
                     type="submit"
@@ -155,15 +145,13 @@ const LoginUsuario = () => {
                 </div>
               </form>
 
-              {/* Link para cadastro */}
               <p className="mt-10 text-center text-sm text-gray-500">
-                {t("nao_tem_conta")} {" "}
+                {t("nao_tem_conta")}{" "}
                 <a
                   href="/register"
                   className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                  >
-                  {/* onClick={handleRegisterClick} */}
-                    {t("cadastre_se")} 
+                >
+                  {t("cadastre_se")}
                 </a>
               </p>
             </div>
