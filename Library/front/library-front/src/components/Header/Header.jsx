@@ -1,3 +1,4 @@
+// TODO: aplicar o contexto de internacionalização
 import { useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Outlet, useNavigate } from "react-router-dom";
