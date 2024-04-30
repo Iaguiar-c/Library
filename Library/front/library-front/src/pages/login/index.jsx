@@ -18,20 +18,25 @@ const LoginUsuario = () => {
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
-    setError(null); 
+    setError(null); // Limpa qualquer erro existente
     navigate('/home');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); 
+    setError(null); // Limpa o estado de erro ao iniciar o login 
 
     try {
-      await login(email, passwordRef.current.value);
-      await http.pegaToken();
-      handleSuccess();
+      if (error.response && error.response.status === 401) {
+        setError("Credenciais inválidas. Por favor, tente novamente.");
+      } else {
+        await login(email, passwordRef.current.value);
+        await http.pegaToken();
+        handleSuccess();
+      }
     } catch (error) {
+      console.log(error)
       setError("Credenciais inválidas. Por favor, tente novamente.");
     } finally {
       setLoading(false);
@@ -110,6 +115,7 @@ const LoginUsuario = () => {
                       autoComplete="current-password"
                       required
                       value={password}
+                      ref={passwordRef}
                       onChange={(e) => setPassword(e.target.value)}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
@@ -161,7 +167,6 @@ const LoginUsuario = () => {
                   href="/register"
                   className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                   >
-                  {/* onClick={handleRegisterClick} */}
                     {t("cadastre_se")} 
                 </a>
               </p>
