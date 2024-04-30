@@ -26,7 +26,7 @@ const resetTokenSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  expires: {
+  expires: {   
     type: Date,
     required: true,
   },
