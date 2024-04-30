@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
-import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { useSnackbar } from "notistack";
+import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
+
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
@@ -13,8 +14,6 @@ const UserRegister = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { t } = useTranslation();
-  const [error, setError] = useState(null);
   const { postUsuario } = useUsuario();
   const [formData, setFormData] = useState({
     name: "",
@@ -44,13 +43,22 @@ const UserRegister = () => {
     try {
       await postUsuario(name, email, password, confirmpassword);
       navigate("/login");
-      enqueueSnackbar("Cadastro realizado com sucesso! Por favor, faça seu login", { variant: "success" });
     } catch {
       setLoading(false);
-      setError("Erro ao registrar usuário", error, { variant: "error" });
     } finally {
       setLoading(false);
     }
+
+    // if (response.data.success) {
+    //   enqueueSnackbar("Usuário registrado com sucesso!", {
+    //     variant: "success",
+    //   });
+    //   navigate("/");
+    // } else {
+    //   enqueueSnackbar(response.data.message || "Erro ao registrar usuário", {
+    //     variant: "error",
+    //   });
+    // }
   };
 
   const handleLoginClick = () => {
