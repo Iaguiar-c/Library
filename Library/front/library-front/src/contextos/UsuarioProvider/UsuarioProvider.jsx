@@ -12,13 +12,21 @@ UsuarioContext.displayName = "Usuario Context";
 
 export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState([]);
-  const { config } = useAutenticacao();
+  const { config, logout } = useAutenticacao();
 
   async function postUsuario(name, email, password, confirmpassword) {
     try {
       const response = await Api.post("user/register", { name, email, password, confirmpassword }, config);
-      console.log("contexto Usuario:", response);
       setUsuario(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function deleteUsuario(id){
+    try{
+      await Api.delete(`user/delete/${id}`, config);
+      logout();
     } catch (error) {
       console.log(error);
     }
@@ -28,6 +36,7 @@ export function UsuarioProvider({ children }) {
     <UsuarioContext.Provider
       value={{
         postUsuario,
+        deleteUsuario,
         usuario,
         setUsuario,
       }}

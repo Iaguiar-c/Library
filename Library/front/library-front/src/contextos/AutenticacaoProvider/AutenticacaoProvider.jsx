@@ -43,6 +43,7 @@ export const AutenticacaoProvider = ({ children }) => {
       const response = await Api.post("auth/login", { email, password }, config);
       const user = response.data.user;
       const token = response.data.token;
+      console.log(user)
       setUsuario(user);
       setToken(token);
       await setUsuarioNoLocalStorage(user, token);
