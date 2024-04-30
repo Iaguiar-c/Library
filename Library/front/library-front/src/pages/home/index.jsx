@@ -9,6 +9,7 @@ export default function Home() {
   const { toggleTraducao } = useTraducao();
   const { t } = useTranslation();
   const { pegarLivrosApiGoogle } = useLivros();
+  const { usuario } = useAutenticacao();
 
   useEffect(() => {
     pegarLivrosApiGoogle();
