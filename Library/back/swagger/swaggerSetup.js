@@ -10,10 +10,20 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "API do sistema Bookster",
     },
-    paths: swaggerDefinition, 
+    paths: swaggerDefinition,
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./controllers/*.js"],
 };
+
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
