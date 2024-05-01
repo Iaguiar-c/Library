@@ -5,6 +5,7 @@ const swaggerDefinition = {
       summary:
         "Retorna uma mensagem indicando que o servidor está funcionando corretamente.",
       tags: ["User"],
+      security: [{ bearerAuth: [] }], 
       responses: {
         200: {
           description: "Retorna uma mensagem de sucesso",
@@ -28,6 +29,7 @@ const swaggerDefinition = {
     get: {
       summary: "Obtém informações de um usuário específico pelo ID.",
       tags: ["User"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
@@ -74,6 +76,7 @@ const swaggerDefinition = {
     post: {
       summary: "Desconecta um usuário pelo ID.",
       tags: ["User"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
@@ -166,6 +169,7 @@ const swaggerDefinition = {
     put: {
       summary: "Atualiza informações de um usuário pelo ID.",
       tags: ["User"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
@@ -218,6 +222,7 @@ const swaggerDefinition = {
     delete: {
       summary: "Deleta um usuário pelo ID.",
       tags: ["User"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
@@ -241,11 +246,12 @@ const swaggerDefinition = {
   },
   // END: User Configuration
   // BEGIN: Senha Configuration
-  "/forgot-password": {
+  "/password/forgot-password": {
     post: {
       summary: "Solicitação de recuperação de senha",
       description: "Envia um e-mail com um link para redefinir a senha.",
       tags: ["Senha"],
+      security: [{ bearerAuth: [] }], 
       requestBody: {
         required: true,
         content: {
@@ -271,12 +277,13 @@ const swaggerDefinition = {
       },
     },
   },
-  "/reset-password": {
+  "password/reset-password": {
     post: {
       summary: "Atualiza a senha com base no token",
       description:
         "Atualiza a senha do usuário com base no token de recuperação.",
       tags: ["Senha"],
+      security: [{ bearerAuth: [] }], 
       requestBody: {
         required: true,
         content: {
@@ -314,6 +321,7 @@ const swaggerDefinition = {
     post: {
       summary: "Cria um novo livro",
       tags: ["Books"],
+      security: [{ bearerAuth: [] }], 
       requestBody: {
         required: true,
         content: {
@@ -370,6 +378,7 @@ const swaggerDefinition = {
     get: {
       summary: "Retorna todos os livros de um usuário",
       tags: ["Books"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "query",
@@ -400,6 +409,7 @@ const swaggerDefinition = {
     get: {
       summary: "Retorna um livro pelo ID",
       tags: ["Books"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
@@ -427,6 +437,7 @@ const swaggerDefinition = {
     put: {
       summary: "Atualiza um livro pelo ID",
       tags: ["Books"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
@@ -499,6 +510,7 @@ const swaggerDefinition = {
     delete: {
       summary: "Deleta um livro pelo ID",
       tags: ["Books"],
+      security: [{ bearerAuth: [] }], 
       parameters: [
         {
           in: "path",
