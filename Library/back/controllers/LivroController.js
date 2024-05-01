@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const authenticateToken = require('../middlewares/authUsuario');
 const Book = require("../models/bookModel");
 
 require("dotenv").config();
@@ -162,9 +163,9 @@ exports.deleteBook = async (req, res) => {
 };
 
 exports.bookRoutes = (app) => {
-  app.post('/books/create', this.createBook);
-  app.get('/books/', this.getAllBooks);
-  app.get('/books/:id', this.getBookById);
-  app.put('/:userId/books/:bookId', this.updateBook);
-  app.delete('/:userId/books/:bookId', this.deleteBook);
+  app.post('/books/create', authenticateToken, this.createBook);
+  app.get('/books/', authenticateToken, this.getAllBooks);
+  app.get('/books/:id', authenticateToken, this.getBookById);
+  app.put('/:userId/books/:bookId', authenticateToken, this.updateBook);
+  app.delete('/:userId/books/:bookId', authenticateToken, this.deleteBook);
 };

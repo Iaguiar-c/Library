@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const authenticateToken = require('../middlewares/authUsuario');
 require("dotenv").config();
 
 //BEGIN: CRUD usuário
@@ -12,7 +13,7 @@ router.get("/", (req, res) => {
 });
 
 //Rota Privada
-router.get("/:id", checkToken, async (req, res) => {
+router.get("/:id", authenticateToken, async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -29,29 +30,6 @@ router.get("/:id", checkToken, async (req, res) => {
     res.status(500).json({ msg: "Erro ao buscar usuário." });
   }
 });
-
-// Função para verificar o token de autenticação
-function checkToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
-    return res
-      .status(401)
-      .json({ msg: "Acesso negado! Token de autenticação não fornecido." });
-  }
-
-  try {
-    const secret = process.env.secret;
-
-    jwt.verify(token, secret);
-
-    next();
-  } catch (error) {
-    console.error("Token inválido:", error.message);
-    res.status(400).json({ msg: "Token inválido!" });
-  }
-}
 
 // Registrar um novo usuário
 router.post("/register", async (req, res) => {
@@ -155,7 +133,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Logout de usuário
-router.post("/logout/:Id", async (req, res) => {
+router.post("/logout/:Id", authenticateToken, async (req, res) => {
   res.status(200).json({ msg: "Usuário desconectado com sucesso!" });
   const Id = req.params.Id;
   
@@ -175,7 +153,7 @@ router.post("/logout/:Id", async (req, res) => {
 });
 
 // Atualização de usuário
-router.put("/update/:Id", async (req, res) => {
+router.put("/update/:Id", authenticateToken, async (req, res) => {
   const Id = req.params.Id;
   const { name, email, password, confirmpassword } = req.body;
 
@@ -231,8 +209,8 @@ router.put("/update/:Id", async (req, res) => {
   }
 });
 
-//Exclusão de usuário
-router.delete("/delete/:Id", async (req, res) => {
+// Exclusão de usuário
+router.delete("/delete/:Id", authenticateToken, async (req, res) => {
   const Id = req.params.Id;
 
   try {
@@ -250,6 +228,7 @@ router.delete("/delete/:Id", async (req, res) => {
     res.status(500).json({ msg: "Erro no servidor ao deletar usuário." });
   }
 });
+
 // END: CRUD Usuário
 
 module.exports = router;
