@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import ModalForm from "../Modals/add-books-modal";
 
 const BookCard = ({ book }) => {
   const { volumeInfo } = book;
   const { title, authors, imageLinks } = volumeInfo;
-  const imageUrl = imageLinks?.thumbnail || "https://via.placeholder.com/150"; 
+  const imageUrl = imageLinks?.thumbnail || "https://via.placeholder.com/150";
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleAddToLibrary = () => {
+    setModalOpen(true);
+  };
 
   return (
     <div className="max-w-sm w-full lg:max-w-full lg:flex mb-4">
@@ -28,7 +35,17 @@ const BookCard = ({ book }) => {
               Publicado em: {volumeInfo.publishedDate || "Desconhecido"}
             </p>
           </div>
+          <button
+            onClick={handleAddToLibrary}
+            className="ml-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+          >
+            Adicionar à Biblioteca
+          </button>
         </div>
+
+        {modalOpen && (
+          <ModalForm isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+        )}
       </div>
     </div>
   );
