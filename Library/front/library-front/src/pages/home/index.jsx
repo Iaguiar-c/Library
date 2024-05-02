@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 //import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
 //import axios from "axios";
-import SelectModal from "../../components/Modals/add-books-modal";
+import SelectModal from "../../components/Modals/select-add-books-modal";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 

@@ -1,97 +1,220 @@
-import React, { useState } from 'react';
-import GoogleBooksModal from './add-book-google-modal';
+import React, { useRef, useEffect, useState } from "react";
 
-const SelectModal = ({ isOpen, onClose }) => {
-    const [showGoogleBooksModal, setShowGoogleBooksModal] = useState(false);
-  
-    const handleAutomatedFillClick = () => {
-      setShowGoogleBooksModal(true); 
+const ModalForm = ({ isOpen, onClose }) => {
+  const modalRef = useRef();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    setModalOpen(isOpen);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
     };
-  
-    return (
+
+    if (modalOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [modalOpen, onClose]);
+
+  const handleModalClick = (event) => {
+    event.stopPropagation();
+  };
+
+  const handleClose = () => {
+    onClose();
+    setModalOpen(false);
+  };
+
+  const handleOpen = () => {
+    setModalOpen(true);
+  };
+
+  if (!modalOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex justify-center items-center">
       <div
-        id="select-modal"
-        tabIndex="-1"
-        aria-hidden={!isOpen}
-        className={`fixed top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center bg-black bg-opacity-50 overflow-y-auto`}
-        onClick={onClose}
+        ref={modalRef}
+        className="bg-white rounded-lg p-8 max-w-xl w-full"
+        onClick={handleModalClick}
+        style={{
+          maxHeight: "90%", // Limita a altura máxima do modal
+          overflowY: "auto", // Adiciona scroll caso o conteúdo seja maior que a tela
+        }}
       >
-        <div className="relative w-full max-w-md p-4 md:p-5 bg-white rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
-          <div className="flex items-center justify-between pb-3 mb-3 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">Adicionar Livros</h3>
+        <div className="flex justify-between items-center border-b pb-4">
+          <h2 className="text-xl font-semibold text-gray-900">
+            Adicionar Livro
+          </h2>
+
+          <button
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-800"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <p className="mt-1 text-sm leading-6 text-gray-600">
+          Complete as informações abaixo:
+        </p>
+
+        <form className="mt-4 space-y-8">
+          <div className="space-y-12">
+            <div className="border-b border-gray-900/10 pb-12">
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="titulo"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Título
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="titulo"
+                      id="titulo"
+                      autoComplete="titulo"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="autor"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Autor
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="autor"
+                      id="autor"
+                      autoComplete="autor"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="ano"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Ano de Publicação
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="ano"
+                      id="ano"
+                      autoComplete="ano"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="categoria"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Categoria
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="categoria"
+                      name="categoria"
+                      autoComplete="categoria"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    >
+                      <option>--</option>
+                      <option>bla</option>
+                      <option>bla</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-span-full">
+                  <label
+                    htmlFor="sinopse"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Sinopse
+                  </label>
+                  <div className="mt-2">
+                    <textarea
+                      id="sinopse"
+                      name="sinopse"
+                      rows="3"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="col-span-full">
+                  <label
+                    htmlFor="imagem"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Imagem URL
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="imagem"
+                      id="imagem"
+                      autoComplete="imagem"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
               type="button"
-              className="text-gray-400 hover:text-gray-800"
               onClick={onClose}
+              className="text-sm font-semibold leading-6 text-gray-900"
             >
-             
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Adicionar
             </button>
           </div>
-          <div className="p-4 md:p-5">
-            <p className="text-gray-500 mb-4">Escolha a forma como deseja adicionar:</p>
-            <ul className="space-y-4 mb-4">
-              <li>
-                <input
-                  type="radio"
-                  id="manual"
-                  name="addMethod"
-                  className="hidden peer"
-                  required
-                />
-                <label
-                  htmlFor="manual"
-                  className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100"
-                >
-                  <div>
-                    <div className="text-lg font-semibold">Manualmente</div>
-                    <div className="text-gray-500">Completando todas as informações</div>
-                  </div>
-                  <svg class="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                </label>
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  id="automated"
-                  name="addMethod"
-                  className="hidden peer"
-                />
-                <label
-                  htmlFor="automated"
-                  className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100"
-                  onClick={handleAutomatedFillClick} // Adicionar onClick para abrir o modal GoogleBooksModal
-                >
-                  <div>
-                    <div className="text-lg font-semibold">Preenchimento automático</div>
-                    <div className="text-gray-500">Utilizando o Google Livros</div>
-                  </div>
-                  <svg class="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                </label>
-              </li>
-            </ul>
-           
-          </div>
-        </div>
-  
-        {showGoogleBooksModal && (
-          <GoogleBooksModal isOpen={true} onClose={() => setShowGoogleBooksModal(false)} />
-        )}
+        </form>
       </div>
-    );
-  };
-  
-  export default SelectModal;
+    </div>
+  );
+};
+
+export default ModalForm;
