@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import GoogleBooksModal from './add-book-google-modal';
-import ModalForm from './add-books-modal';
+import React, { useState } from "react";
+import GoogleBooksModal from "./add-book-google-modal";
+import ModalForm from "./add-books-modal";
 
 const SelectModal = ({ isOpen, onClose }) => {
+  const [selectedBook, setSelectedBook] = useState(null);
   const [showGoogleBooksModal, setShowGoogleBooksModal] = useState(false);
-  const [showManualForm, setShowManualForm] = useState(false); 
+  const [showManualForm, setShowManualForm] = useState(false);
 
   const handleAutomatedFillClick = () => {
     setShowGoogleBooksModal(true);
   };
 
   const handleManualAddClick = () => {
-    setShowManualForm(true); 
+    setShowManualForm(true); // Atualiza o estado para mostrar o formulário manual
+    setShowGoogleBooksModal(false); // Garante que o modal do Google Books esteja fechado
+  };
+
+  const handleBookSelection = (book) => {
+    setSelectedBook(book);
+    setShowGoogleBooksModal(false);
+    setShowManualForm(true);
   };
 
   return (
@@ -30,20 +38,7 @@ const SelectModal = ({ isOpen, onClose }) => {
             className="text-gray-400 hover:text-gray-800"
             onClick={onClose}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            X
           </button>
         </div>
         <div className="p-4 md:p-5">
@@ -55,7 +50,7 @@ const SelectModal = ({ isOpen, onClose }) => {
                 id="manual"
                 name="addMethod"
                 className="hidden peer"
-                onChange={handleManualAddClick} 
+                onChange={handleManualAddClick}
               />
               <label
                 htmlFor="manual"
@@ -108,12 +103,11 @@ const SelectModal = ({ isOpen, onClose }) => {
       </div>
 
       {showGoogleBooksModal && (
-        <GoogleBooksModal isOpen={true} onClose={() => setShowGoogleBooksModal(false)} />
+        <GoogleBooksModal isOpen={true} onClose={() => setShowGoogleBooksModal(false)} onSelectBook={handleBookSelection} />
       )}
 
-      {/* Renderizar o ModalForm se showManualForm for true */}
       {showManualForm && (
-        <ModalForm isOpen={true} onClose={() => setShowManualForm(false)} />
+        <ModalForm isOpen={true} onClose={() => setShowManualForm(false)} book={selectedBook} />
       )}
     </div>
   );
