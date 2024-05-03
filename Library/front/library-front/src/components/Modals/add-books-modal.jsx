@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 
-const ModalForm = ({ isOpen, onClose }) => {
+const ModalForm = ({ isOpen, onClose, book }) => {
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
+  const [manualEntry, setManualEntry] = useState(false);
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -33,8 +34,10 @@ const ModalForm = ({ isOpen, onClose }) => {
     setModalOpen(false);
   };
 
-  const handleOpen = () => {
-    setModalOpen(true);
+  const handleImageInputChange = (event) => {
+    const imageUrl = event.target.value;
+
+    setManualEntry(imageUrl !== "");
   };
 
   if (!modalOpen) return null;
@@ -46,8 +49,8 @@ const ModalForm = ({ isOpen, onClose }) => {
         className="bg-white rounded-lg p-8 max-w-xl w-full"
         onClick={handleModalClick}
         style={{
-          maxHeight: "90%", // Limita a altura máxima do modal
-          overflowY: "auto", // Adiciona scroll caso o conteúdo seja maior que a tela
+          maxHeight: "90%",
+          overflowY: "auto",
         }}
       >
         <div className="flex justify-between items-center border-b pb-4">
@@ -97,9 +100,32 @@ const ModalForm = ({ isOpen, onClose }) => {
                       id="titulo"
                       autoComplete="titulo"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={book?.volumeInfo?.title || ""}
                     />
                   </div>
                 </div>
+
+                {manualEntry && (
+                  <div className="sm:col-span-3">
+                    <label
+                      htmlFor="imagem"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      URL da Imagem
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="imagem"
+                        id="imagem"
+                        autoComplete="imagem"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        onChange={handleImageInputChange}
+                        placeholder="Insira a URL da imagem"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="sm:col-span-3">
                   <label
@@ -115,6 +141,7 @@ const ModalForm = ({ isOpen, onClose }) => {
                       id="autor"
                       autoComplete="autor"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={book?.volumeInfo?.authors?.join(", ") || ""}
                     />
                   </div>
                 </div>
@@ -133,6 +160,7 @@ const ModalForm = ({ isOpen, onClose }) => {
                       id="ano"
                       autoComplete="ano"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={book?.volumeInfo?.publishedDate || ""}
                     />
                   </div>
                 </div>
@@ -150,6 +178,7 @@ const ModalForm = ({ isOpen, onClose }) => {
                       name="categoria"
                       autoComplete="categoria"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                      value={book?.volumeInfo?.categories || ""}
                     >
                       <option>--</option>
                       <option>bla</option>
@@ -163,7 +192,7 @@ const ModalForm = ({ isOpen, onClose }) => {
                     htmlFor="sinopse"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                    Sinopse
+                    Descrição
                   </label>
                   <div className="mt-2">
                     <textarea
@@ -171,27 +200,30 @@ const ModalForm = ({ isOpen, onClose }) => {
                       name="sinopse"
                       rows="3"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      value={book?.volumeInfo?.description || ""}
                     ></textarea>
                   </div>
                 </div>
 
-                <div className="col-span-full">
-                  <label
-                    htmlFor="imagem"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Imagem URL
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="imagem"
-                      id="imagem"
-                      autoComplete="imagem"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
+                {!manualEntry && (
+                  <div className="sm:col-span-3">
+                    <label
+                      htmlFor="imagem"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Capa do Livro
+                    </label>
+                    <div className="mt-2">
+                      {book?.volumeInfo?.imageLinks?.thumbnail && (
+                        <img
+                          src={book?.volumeInfo?.imageLinks?.thumbnail}
+                          alt="Capa do Livro"
+                          className="rounded-md h-40 w-auto"
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

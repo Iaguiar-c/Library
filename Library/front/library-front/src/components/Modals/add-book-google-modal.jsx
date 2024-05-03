@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import BookCard from "../Cards/modal-book-card";
 
-const GoogleBooksModal = ({ isOpen, onClose }) => {
+const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -17,6 +17,11 @@ const GoogleBooksModal = ({ isOpen, onClose }) => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleBookSelection = (book) => {
+    onClose(); // Fecha o modal de pesquisa
+    onSelectBook(book); // Chama a função para preencher o ModalForm com o livro selecionado
   };
 
   return (
@@ -73,7 +78,13 @@ const GoogleBooksModal = ({ isOpen, onClose }) => {
 
           <div className="mt-4 max-h-96 overflow-y-auto">
             {searchResults.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <div
+                key={book.id}
+                className="cursor-pointer p-4 border rounded-lg mb-2 bg-gray-50 hover:bg-gray-100"
+                onClick={() => handleBookSelection(book)}
+              >
+                <BookCard book={book} />
+              </div>
             ))}
           </div>
         </div>
