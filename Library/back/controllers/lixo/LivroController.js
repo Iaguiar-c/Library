@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
-const authenticateToken = require('../middlewares/authUsuario');
-const Book = require("../models/bookModel");
+const User = require("../../models/User");
+const authenticateToken = require('../../middlewares/authenticateToken');
+const Book = require("../../models/Book");
 
 require("dotenv").config();
 

@@ -1,20 +1,11 @@
-
-const express = require("express");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const sgTransport = require("nodemailer-sendgrid-transport");
-const crypto = require("crypto");
-const cors = require('cors');
-const { exec } = require('child_process');
-
-require("dotenv").config(); 
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import { exec } from 'child_process';
+import routes from './routes.js';
+import { swaggerUi, swaggerDocs } from './swagger/swaggerSetup.js'; // Importar o Swagger usando 'import'
 
 const app = express();
-
-// Importar a configuração do Swagger
-const { swaggerUi, swaggerDocs } = require("./swagger/swaggerSetup");
 
 // Middleware para servir a interface do Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -24,26 +15,9 @@ app.get('/', (req, res) => {
   res.redirect('/api-docs');
 });
 
-// Config JSON response
 app.use(express.json());
-
-// Models
-const User = require("./models/User");
-
-// Controllers
-const userController = require("./controllers/UsuarioController");
-const senhaController = require("./controllers/SenhaController");
-const { bookRoutes } = require('./controllers/LivroController');
-
-// CORS
 app.use(cors());
-
-// Use as controllers como middlewares
-app.use("/password", senhaController);
-app.use("/auth", userController);
-app.use("/user", userController);
-bookRoutes(app);  
-
+app.use(routes);
 
 // Credenciais
 const dbUser = process.env.DB_USER;

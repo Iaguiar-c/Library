@@ -548,6 +548,4 @@ const swaggerDefinition = {
   // END: Book Configuration
 };
 
-module.exports = {
-  swaggerDefinition,
-};
+export { swaggerDefinition };
