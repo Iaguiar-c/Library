@@ -1,36 +1,24 @@
+import React, { useState } from "react";
 import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
 import { useTranslation } from "react-i18next";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { useState } from "react";
-import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
-import { useEffect } from "react";
-import axios from "axios";
-import Card from "../../components/Card";
+//import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
+//import axios from "axios";
+import SelectModal from "../../components/Modals/select-add-books-modal";
 
-
-export default function Home() {
+const Home = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const { toggleTraducao } = useTraducao();
   const { t } = useTranslation();
-
-  const { getSearch, getBook } = useLivros();
   const { usuario } = useAutenticacao();
-  const [search, setSearch] = useState("");
-  const [bookData, setData] = useState([]);
-  const searchBook = (evt) => {
-    if (evt.key === "Enter") {
-      axios
-        .get(
-          "https://www.googleapis.com/books/v1/volumes?q=" +
-            search +
-            "&key=AIzaSyA6SaT23KNiiA6DnUfUQTvFeyAcQEkwnSU" +
-            "&maxResults=20"
-        )
-        .then((res) => setData(res.data.items))
-        .catch((err) => console.log(err));
-    }
-  };
-  
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -48,25 +36,20 @@ export default function Home() {
         </button>
       </div>
 
-      <>
-        <div className="row2">
-          <h2>Pesquisa logo embaixo</h2>
-          <div className="search">
-            <input
-              type="text"
-              placeholder="Bote um nome aqui"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyPress={searchBook}
-            />
-            <button>
-              <i className="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
+      <div>
+        <button
+          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={openModal}
+        >
+          Adicionar Livros
+        </button>
 
-        <div className="container">{<Card book={bookData} />}</div>
-      </>
+        {isModalOpen && (
+          <SelectModal isOpen={isModalOpen} onClose={closeModal} />
+        )}
+      </div>
     </>
   );
-}
+};
+
+export default Home;
