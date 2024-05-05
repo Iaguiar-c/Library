@@ -7,17 +7,17 @@ Esse projeto foi criado como método avaliativo na Faculdade de Tecnologia do Es
 
 ## Time Secure-Her
 
-* [Isabella Aguiar](https://github.com/zacharyjbaldwin)​ (frontend development, backend development, documentation)
+* [Isabella Aguiar](https://github.com/zacharyjbaldwin)​ (front-end development, back-end development, documentation)
   * [LinkedIn](https://www.linkedin.com/in/isabella-aguiar-bb5a41248/)
     
-* [Isabella Oliveira](https://github.com/isabellacoliveira)​ (frontend development, backend devlopment, documentation, TL)
+* [Isabella Oliveira](https://github.com/isabellacoliveira)​ (front-end development, back-end devlopment, documentation, TL)
   * [LinkedIn](https://www.linkedin.com/in/isabella-cruz-de-oliveira-b761b7233?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app)
     
-* [Maria Eduarda Santos](https://github.com/Mariajesus65) (frontend devlopment, tester, research, documentation)
+* [Maria Eduarda Santos](https://github.com/Mariajesus65) (front-end development, tester, research, documentation)
   * [LinkedIn](https://www.linkedin.com/in/maria-eduarda-de-jesus-b24b86200?trk=contact-info)
     
-* [Rafaela Cristina](https://github.com/rafaela-css)​ (frontend devlopment, tester, documentation)
+* [Rafaela Cristina](https://github.com/rafaela-css)​ (front-end development, tester, designer, documentation)
   * [LinkedIn](https://www.linkedin.com/in/rafaela-css?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
     
-* [Thaís Tagawa](https://github.com/ThaisYassue) (frontend devlopment, desing, documentation)
+* [Thaís Tagawa](https://github.com/ThaisYassue) (front-end development, desing, documentation)
   * [LinkedIn](https://www.linkedin.com/in/tha%C3%ADs-tagawa/)
