@@ -65,9 +65,7 @@ router.post("/register", async (req, res) => {
     const userExists = await User.findOne({ email: email });
 
     if (userExists) {
-      return res.status(422).json({
-        msg: "Este email já está cadastrado. Por favor, use outro email.",
-      });
+      throw new Error("Este email já está cadastrado. Por favor, use outro email.");
     }
 
     // Gera um hash da senha

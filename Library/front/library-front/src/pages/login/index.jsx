@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { Api } from "../../services/api";
 import { useTranslation } from "react-i18next";
 import PasswordField from '../../components/PasswordField/PasswordField';
+import { http } from "../../services/api";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();
@@ -28,10 +28,15 @@ const LoginUsuario = () => {
     setError(null); // Limpa o estado de erro ao iniciar o login
 
     try {
-      await login(email, passwordRef.current.value);
-      await Api.pegaToken();
-      handleSuccess();
+      if (error.response && error.response.status === 401) {
+        setError("Credenciais inválidas. Por favor, tente novamente.");
+      } else {
+        await login(email, passwordRef.current.value);
+        await http.pegaToken();
+        handleSuccess();
+      }
     } catch (error) {
+      console.log(error)
       setError("Credenciais inválidas. Por favor, tente novamente.");
     } finally {
       setLoading(false);
