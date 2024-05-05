@@ -23,8 +23,8 @@ export function UsuarioProvider({ children }) {
     }
   }
 
-  async function deleteUsuario(id){
-    try{
+  async function deleteUsuario(id) {
+    try {
       await Api.delete(`user/delete/${id}`, config);
       logout();
     } catch (error) {
@@ -38,7 +38,7 @@ export function UsuarioProvider({ children }) {
         postUsuario,
         deleteUsuario,
         usuario,
-        setUsuario,
+        setUsuario
       }}
     >
       {children}
