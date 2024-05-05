@@ -16,7 +16,7 @@ Esse projeto foi criado como método avaliativo na Faculdade de Tecnologia do Es
 * [Maria Eduarda Santos](https://github.com/Mariajesus65) (front-end development, tester, research, documentation)
   * [LinkedIn](https://www.linkedin.com/in/maria-eduarda-de-jesus-b24b86200?trk=contact-info)
     
-* [Rafaela Cristina](https://github.com/rafaela-css)​ (front-end development, tester, designer, documentation)
+* [Rafaela Cristina](https://github.com/rafaela-css)​ (front-end development, tester, UX/UI, documentation)
   * [LinkedIn](https://www.linkedin.com/in/rafaela-css?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
     
 * [Thaís Tagawa](https://github.com/ThaisYassue) (front-end development, desing, documentation)
