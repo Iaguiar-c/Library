@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { exec } from 'child_process';
 import routes from './routes.js';
-import { swaggerUi, swaggerDocs } from './swagger/swaggerSetup.js'; // Importar o Swagger usando 'import'
+import { swaggerUi, swaggerDocs } from './swagger/swaggerSetup.js'; 
 
 const app = express();
 

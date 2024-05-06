@@ -155,7 +155,7 @@ export class UserController {
   }
 
   async updateUser(req, res) {
-    const Id = req.params.Id;
+    const { Id } = req.params.Id;
     const { name, email, password, confirmpassword } = req.body;
 
     // Validação dos campos obrigatórios
