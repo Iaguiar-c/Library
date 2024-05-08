@@ -18,22 +18,24 @@ const LoginUsuario = () => {
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
-    setError(null); // Limpa qualquer erro existente
+    setError(null);
     navigate("/home");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); // Limpa o estado de erro ao iniciar o login
+    setError(null);
 
     try {
-      if (error.response && error.response.status === 401) {
-        setError("Credenciais inválidas. Por favor, tente novamente.");
-      } else {
-        await login(email, passwordRef.current.value);
-        await http.pegaToken();
+      const response = await login(email, passwordRef.current.value);
+
+      if (response && response.status === "success") {
+        setError(null);
+
         handleSuccess();
+      } else {
+        setError("Credenciais inválidas. Por favor, tente novamente.");
       }
     } catch (error) {
       console.log(error);
