@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { useTranslation } from "react-i18next";
-import PasswordField from '../../components/PasswordField/PasswordField';
+import PasswordField from "../../components/PasswordField/PasswordField";
 import { http } from "../../services/api";
 
 const LoginUsuario = () => {
@@ -13,13 +13,13 @@ const LoginUsuario = () => {
   const navigate = useNavigate();
   const passwordRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
     setError(null); // Limpa qualquer erro existente
-    navigate('/home');
+    navigate("/home");
   };
 
   const handleSubmit = async (e) => {
@@ -36,7 +36,7 @@ const LoginUsuario = () => {
         handleSuccess();
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setError("Credenciais inválidas. Por favor, tente novamente.");
     } finally {
       setLoading(false);
@@ -90,18 +90,8 @@ const LoginUsuario = () => {
                 </div>
 
                 <div className="mt-2">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium leading-6 text-primary-950"
-                  >
-                    {t("senha")}
-                  </label>
                   <div className="mt-2">
-                    <PasswordField
-                      id="password"
-                      label="Senha"
-                      passwordRef={passwordRef}
-                    />
+                    <PasswordField passwordRef={passwordRef} />
                   </div>
                   <div className="text-sm">
                     <a
@@ -144,7 +134,7 @@ const LoginUsuario = () => {
                         </svg>
                       </div>
                     ) : (
-                      'Entrar'
+                      "Entrar"
                     )}
                   </button>
                 </div>
