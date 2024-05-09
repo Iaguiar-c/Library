@@ -58,17 +58,24 @@ const LoginUsuario = () => {
   }, [error, enqueueSnackbar, usuario]);
 
   return (
-    <section className="bg-primary-950 ">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="bg-gradient-to-tl from-purple-950 to-purple-400 min-h-screen flex flex-col items-center justify-center">
+      <div className="max-w-xs">
+          <img src={require('../../assets/logoBom.png')}
+          alt="Logo"
+          style={{ width: '10rem', height: '11rem' }}
+          />
+        </div>
+
+        
         <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-              <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-primary-950">
+            <div className="sm:mx-auto sm:w-full">
+              <h2 className="text-center text-2xl font-bold leading-9 text-primary-950">
                 {t("entre_na_sua_conta")}
               </h2>
             </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+  
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
@@ -86,33 +93,32 @@ const LoginUsuario = () => {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="block w-full rounded-md border-0 py-1.5 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder:text-primary-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                    
                     />
                   </div>
                 </div>
 
                 <div className="mt-2">
-                  <div className="mt-2">
-                    <PasswordField passwordRef={passwordRef} />
-                  </div>
-                  <div className="text-sm">
-                    <a
-                      href="#"
-                      className="font-semibold text-primary-500 hover:text-primary-500"
-                    >
-                      {t("esqueceu_a_senha")}
-                    </a>
-                  </div>
-                </div>
+              <PasswordField passwordRef={passwordRef} />
+              <div className="text-sm text-right py-1.5">
+                <a
+                  href="#"
+                  className="font-semibold text-primary-500 hover:text-primary-500"
+                >
+                  {t("esqueceu_a_senha")}
+                </a>
+              </div>
+            </div>
 
                 <div className="mt-6">
                   <button
                     type="submit"
-                    className="flex justify-center w-full rounded-md bg-primary-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                    className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
                     disabled={loading}
                   >
                     {loading ? (
-                      <div className="flex items-center">
+                      <div className="flex items-center justify-center">
                         <span className="mr-2">Entrando...</span>
                         <svg
                           className="animate-spin h-5 w-5 text-white"
@@ -153,8 +159,6 @@ const LoginUsuario = () => {
               </p>
             </div>
           </div>
-        </div>
-      </div>
     </section>
   );
 };
