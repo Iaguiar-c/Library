@@ -32,9 +32,9 @@ export const AutenticacaoProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    if (usuario) {
-      const usuario = getUsuarioNoLocalStorage();
-      setUsuario(usuario);
+    const usuarioLocalStorage = getUsuarioNoLocalStorage();
+    if (usuarioLocalStorage) {
+      setUsuario(usuarioLocalStorage);
     }
   }, []);
 
