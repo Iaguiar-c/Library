@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import {Api} from "../../services/api";
+import { Api } from "../../services/api";
 import axios from "axios";
 
 const ModalForm = ({ isOpen, onClose, book }) => {
@@ -9,7 +9,6 @@ const ModalForm = ({ isOpen, onClose, book }) => {
   const [manualEntry, setManualEntry] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const { usuario, token, config } = useAutenticacao();
-
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -48,37 +47,37 @@ const ModalForm = ({ isOpen, onClose, book }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
+    if (!token || !usuario) {
+      console.error(
+        "Token ou usuário não disponível. Realize o login novamente."
+      );
+      return;
+    }
+
+    const publicationYear = parseInt(
+      book?.volumeInfo?.publishedDate?.substring(0, 4)
+    );
+
     const data = {
       title: book?.volumeInfo?.title || "",
       author: book?.volumeInfo?.authors?.join(", ") || "",
-      publicationYear: book?.volumeInfo?.publishedDate || "",
+      publicationYear: publicationYear || 0,
       category: book?.volumeInfo?.categories?.join(", ") || "",
       description: book?.volumeInfo?.description || "",
       imageURL: imageUrl,
-      status: "available", 
-      userId: usuario ? usuario._id : "", 
+      status: "available",
+      userId: usuario?._id,
     };
-  
-    console.log("Form Data:", data);
-    console.log("usuarioid", usuario._id);
-    console.log("usuario", usuario);
-  
+
     try {
-      console.log("Token:", token);
-      const response = await Api.post("books/create", data, config, {
-        headers: {
-          Authorization: `Bearer ${token}`, 
-        },
-      });
-      console.log("Livro criado com sucesso:", response.data);
-      onClose(); 
+      const response = await Api.post("/books/create", data, config);
+      onClose();
     } catch (error) {
       console.error("Erro ao criar livro:", error.message);
       if (error.response) {
         console.error("Detalhes do erro:", error.response.data);
       }
-    
     }
   };
 
@@ -221,9 +220,7 @@ const ModalForm = ({ isOpen, onClose, book }) => {
                       autoComplete="categoria"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                       value={book?.volumeInfo?.categories || ""}
-                    >
-                   
-                    </input>
+                    ></input>
                   </div>
                 </div>
 
