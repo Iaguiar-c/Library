@@ -19,7 +19,7 @@ const Home = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
+console.log(usuario)
   return (
     <>
       <div>

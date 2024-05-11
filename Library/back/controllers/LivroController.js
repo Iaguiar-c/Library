@@ -1,30 +1,37 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const authenticateToken = require('../middlewares/authUsuario');
+const authenticateToken = require("../middlewares/authUsuario");
 const Book = require("../models/bookModel");
-
-require("dotenv").config();
-
 const { validationResult } = require("express-validator");
+require("dotenv").config();
 
 const handleErrors = (res, message) => {
   console.error(message);
-  return res.status(500).send('Server Error');
+  return res.status(500).send("Server Error");
 };
 
-exports.createBook = async (req, res) => {
+const createBook = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { title, author, publicationYear, category, description, imageURL, status, userId } = req.body;
+    const {
+      title,
+      author,
+      publicationYear,
+      category,
+      description,
+      imageURL,
+      status,
+      userId,
+    } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ msg: "Usuário não encontrado" });
     }
 
     const book = new Book({
@@ -35,7 +42,7 @@ exports.createBook = async (req, res) => {
       description,
       imageURL,
       status,
-      user: userId
+      user: userId,
     });
 
     const session = await Book.startSession();
@@ -46,31 +53,40 @@ exports.createBook = async (req, res) => {
       user.books.push(book);
       await user.save({ session });
       await session.commitTransaction();
+
+      res.status(201).json(book);
     } catch (error) {
       await session.abortTransaction();
-      throw new Error('Failed to create book. Please try again later.');
+      console.error("Erro ao criar o livro:", error);
+      return res
+        .status(500)
+        .json({
+          error:
+            "Falha ao criar o livro. Por favor, tente novamente mais tarde.",
+        });
     } finally {
       session.endSession();
     }
-
-    res.status(201).json(book);
   } catch (err) {
-    return handleErrors(res, err.message);
+    console.error("Erro ao processar a requisição:", err);
+    return res
+      .status(500)
+      .json({ error: "Ocorreu um erro ao processar a requisição." });
   }
 };
 
-exports.getAllBooks = async (req, res) => {
+const getAllBooks = async (req, res) => {
   try {
     const userId = req.query.userId;
 
     if (!userId) {
-      return res.status(400).json({ msg: 'User ID is required' });
+      return res.status(400).json({ msg: "User ID is required" });
     }
 
-    const user = await User.findById(userId).populate('books');
+    const user = await User.findById(userId).populate("books");
 
     if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+      return res.status(404).json({ msg: "User not found" });
     }
 
     const page = parseInt(req.query.page) || 1;
@@ -84,7 +100,7 @@ exports.getAllBooks = async (req, res) => {
     const pagination = {
       currentPage: page,
       totalPages: Math.ceil(totalBooks / limit),
-      totalBooks
+      totalBooks,
     };
 
     res.status(200).json({ pagination, books });
@@ -93,12 +109,12 @@ exports.getAllBooks = async (req, res) => {
   }
 };
 
-exports.getBookById = async (req, res) => {
+const getBookById = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ msg: 'Book not found' });
+      return res.status(404).json({ msg: "Book not found" });
     }
 
     res.status(200).json(book);
@@ -107,33 +123,49 @@ exports.getBookById = async (req, res) => {
   }
 };
 
-exports.updateBook = async (req, res) => {
+const updateBook = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { title, author, publicationYear, category, description, imageURL, status } = req.body;
+    const {
+      title,
+      author,
+      publicationYear,
+      category,
+      description,
+      imageURL,
+      status,
+    } = req.body;
 
     const book = await Book.findById(req.params.bookId);
 
     if (!book) {
-      return res.status(404).json({ msg: 'Book not found' });
+      return res.status(404).json({ msg: "Book not found" });
     }
 
     if (book.user.toString() !== req.params.userId) {
-      return res.status(401).json({ msg: 'Unauthorized' });
+      return res.status(401).json({ msg: "Unauthorized" });
     }
 
     const updatedBook = await Book.findByIdAndUpdate(
       req.params.bookId,
-      { title, author, publicationYear, category, description, imageURL, status },
+      {
+        title,
+        author,
+        publicationYear,
+        category,
+        description,
+        imageURL,
+        status,
+      },
       { new: true }
     );
 
     if (!updatedBook) {
-      return res.status(404).json({ msg: 'Book not found' });
+      return res.status(404).json({ msg: "Book not found" });
     }
 
     res.status(200).json(updatedBook);
@@ -142,30 +174,30 @@ exports.updateBook = async (req, res) => {
   }
 };
 
-exports.deleteBook = async (req, res) => {
+const deleteBook = async (req, res) => {
   try {
     const book = await Book.findById(req.params.bookId);
 
     if (!book) {
-      return res.status(404).json({ msg: 'Book not found' });
+      return res.status(404).json({ msg: "Book not found" });
     }
 
     if (book.user.toString() !== req.params.userId) {
-      return res.status(401).json({ msg: 'Unauthorized' });
+      return res.status(401).json({ msg: "Unauthorized" });
     }
 
     await Book.findByIdAndDelete(req.params.bookId);
 
-    res.status(200).json({ msg: 'Book deleted' });
+    res.status(200).json({ msg: "Book deleted" });
   } catch (err) {
     return handleErrors(res, err);
   }
 };
 
-exports.bookRoutes = (app) => {
-  app.post('/books/create', authenticateToken, this.createBook);
-  app.get('/books/', authenticateToken, this.getAllBooks);
-  app.get('/books/:id', authenticateToken, this.getBookById);
-  app.put('/:userId/books/:bookId', authenticateToken, this.updateBook);
-  app.delete('/:userId/books/:bookId', authenticateToken, this.deleteBook);
-};
+router.post("/books/create", authenticateToken, createBook);
+router.get("/books/", authenticateToken, getAllBooks);
+router.get("/books/:id", authenticateToken, getBookById);
+router.put("/:userId/books/:bookId", authenticateToken, updateBook);
+router.delete("/:userId/books/:bookId", authenticateToken, deleteBook);
+
+module.exports = router;
