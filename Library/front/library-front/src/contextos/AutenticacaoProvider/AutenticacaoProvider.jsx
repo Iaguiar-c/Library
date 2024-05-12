@@ -12,15 +12,13 @@ export const useAutenticacao = () => {
 
 export const AutenticacaoProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
-  const [token, setToken] = useState(
-    localStorage.getItem("token") || "" || null || undefined
-  );
+  const [token, setToken] = useState(localStorage.getItem('token') || '' || null || undefined);
   const [config, setConfig] = useState({});
 
   useEffect(() => {
     async function pegaToken() {
       const res = await http.pegaToken();
-      setToken(res || "");
+      setToken(res || '');
     }
     pegaToken();
   }, []);
@@ -28,27 +26,23 @@ export const AutenticacaoProvider = ({ children }) => {
   useEffect(() => {
     setConfig({
       headers: {
-        Authorization: `Bearer ${token.trim()}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }, [token]);
 
   useEffect(() => {
-    const usuarioLocalStorage = getUsuarioNoLocalStorage();
-    if (usuarioLocalStorage) {
-      setUsuario(usuarioLocalStorage);
+    if (usuario) {
+      const usuario = getUsuarioNoLocalStorage();
+      setUsuario(usuario);
     }
   }, []);
 
   async function login(email, password) {
     try {
-      const response = await Api.post(
-        "auth/login",
-        { email, password },
-        config
-      );
+      const response = await Api.post("auth/login", { email, password }, config);
       const user = response.data.user;
-      const token = response.data.token.trim();
+      const token = response.data.token;
       setUsuario(user);
       setToken(token);
       await setUsuarioNoLocalStorage(user, token);
@@ -59,7 +53,7 @@ export const AutenticacaoProvider = ({ children }) => {
 
   function logout() {
     setUsuario(null);
-    setToken("");
+    setToken('');
     localStorage.clear();
   }
 
