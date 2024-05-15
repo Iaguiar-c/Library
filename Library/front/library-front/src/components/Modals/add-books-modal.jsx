@@ -3,7 +3,13 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Api } from "../../services/api";
 import axios from "axios";
 
-const ModalForm = ({ isOpen, onClose, book }) => {
+const ModalForm = ({
+  isOpen,
+  onClose,
+  book,
+  onCloseSelectModal,
+  fetchLivros,
+}) => {
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [manualEntry, setManualEntry] = useState(false);
@@ -73,6 +79,12 @@ const ModalForm = ({ isOpen, onClose, book }) => {
     try {
       const response = await Api.post("/books/create", data, config);
       onClose();
+
+      if (typeof onCloseSelectModal === "function") {
+        onCloseSelectModal();
+      }
+
+      fetchLivros();
     } catch (error) {
       console.error("Erro ao criar livro:", error.message);
       if (error.response) {
@@ -80,7 +92,6 @@ const ModalForm = ({ isOpen, onClose, book }) => {
       }
     }
   };
-
   if (!modalOpen) return null;
 
   return (
@@ -100,7 +111,7 @@ const ModalForm = ({ isOpen, onClose, book }) => {
           </h2>
 
           <button
-            onClick={handleClose}
+            onClick={onClose}
             className="text-gray-400 hover:text-gray-800"
           >
             <svg

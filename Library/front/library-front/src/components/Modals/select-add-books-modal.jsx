@@ -12,14 +12,19 @@ const SelectModal = ({ isOpen, onClose }) => {
   };
 
   const handleManualAddClick = () => {
-    setShowManualForm(true); // Atualiza o estado para mostrar o formulário manual
-    setShowGoogleBooksModal(false); // Garante que o modal do Google Books esteja fechado
+    setShowManualForm(true);
+    setShowGoogleBooksModal(false);
   };
 
   const handleBookSelection = (book) => {
     setSelectedBook(book);
     setShowGoogleBooksModal(false);
     setShowManualForm(true);
+  };
+
+  const handleCloseSelectModal = () => {
+    setShowManualForm(false);
+    onClose();
   };
 
   return (
@@ -30,9 +35,14 @@ const SelectModal = ({ isOpen, onClose }) => {
       className={`fixed top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center bg-black bg-opacity-50 overflow-y-auto`}
       onClick={onClose}
     >
-      <div className="relative w-full max-w-md p-4 md:p-5 bg-white rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="relative w-full max-w-md p-4 md:p-5 bg-white rounded-lg shadow-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between pb-3 mb-3 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">Adicionar Livros</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Adicionar Livros
+          </h3>
           <button
             type="button"
             className="text-gray-400 hover:text-gray-800"
@@ -42,7 +52,9 @@ const SelectModal = ({ isOpen, onClose }) => {
           </button>
         </div>
         <div className="p-4 md:p-5">
-          <p className="text-gray-500 mb-4">Escolha a forma como deseja adicionar:</p>
+          <p className="text-gray-500 mb-4">
+            Escolha a forma como deseja adicionar:
+          </p>
           <ul className="space-y-4 mb-4">
             <li>
               <input
@@ -58,7 +70,9 @@ const SelectModal = ({ isOpen, onClose }) => {
               >
                 <div>
                   <div className="text-lg font-semibold">Manualmente</div>
-                  <div className="text-gray-500">Completando todas as informações</div>
+                  <div className="text-gray-500">
+                    Completando todas as informações
+                  </div>
                 </div>
                 <svg
                   className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400"
@@ -67,7 +81,13 @@ const SelectModal = ({ isOpen, onClose }) => {
                   fill="none"
                   viewBox="0 0 14 10"
                 >
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
                 </svg>
               </label>
             </li>
@@ -84,8 +104,12 @@ const SelectModal = ({ isOpen, onClose }) => {
                 onClick={handleAutomatedFillClick}
               >
                 <div>
-                  <div className="text-lg font-semibold">Preenchimento automático</div>
-                  <div className="text-gray-500">Utilizando o Google Livros</div>
+                  <div className="text-lg font-semibold">
+                    Preenchimento automático
+                  </div>
+                  <div className="text-gray-500">
+                    Utilizando o Google Livros
+                  </div>
                 </div>
                 <svg
                   className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400"
@@ -94,7 +118,13 @@ const SelectModal = ({ isOpen, onClose }) => {
                   fill="none"
                   viewBox="0 0 14 10"
                 >
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
                 </svg>
               </label>
             </li>
@@ -103,11 +133,21 @@ const SelectModal = ({ isOpen, onClose }) => {
       </div>
 
       {showGoogleBooksModal && (
-        <GoogleBooksModal isOpen={true} onClose={() => setShowGoogleBooksModal(false)} onSelectBook={handleBookSelection} />
+        <GoogleBooksModal
+          isOpen={true}
+          onClose={() => setShowGoogleBooksModal(false)}
+          onSelectBook={handleBookSelection}
+          onCloseSelectModal={onClose}
+        />
       )}
 
       {showManualForm && (
-        <ModalForm isOpen={true} onClose={() => setShowManualForm(false)} book={selectedBook} />
+        <ModalForm
+          isOpen={true}
+          onClose={handleCloseSelectModal}
+          book={selectedBook}
+          onCloseSelectModal={onClose}
+        />
       )}
     </div>
   );
