@@ -72,10 +72,10 @@ const LoginUsuario = () => {
           src={require("../../assets/fundoTela.png")}
           alt="Imagem de Fundo"
           style={{
-            width: "65rem",
-            height: "50rem",
+            width: "50rem",
+            height: "35rem",
             marginTop: "100px",
-            marginLeft: "-200px",
+            marginLeft: "-100px",
             transform: `rotate(${swing ? "-3deg" : "3deg"})`,
             transition: "transform 1s ease-in-out",
           }}
