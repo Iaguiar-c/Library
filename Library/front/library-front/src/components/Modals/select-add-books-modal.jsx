@@ -36,23 +36,23 @@ const SelectModal = ({ isOpen, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md p-4 md:p-5 bg-white rounded-lg shadow-lg"
+        className="relative w-full max-w-md p-4 md:p-5 bg-primary-100 rounded-lg shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pb-3 mb-3 border-b">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-primary-950">
             Adicionar Livros
           </h3>
           <button
             type="button"
-            className="text-gray-400 hover:text-gray-800"
+            className="text-primary-950 hover:text-primary-950  "
             onClick={onClose}
           >
             X
           </button>
         </div>
         <div className="p-4 md:p-5">
-          <p className="text-gray-500 mb-4">
+          <p className="text-primary-950 mb-4">
             Escolha a forma como deseja adicionar:
           </p>
           <ul className="space-y-4 mb-4">
@@ -66,16 +66,16 @@ const SelectModal = ({ isOpen, onClose }) => {
               />
               <label
                 htmlFor="manual"
-                className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100"
+                className="inline-flex items-center justify-between w-full p-5 text-primary-950 bg-primary-50 border rounded-lg cursor-pointer hover:text-primary-900 hover:bg-primary-300"
               >
                 <div>
                   <div className="text-lg font-semibold">Manualmente</div>
-                  <div className="text-gray-500">
+                  <div className="text-primary-800">
                     Completando todas as informações
                   </div>
                 </div>
                 <svg
-                  className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400"
+                  className="w-4 h-4 ms-3 rtl:rotate-180 text-primary-950 dark:text-primary-950"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -100,19 +100,19 @@ const SelectModal = ({ isOpen, onClose }) => {
               />
               <label
                 htmlFor="automated"
-                className="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100"
+                className="inline-flex items-center justify-between w-full p-5 text-primary-950 bg-primary-50 border rounded-lg cursor-pointer hover:text-primary-900 hover:bg-primary-300"
                 onClick={handleAutomatedFillClick}
               >
                 <div>
                   <div className="text-lg font-semibold">
                     Preenchimento automático
                   </div>
-                  <div className="text-gray-500">
+                  <div className="text-primary-800">
                     Utilizando o Google Livros
                   </div>
                 </div>
                 <svg
-                  className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400"
+                  className="w-4 h-4 ms-3 rtl:rotate-180 text-primary-950 dark:text-primary-950"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

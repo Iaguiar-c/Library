@@ -33,16 +33,16 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
       onClick={onClose}
     >
       <div
-        className="modal-container bg-white rounded-lg shadow-lg w-full max-w-2xl p-4 md:p-5"
+        className="modal-container bg-primary-100 rounded-lg shadow-lg w-full max-w-2xl p-4 md:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header flex justify-between border-b pb-3 mb-3">
-          <h3 className="text-xl font-semibold text-gray-900">
+          <h3 className="text-xl font-semibold text-primary-950">
             Adicionar com Google Livros
           </h3>
           <button
             type="button"
-            className="text-gray-400 hover:text-gray-800"
+            className="text-primary-800 hover:text-primary-950"
             onClick={onClose}
           >
             <svg
@@ -64,13 +64,13 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
         <div className="modal-body">
           <input
             type="text"
-            className="w-full border rounded-lg px-3 py-2 mb-3"
+            className="w-full placeholder-primary-300 border border-primary-800 focus:border-primary-800 focus:outline-none bg-primary-50 rounded-lg px-3 py-2 mb-3"
             placeholder="Digite o título do livro"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
-            className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg"
+            className="bg-primary-800 hover:bg-primary-900 text-primary-50 font-semibold py-2 px-4 rounded-lg"
             onClick={handleSearch}
           >
             Pesquisar
@@ -80,7 +80,7 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
             {searchResults.map((book) => (
               <div
                 key={book.id}
-                className="cursor-pointer p-4 border rounded-lg mb-2 bg-gray-50 hover:bg-gray-100"
+                className="cursor-pointer p-4 border rounded-lg mb-2 bg-primary-50 hover:bg-primary-100"
                 onClick={() => handleBookSelection(book)}
               >
                 <BookCard book={book} />
