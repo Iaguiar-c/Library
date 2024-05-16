@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import GoogleBooksModal from "./add-book-google-modal";
 import ModalForm from "./add-books-modal";
 
-const SelectModal = ({ isOpen, onClose }) => {
+const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showGoogleBooksModal, setShowGoogleBooksModal] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
@@ -143,10 +143,10 @@ const SelectModal = ({ isOpen, onClose }) => {
 
       {showManualForm && (
         <ModalForm
-          isOpen={true}
-          onClose={handleCloseSelectModal}
-          book={selectedBook}
-          onCloseSelectModal={onClose}
+          isOpen={isOpen}
+          onClose={onClose}
+          onBookAdded={onBookAdded}
+          book={{ ...selectedBook }}
         />
       )}
     </div>

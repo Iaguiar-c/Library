@@ -3,13 +3,7 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Api } from "../../services/api";
 import axios from "axios";
 
-const ModalForm = ({
-  isOpen,
-  onClose,
-  book,
-  onCloseSelectModal,
-  fetchLivros,
-}) => {
+const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [manualEntry, setManualEntry] = useState(false);
@@ -47,7 +41,7 @@ const ModalForm = ({
 
   const handleImageInputChange = (event) => {
     const imageUrl = event.target.value;
-
+    setImageUrl(imageUrl);
     setManualEntry(imageUrl !== "");
   };
 
@@ -77,14 +71,9 @@ const ModalForm = ({
     };
 
     try {
-      const response = await Api.post("/books/create", data, config);
+      await Api.post("/books/create", data, config);
+      if (onBookAdded) onBookAdded();
       onClose();
-
-      if (typeof onCloseSelectModal === "function") {
-        onCloseSelectModal();
-      }
-
-      fetchLivros();
     } catch (error) {
       console.error("Erro ao criar livro:", error.message);
       if (error.response) {
@@ -92,6 +81,7 @@ const ModalForm = ({
       }
     }
   };
+
   if (!modalOpen) return null;
 
   return (
