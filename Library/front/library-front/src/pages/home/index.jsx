@@ -2,23 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
 import { useTranslation } from "react-i18next";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-//import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
-//import axios from "axios";
 import SelectModal from "../../components/Modals/select-add-books-modal";
 import { Api } from "../../services/api";
-import BookCard from "../../components/Cards/book-card-home";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toggleTraducao } = useTraducao();
   const { t } = useTranslation();
-  const { usuario, token, config } = useAutenticacao();
+  const { usuario, token } = useAutenticacao();
   const [livros, setLivros] = useState([]);
 
   const fetchLivros = async () => {
+    if (!usuario || !token) return;
     try {
       const response = await Api.get("/books", {
-        params: { userId: usuario?._id },
+        params: { userId: usuario._id },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -30,9 +28,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (usuario) {
-      fetchLivros();
-    }
+    fetchLivros();
   }, [usuario, token]);
 
   const openModal = () => {
@@ -41,6 +37,10 @@ const Home = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleBookAdded = () => {
+    fetchLivros();
   };
 
   return (
@@ -68,7 +68,11 @@ const Home = () => {
         </button>
 
         {isModalOpen && (
-          <SelectModal isOpen={isModalOpen} onClose={closeModal} />
+          <SelectModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onBookAdded={handleBookAdded}
+          />
         )}
       </div>
 
@@ -84,10 +88,6 @@ const Home = () => {
           </ul>
         ) : (
           <p>Você ainda não possui livros adicionados.</p>
-        )}
-
-        {isModalOpen && (
-          <SelectModal isOpen={isModalOpen} onClose={closeModal} />
         )}
       </div>
     </>
