@@ -5,6 +5,7 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import SelectModal from "../../components/Modals/select-add-books-modal";
 import { Api } from "../../services/api";
 import BooksCard from "../../components/Cards/books-card";
+import BooksTable from "../../components/Table/books-table";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,6 +14,7 @@ const Home = () => {
   const { usuario, token } = useAutenticacao();
   const [livros, setLivros] = useState([]);
   const [livroCovers, setLivroCovers] = useState({});
+  const [viewMode, setViewMode] = useState("card"); 
 
   const fetchLivros = async () => {
     if (!usuario || !token) return;
@@ -26,7 +28,6 @@ const Home = () => {
       const books = response.data.books;
       setLivros(books);
 
-      // Fetch book covers from Google Books API
       const covers = {};
       for (const livro of books) {
         try {
@@ -39,7 +40,7 @@ const Home = () => {
           if (data.items && data.items.length > 0) {
             covers[livro._id] = data.items[0].volumeInfo.imageLinks.thumbnail;
           } else {
-            covers[livro._id] = "https://via.placeholder.com/150"; // Set a default cover image if no image found
+            covers[livro._id] = "https://via.placeholder.com/150";
           }
         } catch (error) {
           console.error("Erro ao buscar capa do livro:", error.message);
@@ -101,11 +102,33 @@ const Home = () => {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-          Meus Livros
-        </h2>
+        <div className="flex justify-between items-center mt-6 mb-3">
+          <h2 className="text-xl font-semibold text-gray-900">Meus Livros</h2>
+          <div>
+            <button
+              className={`mr-2 px-4 py-2 rounded ${
+                viewMode === "card" ? "bg-blue-700 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => setViewMode("card")}
+            >
+              Card
+            </button>
+            <button
+              className={`px-4 py-2 rounded ${
+                viewMode === "table" ? "bg-blue-700 text-white" : "bg-gray-200"
+              }`}
+              onClick={() => setViewMode("table")}
+            >
+              Tabela
+            </button>
+          </div>
+        </div>
         {livros.length > 0 ? (
-          <BooksCard books={livros} covers={livroCovers} />
+          viewMode === "card" ? (
+            <BooksCard books={livros} covers={livroCovers} />
+          ) : (
+            <BooksTable books={livros} />
+          )
         ) : (
           <p>Você ainda não possui livros adicionados.</p>
         )}
