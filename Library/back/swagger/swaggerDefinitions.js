@@ -193,13 +193,7 @@ const swaggerDefinition = {
                 },
                 email: {
                   type: "string",
-                },
-                password: {
-                  type: "string",
-                },
-                confirmpassword: {
-                  type: "string",
-                },
+                }
               },
             },
           },

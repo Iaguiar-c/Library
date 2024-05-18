@@ -1,29 +1,37 @@
 import { Router } from 'express';
 import { UserController } from './controllers/UserController.js';
-import { BookController } from './controllers/BookController.js ';
-import { authenticateToken } from './middlewares/authenticateToken.js'
+import { BookController } from './controllers/BookController.js';
+import { authenticateToken } from './middlewares/authenticateToken.js';
 
 const routes = Router();
 const userController = new UserController();
 const bookController = new BookController();
 
 routes.route('/user')
-.get(userController.startServer)
+  .get(userController.startServer);
 
 routes.route('/user/login')
   .post(userController.login);
 
-routes.route('/user/register')
-  .post(userController.register)
+routes.route('/user/logout/:id')
+  .post(userController.logout);
 
-routes.route('/user/:id')
-  .get(authenticateToken, userController.getUserById)
-  .post(authenticateToken, userController.logout)
-  .put(authenticateToken, userController.updateUser)
+routes.route('/user/register')
+  .post(userController.register);
+
+routes.route('/user/update/:id')
+  .put(authenticateToken, userController.updateUser);
+
+routes.route('/user/delete/:id')
   .delete(authenticateToken, userController.deleteUser);
 
+routes.route('/user/:id')
+  .get(authenticateToken, userController.getUserById);
+
 routes.route('/books')
-  .get(authenticateToken, bookController.getAllBooks)
+  .get(authenticateToken, bookController.getAllBooks);
+
+routes.route('/books/create')
   .post(authenticateToken, bookController.createBook);
 
 routes.route('/books/:id')
