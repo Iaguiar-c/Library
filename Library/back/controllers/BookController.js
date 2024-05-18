@@ -1,6 +1,8 @@
 import { validationResult } from "express-validator";
 import { User } from '../models/User.js'
 import { Book } from '../models/Book.js'
+import Categoria from '../enums/Categoria.js';
+import Status from '../enums/Status.js';
 
 export class BookController {
   async handleErrors(res, message) {
@@ -25,6 +27,14 @@ export class BookController {
         status,
         userId,
       } = req.body;
+
+      if(!Categoria.isValid(category)){
+        return res.status(400).json({ error: 'Categoria Inválida' })
+      }
+  
+      if(!Status.isValid(status)){
+        return res.status(400).json({ error: 'Status Inválido' })
+      }
   
       const user = await User.findById(userId);
       if (!user) {
