@@ -105,8 +105,9 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
           </h2>
 
           <button
-            onClick={onClose}
+            type="button"
             className="text-primary-800 hover:text-primary-950"
+            onClick={onClose}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
