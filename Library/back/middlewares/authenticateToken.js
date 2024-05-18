@@ -1,9 +1,16 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config(); 
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-function authenticateToken(req, res, next) {
+dotenv.config();
+
+export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Token não fornecido' });
+  }
+
+  const token = authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ error: 'Token não fornecido' });
@@ -15,9 +22,8 @@ function authenticateToken(req, res, next) {
     if (err) {
       return res.status(403).json({ error: 'Token inválido' });
     }
-    req.user = decoded; 
+    
+    req.user = decoded;
     next();
   });
 }
-
-module.exports = authenticateToken;

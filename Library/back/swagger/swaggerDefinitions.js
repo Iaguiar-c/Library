@@ -193,13 +193,7 @@ const swaggerDefinition = {
                 },
                 email: {
                   type: "string",
-                },
-                password: {
-                  type: "string",
-                },
-                confirmpassword: {
-                  type: "string",
-                },
+                }
               },
             },
           },
@@ -548,6 +542,4 @@ const swaggerDefinition = {
   // END: Book Configuration
 };
 
-module.exports = {
-  swaggerDefinition,
-};
+export { swaggerDefinition };
