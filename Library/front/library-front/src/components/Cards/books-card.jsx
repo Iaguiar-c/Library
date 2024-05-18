@@ -1,37 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import BookSingleCard from "./book-single-card";
 
 const BooksCard = ({ books }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [covers, setCovers] = useState({});
-
-  useEffect(() => {
-    const fetchBookCovers = async () => {
-      const fetchedCovers = {};
-      for (const book of books) {
-        try {
-          const response = await fetch(
-            `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-              book.title
-            )}`
-          );
-          const data = await response.json();
-          if (data.items && data.items.length > 0) {
-            const coverUrl = data.items[0].volumeInfo.imageLinks?.thumbnail;
-            fetchedCovers[book._id] = coverUrl || ""; 
-          } else {
-            fetchedCovers[book._id] = ""; 
-          }
-        } catch (error) {
-          console.error("Error fetching book cover:", error);
-          fetchedCovers[book._id] = ""; 
-        }
-      }
-      setCovers(fetchedCovers);
-    };
-
-    fetchBookCovers();
-  }, [books]);
 
   const filteredBooks = books.filter((book) => {
     return (
@@ -74,9 +45,16 @@ const BooksCard = ({ books }) => {
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        {filteredBooks.map((book) => (
-          <BookSingleCard key={book._id} book={book} coverUrl={covers[book._id]} />
-        ))}
+        {filteredBooks.map((book) => {
+          console.log("Conteúdo da imageUrl:", book.imageUrl);
+          return (
+            <BookSingleCard
+              key={book._id}
+              book={book}
+              coverUrl={book.imageURL || "https://via.placeholder.com/150"}
+            />
+          );
+        })}
       </div>
     </div>
   );

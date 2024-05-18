@@ -14,7 +14,7 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
     setModalOpen(isOpen);
     if (book?.volumeInfo?.imageLinks?.thumbnail) {
       setImageUrl(book.volumeInfo.imageLinks.thumbnail);
-      setManualEntry(false); // Garantir que não estamos em modo de entrada manual
+      setManualEntry(false); 
     }
   }, [isOpen, book]);
 

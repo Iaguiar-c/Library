@@ -1,9 +1,9 @@
 import React from "react";
 
 const HomeBookCard = ({ livro, coverUrl }) => {
-  if (!livro) {
-    console.error("Livro indefinido");
-    return null; 
+  if (!livro || !coverUrl) {
+    console.error("Livro ou URL da capa não definidos");
+    return null;
   }
 
   const { title, author, category } = livro;

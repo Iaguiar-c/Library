@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import BookCard from "../Cards/modal-book-card";
 
-const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal }) => {
+const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, showNotification }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,6 +37,9 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal })
   const handleBookSelection = (book) => {
     onClose();
     onSelectBook(book);
+    if (typeof showNotification === 'function') {
+      showNotification("Livro adicionado com sucesso!", "success");
+    }
   };
 
   const handleKeyPress = (event) => {
