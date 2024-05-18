@@ -12,7 +12,11 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
 
   useEffect(() => {
     setModalOpen(isOpen);
-  }, [isOpen]);
+    if (book?.volumeInfo?.imageLinks?.thumbnail) {
+      setImageUrl(book.volumeInfo.imageLinks.thumbnail);
+      setManualEntry(false); // Garantir que não estamos em modo de entrada manual
+    }
+  }, [isOpen, book]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -65,7 +69,7 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
       publicationYear: publicationYear || 0,
       category: book?.volumeInfo?.categories?.join(", ") || "",
       description: book?.volumeInfo?.description || "",
-      imageURL: imageUrl,
+      imageURL: book?.volumeInfo?.imageLinks?.thumbnail || imageUrl || "",
       status: "available",
       userId: usuario?._id,
     };

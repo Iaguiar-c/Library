@@ -5,23 +5,27 @@ import BookCard from "../Cards/modal-book-card";
 const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    axios
-      .get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY&maxResults=20`
-      )
-      .then((res) => {
-        setSearchResults(res.data.items);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleSearch = async () => {
+    if (!searchTerm) return;
+
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&maxResults=20`
+      );
+      setSearchResults(response.data.items || []);
+    } catch (error) {
+      console.error("Erro ao buscar livros:", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBookSelection = (book) => {
-    onClose(); // Fecha o modal de pesquisa
-    onSelectBook(book); // Chama a função para preencher o ModalForm com o livro selecionado
+    onClose();
+    onSelectBook(book);
   };
 
   return (
@@ -45,20 +49,7 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
             className="text-primary-800 hover:text-primary-950"
             onClick={onClose}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18 18 6M6 6l12 12"
-              />
-            </svg>
+            Fechar
           </button>
         </div>
         <div className="modal-body">
@@ -72,8 +63,9 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook }) => {
           <button
             className="bg-primary-800 hover:bg-primary-900 text-primary-50 font-semibold py-2 px-4 rounded-lg"
             onClick={handleSearch}
+            disabled={loading}
           >
-            Pesquisar
+            {loading ? "Carregando..." : "Pesquisar"}
           </button>
 
           <div className="mt-4 max-h-96 overflow-y-auto">
