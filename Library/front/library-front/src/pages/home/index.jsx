@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import SelectModal from "../../components/Modals/select-add-books-modal";
 import { Api } from "../../services/api";
+import BooksCard from "../../components/Cards/books-card";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,6 +12,7 @@ const Home = () => {
   const { t } = useTranslation();
   const { usuario, token } = useAutenticacao();
   const [livros, setLivros] = useState([]);
+  const [livroCovers, setLivroCovers] = useState({});
 
   const fetchLivros = async () => {
     if (!usuario || !token) return;
@@ -21,7 +23,29 @@ const Home = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setLivros(response.data.books);
+      const books = response.data.books;
+      setLivros(books);
+
+      // Fetch book covers from Google Books API
+      const covers = {};
+      for (const livro of books) {
+        try {
+          const googleBooksResponse = await fetch(
+            `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+              livro.title
+            )}&key=AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY`
+          );
+          const data = await googleBooksResponse.json();
+          if (data.items && data.items.length > 0) {
+            covers[livro._id] = data.items[0].volumeInfo.imageLinks.thumbnail;
+          } else {
+            covers[livro._id] = "https://via.placeholder.com/150"; // Set a default cover image if no image found
+          }
+        } catch (error) {
+          console.error("Erro ao buscar capa do livro:", error.message);
+        }
+      }
+      setLivroCovers(covers);
     } catch (error) {
       console.error("Erro ao buscar livros:", error.message);
     }
@@ -81,11 +105,7 @@ const Home = () => {
           Meus Livros
         </h2>
         {livros.length > 0 ? (
-          <ul>
-            {livros.map((livro) => (
-              <li key={livro._id}>{livro.title}</li>
-            ))}
-          </ul>
+          <BooksCard books={livros} covers={livroCovers} />
         ) : (
           <p>Você ainda não possui livros adicionados.</p>
         )}
