@@ -11,8 +11,8 @@ const app = express();
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Redirecionar para a rota do Swagger
-app.get('/', (req, res) => {
-  res.redirect('/api-docs');
+app.get("/", (req, res) => {
+  res.redirect("/api-docs");
 });
 
 app.use(express.json());
@@ -32,8 +32,8 @@ mongoose
     app.listen(PORT, () => {
       console.log(`Servidor iniciado na porta ${PORT}`);
 
-      // Abrir servidor automaticamente 
-      const openCommand = process.platform === 'win32' ? 'start' : 'open';
+      // Abrir servidor automaticamente
+      const openCommand = process.platform === "win32" ? "start" : "open";
       exec(`${openCommand} http://localhost:${PORT}/api-docs`);
     });
   })

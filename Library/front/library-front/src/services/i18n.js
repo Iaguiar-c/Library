@@ -20,6 +20,8 @@ i18n.use(initReactI18next).init({
         criar_conta_btn: "Create Account",
         ja_tem_conta: "Already have an account?",
         login: "Login",
+        pagina_nao_encontrada: "OOPSS!! Page Not Found :(",
+        botao_voltar: "Back",
       },
     },
     pt: {
@@ -39,6 +41,8 @@ i18n.use(initReactI18next).init({
         criar_conta_btn: "Criar Conta",
         ja_tem_conta: "Já tem uma Conta?",
         login: "Login",
+        pagina_nao_encontrada: "PUTSS!! Página não encontrada :(",
+        botao_voltar: "Voltar",
       },
     },
     es: {
@@ -58,6 +62,8 @@ i18n.use(initReactI18next).init({
         criar_conta_btn: "Crear Cuenta",
         ja_tem_conta: "¿Ya tienes una cuenta?",
         login: "Iniciar sesión",
+        pagina_nao_encontrada: "¡AY! Página no encontrada :(",
+        botao_voltar: "Volver",
       },
     },
   },

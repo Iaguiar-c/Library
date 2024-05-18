@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
-
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
@@ -12,137 +11,164 @@ const UserRegister = () => {
   const [confirmpassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { postUsuario } = useUsuario();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    // essa verificação deve ser feita só no front
-    confirmpassword: "",
-  });
+  const { postUsuario, message } = useUsuario();
+  const { t } = useTranslation(); 
+  const [swing, setSwing] = useState(false);
 
-    const handleInputChange = (e) => {
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === 'name') setUsername(value);
+    if (name === 'email') setEmail(value);
+    if (name === 'password') setPassword(value);
+    if (name === 'confirmpassword') setConfirmPassword(value);
   };
 
-  async function handleSubmit(name, email, password, confirmpassword, e){
+  async function handleSubmit(e) {
     e.preventDefault();
-
     setLoading(true);
-
-    if (formData.password !== formData.confirmpassword) {
-      return;
-    }
-
-    try {
-      await postUsuario(name, email, password, confirmpassword);
-      navigate("/login");
-    } catch {
+  
+    if (!username || !email || !password || !confirmpassword) {
       setLoading(false);
+      return enqueueSnackbar("Por favor, preencha todos os campos obrigatórios.", { variant: "error" });
+    }
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setLoading(false);
+      return enqueueSnackbar("Formato de email inválido.", { variant: "error" });
+    }
+  
+    if (password !== confirmpassword) {
+      setLoading(false);
+      return enqueueSnackbar("As senhas precisam ser iguais!", { variant: "error" });
+    }
+  
+    try {
+      await postUsuario(username, email, password, confirmpassword);
+      if (error.response && error.response.status === 500) {
+        enqueueSnackbar("Este email já está cadastrado. Por favor, use outro email.", { variant: "error" });
+      } 
+    } catch (error) {
+      if (error.response && error.response.status === 500) {
+        enqueueSnackbar("Este email já está cadastrado. Por favor, use outro email.", { variant: "error" });
+      } else {
+        console.error("Erro ao registrar usuário:", error.message);
+        enqueueSnackbar("Erro ao registrar usuário. Por favor, tente novamente mais tarde.", { variant: "error" });
+      }
     } finally {
       setLoading(false);
     }
-
-    // if (response.data.success) {
-    //   enqueueSnackbar("Usuário registrado com sucesso!", {
-    //     variant: "success",
-    //   });
-    //   navigate("/");
-    // } else {
-    //   enqueueSnackbar(response.data.message || "Erro ao registrar usuário", {
-    //     variant: "error",
-    //   });
-    // }
-  };
+  }
+  
 
   const handleLoginClick = () => {
     navigate("/");
   };
 
+  useEffect(() => {
+    const swingInterval = setInterval(() => {
+      setSwing(!swing);
+    }, 3000);
+
+    return () => clearInterval(swingInterval);
+  }, [swing]);
+
+
   return (
-    <section className="bg-primary-950">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="bg-gradient-to-tl from-purple-950 to-purple-400 min-h-screen flex flex-row items-center justify-center">
+
+    <div className="flex-none p-10 md:ml-8 lg:ml-16">
+        <img
+          src={require("../../assets/fundoTela.png")}
+          alt="Imagem de Fundo"
+          style={{
+            width: "50rem",
+            height: "35rem",
+            marginTop: "100px",
+            marginLeft: "-100px",
+            transform: `rotate(${swing ? "-3deg" : "3deg"})`,
+            transition: "transform 1s ease-in-out",
+          }}
+          className="float-left"
+        />
+      </div>
+
+    <div className="flex-auto max-w-xs">
+    <div className="flex justify-center items-center mb-8">
+          <img
+            src={require("../../assets/logoBom.png")}
+            alt="Logo"
+            style={{ width: "10rem", height: "11rem" }}
+          />
+        </div>
+
+      <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
         <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl text-center  font-bold leading-tight tracking-tight text-primary-900 md:text-2xl dark:text-primary">
-            {t("criar_conta")}
+            <h1 className="text-xl text-center  font-bold leading-tight tracking-tight text-primary-950 md:text-2xl dark:text-primary">
+              {t("criar_conta")}
             </h1>
-            <form
-              className="space-y-4 md:space-y-6"
-              action="#"
-              onSubmit={(e) => handleSubmit(username, email, password, confirmpassword, e)}
-              >
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label
-                  htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-primary-900 dark:text-primary"
-                  >
+                <label htmlFor="username" className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary">
                   {t("usuario")}
                 </label>
                 <input
                   type="username"
+                  name="name"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="bg-gray-50 border border-primary-300 text-primary-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  onChange={handleInputChange}
+                  className="bg-gray-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="docinho123"
-                  required=""
-                ></input>
+                  required
+                />
               </div>
               <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-primary-900 dark:text-primary"
-                >
+                <label htmlFor="email" className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary">
                   {t("email")}
                 </label>
                 <input
                   type="email"
+                  name="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-primary-50 border border-primary-300 text-primary-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  onChange={handleInputChange}
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="docinho@gmail.com"
-                  required=""
-                ></input>
+                  required
+                />
               </div>
               <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-primary-900 dark:text-primary"
-                >
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary">
                   {t("senha")}
                 </label>
                 <input
                   type="password"
+                  name="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="••••••••"
-                  className="bg-primary-50 border border-primary-300 text-primary-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  required=""
-                  ></input>
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
               </div>
               <div>
-                <label
-                  htmlFor="confirmpassword"
-                  className="block mb-2 text-sm font-medium text-primary-900 dark:text-primary"
-                  >
+                <label htmlFor="confirmpassword" className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary">
                   {t("confirmar_senha")}
                 </label>
                 <input
-                  type="confirmpassword"
+                  type="password"
+                  name="confirmpassword"
                   value={confirmpassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="••••••••"
-                  className="bg-primary-50 border border-primary-300 text-primary-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  required=""
-                ></input>
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
               </div>
-
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -150,19 +176,16 @@ const UserRegister = () => {
                     aria-describedby="terms"
                     type="checkbox"
                     className="w-4 h-4 border border-primary-300 rounded bg-primary-50 focus:ring-3 focus:ring-primary-300 dark:bg-primary-700 dark:border-primary-600 dark:focus:ring-primary-600 dark:ring-offset-primary-800"
-                    required=""
-                  ></input>
+                    required
+                  />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label
-                    htmlFor="terms"
-                    className="font-light text-primary-500 dark:text-primary-300"
-                  >
+                  <label htmlFor="terms" className="font-light text-primary-950 dark:text-primary-300">
                     {t("eu_aceito_os")}{" "}
                     <a
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                      className="font-medium text-primary-500 hover:underline dark:text-primary-500"
                       href="#"
-                      >
+                    >
                       {t("termos_e_condicoes")}
                     </a>
                   </label>
@@ -171,22 +194,19 @@ const UserRegister = () => {
               <button
                 type="submit"
                 className="w-full text-white bg-primary-700 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
+              >
                 {t("criar_conta")}
               </button>
-              <p className="text-sm font-light text-primary-500 dark:text-primary-400">
+              <p className="text-sm font-light text-primary-950 dark:text-primary-400">
                 {t("ja_tem_conta")}{" "}
-                <a
-                  href="#"
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                  onClick={handleLoginClick}
-                  >
+                <a href="#" className="font-medium text-primary-500 hover:underline dark:text-primary-500" onClick={handleLoginClick}>
                   {t("login")}
                 </a>
               </p>
             </form>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );
