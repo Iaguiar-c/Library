@@ -25,6 +25,7 @@ export class BookController {
         description,
         imageURL,
         status,
+        isGoogle,
         userId,
       } = req.body;
 
@@ -51,6 +52,7 @@ export class BookController {
         description,
         imageURL,
         status,
+        isGoogle,
         user: userId,
       });
   

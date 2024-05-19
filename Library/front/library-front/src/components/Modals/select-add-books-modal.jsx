@@ -6,6 +6,7 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showGoogleBooksModal, setShowGoogleBooksModal] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
+  const [showManualUrlInput, setShowManualUrlInput] = useState(false);
 
   const handleAutomatedFillClick = () => {
     setShowGoogleBooksModal(true);
@@ -14,6 +15,19 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
   const handleManualAddClick = () => {
     setShowManualForm(true);
     setShowGoogleBooksModal(false);
+    setShowManualUrlInput(true);
+    setSelectedBook({
+      volumeInfo: {
+        title: null,
+        authors: [],
+        publishedDate: null,
+        categories: [],
+        description: null,
+        imageLinks: {
+          thumbnail: null
+        }
+      }
+    });
   };
 
   const handleBookSelection = (book) => {
@@ -31,6 +45,7 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
   const handleBackToSelectModal = () => {
     setShowGoogleBooksModal(false);
     setShowManualForm(false);
+    setShowManualUrlInput(false);
   };
 
   return (
@@ -169,6 +184,7 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
           onClose={handleCloseSelectModal}
           onBookAdded={onBookAdded}
           book={{ ...selectedBook }}
+          showManualUrlInput={showManualUrlInput}
         />
       )}
     </>
