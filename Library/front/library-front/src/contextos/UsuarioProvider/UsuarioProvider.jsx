@@ -16,10 +16,10 @@ export function UsuarioProvider({ children }) {
 
   async function postUsuario(name, email, password, confirmpassword) {
     try {
-      const response = await Api.post("user/register", { name, email, password, confirmpassword }, config);
+      const response = await Api.post("user/register", { name, email, password, confirmpassword });
       setUsuario(response.data);
     } catch (error) {
-      console.log(error);
+      throw error; 
     }
   }
 
