@@ -4,7 +4,6 @@ import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { useTranslation } from "react-i18next";
 import PasswordField from "../../components/PasswordField/PasswordField";
-import { http } from "../../services/api";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();

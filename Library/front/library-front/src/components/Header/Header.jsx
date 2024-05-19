@@ -4,17 +4,51 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Outlet, useNavigate } from "react-router-dom";
 import ThemeButton from "../ThemeButton/ThemeButton";
 import { useTheme } from '../../contextos/ThemeProvider/ThemeProvider';
+import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
+import { useTranslation } from "react-i18next";
+import Brasil from "../../assets/brasil.png"
+import Espanha from "../../assets/espanha.png"
+import Usa from "../../assets/usa.png"
+import { useEffect } from 'react'; 
+import LogoPreto from "../../assets/logoPreto.png"
+import LogoBranco from "../../assets/logoBom.png"
 
 export default function Header() {
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({});
   const { usuario, logout } = useAutenticacao();
   const [open, setOpen] = useState(false);
+  const [openLanguage, setOpenLanguage] = useState(false);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
+  const { toggleTraducao } = useTraducao();
+  const { t } = useTranslation();
+  const { traducao } = useTraducao();
+
+    const [imagem, setImagem] = useState(Usa);
+
+    useEffect(() => {
+        const changeImage = () => {
+            if (traducao === 'es') {
+                setImagem(Espanha);
+            } else if (traducao === 'pt') {
+                setImagem(Brasil);
+            } else {
+                setImagem(Usa);
+            }
+        };
+
+        changeImage();
+    }, [traducao]);
 
   function openCloseUserMenu() {
     setOpen(!open);
+    setOpenLanguage(false);
+  }
+
+  function openCloseLanguageMenu() {
+    setOpenLanguage(!openLanguage);
+    setOpen(false);
   }
 
   function doLogout(event) {
@@ -25,7 +59,7 @@ export default function Header() {
 
   return (
     <>
-    
+
       <div className="min-h-full">
         <nav className={`bg-gray-800-${darkMode ? 'dark' : ''}`} >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -33,19 +67,19 @@ export default function Header() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <img
-                    className="h-8 w-8"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                    className="h-20 w-20 hover:transform hover:-translate-y-0.5"
+                    src={LogoPreto}
                     alt="Your Company"
                   />
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     <a
-                      href="#"
+                      href="home"
                       className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
                       aria-current="page"
                     >
-                      Dashboard
+                      Home
                     </a>
                     <a
                       href="#"
@@ -97,7 +131,55 @@ export default function Header() {
                       />
                     </svg>
                   </button>
-                  <ThemeButton/>
+                  <ThemeButton />
+                  <div className="relative ml-3">
+
+                    <div>
+                      <button
+                        type="button"
+                        className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        id="user-menu-button"
+                        aria-expanded={open ? "true" : "false"}
+                        aria-haspopup="true"
+                        onClick={openCloseLanguageMenu}
+                      >
+                        <span className="absolute -inset-1.5"></span>
+                        <span className="sr-only">Linguagem</span>
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src={imagem}
+                          alt=""
+                        />
+                      </button>
+                    </div>
+                    {openLanguage ? (
+                      <div
+                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        role="menu"
+                        aria-orientation="vertical"
+                        aria-labelledby="user-menu-button"
+                        tabIndex="-1"
+                      >
+                        <div>
+                          <button type="submit" className="block px-4 py-2 text-sm text-gray-700"
+                            onClick={() => toggleTraducao("pt")}>
+                            Português
+                          </button>
+                          <button type="submit" className="block px-4 py-2 text-sm text-gray-700"
+                            onClick={() => toggleTraducao("en")}>
+                            Inglês
+                          </button>
+                          <button type="submit" className="block px-4 py-2 text-sm text-gray-700"
+                            onClick={() => toggleTraducao("es")}>
+                            Espanhol
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
                   <div className="relative ml-3">
                     <div>
                       <button
@@ -129,17 +211,10 @@ export default function Header() {
                         <button
                           onClick={() => navigate("/profile")}
                           className="block px-4 py-2 text-sm text-gray-700"
-                          >
+                        >
                           Your Profile
                         </button>
-                        {/* <a
-                          href="settings"
-                          role="menuitem"
-                          tabIndex="-1"
-                          id="user-menu-item-1"
-                        >
-                          Settings
-                        </a> */}
+
                         <button
                           onClick={(event) => doLogout(event)}
                           className="block px-4 py-2 text-sm text-gray-700"
@@ -151,6 +226,7 @@ export default function Header() {
                     ) : (
                       ""
                     )}
+
                   </div>
                 </div>
               </div>
