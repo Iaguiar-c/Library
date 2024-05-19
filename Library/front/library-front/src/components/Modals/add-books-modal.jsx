@@ -1,22 +1,92 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
-import axios from "axios";
 
-const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
+const STATUS = {
+  TO_READ: "to-read",
+  READING: "reading",
+  READ: "read",
+};
+
+const ModalForm = ({
+  isOpen,
+  onClose,
+  book,
+  onBookAdded,
+  showManualUrlInput,
+}) => {
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
-  const [manualEntry, setManualEntry] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [status, setStatus] = useState(STATUS.TO_READ);
   const { usuario, token, config } = useAutenticacao();
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [publicationYear, setPublicationYear] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [isTitleManual, setIsTitleManual] = useState(true);
+  const [isAuthorManual, setIsAuthorManual] = useState(true);
+  const [isPublicationYearManual, setIsPublicationYearManual] = useState(true);
+  const [isCategoryManual, setIsCategoryManual] = useState(true);
+  const [isDescriptionManual, setIsDescriptionManual] = useState(true);
 
   useEffect(() => {
     setModalOpen(isOpen);
     if (book?.volumeInfo?.imageLinks?.thumbnail) {
       setImageUrl(book.volumeInfo.imageLinks.thumbnail);
-      setManualEntry(false); 
     }
-  }, [isOpen, book]);
+    if (!showManualUrlInput && book?.volumeInfo?.title) {
+      setTitle(book.volumeInfo.title);
+      setIsTitleManual(false);
+    }
+    if (!showManualUrlInput && book?.volumeInfo?.authors) {
+      setAuthor(book.volumeInfo.authors);
+      setIsAuthorManual(false);
+    }
+    if (!showManualUrlInput && book?.volumeInfo?.publishedDate) {
+      setPublicationYear(book.volumeInfo.publishedDate);
+      setIsPublicationYearManual(false);
+    }
+    if (!showManualUrlInput && book?.volumeInfo?.categories) {
+      setCategory(book.volumeInfo.categories);
+      setIsCategoryManual(false);
+    }
+    if (!showManualUrlInput && book?.volumeInfo?.description) {
+      setDescription(book.volumeInfo.description);
+      setIsDescriptionManual(false);
+    }
+  }, [isOpen, book, showManualUrlInput]);
+
+  const handleTitleChange = (event) => {
+    if (isTitleManual) {
+      setTitle(event.target.value);
+    }
+  };
+
+  const handleAuthorChange = (event) => {
+    if (isAuthorManual) {
+      setAuthor(event.target.value);
+    }
+  };
+
+  const handlePublicationYearChange = (event) => {
+    if (isPublicationYearManual) {
+      setPublicationYear(event.target.value);
+    }
+  };
+
+  const handleCategoryChange = (event) => {
+    if (isCategoryManual) {
+      setCategory(event.target.value);
+    }
+  };
+
+  const handleDescriptionChange = (event) => {
+    if (isDescriptionManual) {
+      setDescription(event.target.value);
+    }
+  };
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -46,7 +116,6 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
   const handleImageInputChange = (event) => {
     const imageUrl = event.target.value;
     setImageUrl(imageUrl);
-    setManualEntry(imageUrl !== "");
   };
 
   const handleSubmit = async (event) => {
@@ -64,13 +133,15 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
     );
 
     const data = {
-      title: book?.volumeInfo?.title || "",
-      author: book?.volumeInfo?.authors?.join(", ") || "",
+      title: title || book?.volumeInfo?.title || "",
+      author: author || book?.volumeInfo?.authors?.join(", ") || "",
       publicationYear: publicationYear || 0,
-      category: book?.volumeInfo?.categories?.join(", ") || "",
-      description: book?.volumeInfo?.description || "",
-      imageURL: book?.volumeInfo?.imageLinks?.thumbnail || imageUrl || "",
-      status: "available",
+      category: category || book?.volumeInfo?.categories?.join(", ") || "",
+      description: description || book?.volumeInfo?.description || "",
+      imageURL: showManualUrlInput
+        ? imageUrl
+        : book?.volumeInfo?.imageLinks?.thumbnail || "",
+      status: status,
       userId: usuario?._id,
     };
 
@@ -129,7 +200,7 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
           Complete as informações abaixo:
         </p>
 
-        <form className="mt-4 space-y-8">
+        <form className="mt-4 space-y-8" onSubmit={handleSubmit}>
           <div className="space-y-12">
             <div className="border-b border-primary-900/10 pb-12">
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -146,33 +217,15 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
                       name="titulo"
                       id="titulo"
                       autoComplete="titulo"
-                      className=" py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={book?.volumeInfo?.title || ""}
+                      className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                      value={title}
+                      onChange={handleTitleChange}
+                      readOnly={!isTitleManual}
                     />
                   </div>
                 </div>
 
-                {manualEntry && (
-                  <div className="sm:col-span-3">
-                    <label
-                      htmlFor="imagem"
-                      className="block text-sm font-medium leading-6 text-primary-950"
-                    >
-                      URL da Imagem
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        name="imagem"
-                        id="imagem"
-                        autoComplete="imagem"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        onChange={handleImageInputChange}
-                        placeholder="Insira a URL da imagem"
-                      />
-                    </div>
-                  </div>
-                )}
+                
 
                 <div className="sm:col-span-3">
                   <label
@@ -188,7 +241,9 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
                       id="autor"
                       autoComplete="autor"
                       className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={book?.volumeInfo?.authors?.join(", ") || ""}
+                      value={author}
+                      onChange={handleAuthorChange}
+                      readOnly={!isAuthorManual}
                     />
                   </div>
                 </div>
@@ -207,7 +262,9 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
                       id="ano"
                       autoComplete="ano"
                       className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={book?.volumeInfo?.publishedDate || ""}
+                      value={publicationYear}
+                      onChange={handlePublicationYearChange}
+                      readOnly={!isPublicationYearManual}
                     />
                   </div>
                 </div>
@@ -225,8 +282,10 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
                       name="categoria"
                       autoComplete="categoria"
                       className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={book?.volumeInfo?.categories || ""}
-                    ></input>
+                      value={category}
+                      onChange={handleCategoryChange}
+                      readOnly={!isCategoryManual}
+                    />
                   </div>
                 </div>
 
@@ -243,12 +302,57 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
                       name="sinopse"
                       rows="3"
                       className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={book?.volumeInfo?.description || ""}
-                    ></textarea>
+                      value={description}
+                      onChange={handleDescriptionChange}
+                      readOnly={!isDescriptionManual}
+                    />
                   </div>
                 </div>
 
-                {!manualEntry && (
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="status"
+                    className="block text-sm font-medium leading-6 text-primary-950"
+                  >
+                    Status
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="status"
+                      name="status"
+                      className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                    >
+                      <option value={STATUS.TO_READ}>Para Ler</option>
+                      <option value={STATUS.READING}>Lendo</option>
+                      <option value={STATUS.READ}>Lido</option>
+                    </select>
+                  </div>
+                </div>
+                {showManualUrlInput && (
+                  <div className="sm:col-span-3">
+                    <label
+                      htmlFor="imagem"
+                      className="block text-sm font-medium leading-6 text-primary-950"
+                    >
+                      URL da Imagem
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="imagem"
+                        id="imagem"
+                        autoComplete="imagem"
+                        className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        onChange={handleImageInputChange}
+                       
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {!showManualUrlInput && (
                   <div className="sm:col-span-3">
                     <label
                       htmlFor="imagemURL"
@@ -281,8 +385,7 @@ const ModalForm = ({ isOpen, onClose, book, onBookAdded }) => {
             </button>
             <button
               type="submit"
-              onClick={handleSubmit}
-              className="rounded-md bg-primary-800 hover:bg-primary-900 text-primary-50 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md bg-primary-800 hover:bg-primary-900 text-primary-50 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Adicionar
             </button>
