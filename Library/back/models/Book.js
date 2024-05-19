@@ -10,6 +10,7 @@ const bookSchema = new Schema(
     author: { type: String },
     publicationYear: { type: Number },
     category: { type: String, enum: Object.values(Categoria.CATEGORIES), required: true },
+    isGoogle: { type: Boolean, required: false },
     description: { type: String },
     imageURL: { type: String },
     status: { type: String, enum: Object.values(Status.STATUS), required: true },
