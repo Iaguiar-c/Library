@@ -95,28 +95,37 @@ const swaggerDefinition = {
       },
     },
   },
-  "/user/register": {
+  "/register": {
     post: {
-      summary: "Registra um novo usuário.",
-      tags: ["User"],
+      summary: "Registra um novo usuário",
+      tags: ["Usuário"],
       requestBody: {
         required: true,
         content: {
-          "application/json": {
+          "multipart/form-data": {
             schema: {
               type: "object",
               properties: {
                 name: {
                   type: "string",
+                  description: "Nome do usuário",
                 },
                 email: {
                   type: "string",
+                  description: "Email do usuário",
                 },
                 password: {
                   type: "string",
+                  description: "Senha do usuário",
                 },
                 confirmpassword: {
                   type: "string",
+                  description: "Confirmação da senha do usuário",
+                },
+                profile: {
+                  type: "string",
+                  format: "binary",
+                  description: "Imagem de perfil do usuário",
                 },
               },
             },
@@ -128,7 +137,10 @@ const swaggerDefinition = {
           description: "Usuário registrado com sucesso",
         },
         422: {
-          description: "Erro de validação ou usuário já existente",
+          description: "Erro de validação",
+        },
+        500: {
+          description: "Erro no servidor",
         },
       },
     },

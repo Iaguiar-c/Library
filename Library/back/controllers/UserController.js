@@ -3,7 +3,12 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
+import multer from 'multer';
 import { AppError } from "../helpers/api-errors.js";
+
+// Configuração do multer
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 export class UserController {
   async startServer(req, res) {
@@ -12,57 +17,64 @@ export class UserController {
 
   async register(req, res) {
     const { name, email, password, confirmpassword } = req.body;
-
+    const profileImage = req.file; // Imagem carregada pelo multer
+  
+    console.log("Iniciando registro do usuário");
+  
     // Validações dos campos obrigatórios
     if (!name || !email || !password) {
+      console.log("Campos obrigatórios faltando");
       return res
         .status(422)
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
-
+  
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log("Formato de email inválido");
       return res.status(422).json({ msg: "Formato de email inválido." });
     }
-
+  
     // Validar a força da senha
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
     if (!passwordRegex.test(password)) {
+      console.log("Senha fraca");
       return res.status(422).json({
         msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
       });
     }
-
+  
     if (password !== confirmpassword) {
+      console.log("Senhas não coincidem");
       return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
     }
-
+  
     try {
       // Verifica se o usuário já existe no banco de dados
       const userExists = await User.findOne({ email: email });
-
+  
       if (userExists) {
-        throw new Error(
-          "Este email já está cadastrado. Por favor, use outro email."
-        );
+        console.log("Usuário já existe");
+        return res.status(422).json({ msg: "Este email já está cadastrado. Por favor, use outro email." });
       }
-
+  
       // Gera um hash da senha
       const salt = await bcrypt.genSalt(12);
       const passwordHash = await bcrypt.hash(password, salt);
-
-      // Cria um novo usuário
+  
+      // Cria um novo usuário com ou sem imagem de perfil
       const user = new User({
         name,
         email,
         password: passwordHash,
+        profile: profileImage ? profileImage.buffer : undefined, // Adiciona a imagem se fornecida
       });
-
+  
       // Salva o usuário no banco de dados
       await user.save();
-
+  
+      console.log("Usuário registrado com sucesso");
       res.status(201).json({ msg: "Usuário registrado com sucesso!" });
     } catch (error) {
       console.error("Erro ao registrar usuário:", error.message);
@@ -71,7 +83,7 @@ export class UserController {
       });
     }
   }
-
+  
   async login(req, res) {
     const { email, password } = req.body;
 
@@ -98,7 +110,7 @@ export class UserController {
         return res.status(401).json({ msg: "Credenciais inválidas." });
       }
 
-      const secret = process.env.secret;
+      const secret = process.env.SECRET;
 
       // Gera um token de autenticação
       const token = jwt.sign({ id: user._id }, secret);
@@ -150,6 +162,7 @@ export class UserController {
   async updateUser(req, res) {
     const id = req.params.id;
     const { name, email, password, confirmpassword } = req.body;
+    const profileImage = req.file; // Imagem carregada pelo multer
 
     if (!name || !email) {
       return res.status(422).json({ msg: "Por favor, forneça todos os campos obrigatórios." });
@@ -186,6 +199,10 @@ export class UserController {
         updates.password = passwordHash;
       }
 
+      if (profileImage) {
+        updates.profile = profileImage.buffer;
+      }
+
       await User.findByIdAndUpdate(id, updates);
 
       res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
@@ -214,3 +231,7 @@ export class UserController {
     }
   }
 }
+
+// Exportar a instância do controlador e o middleware de upload
+export const userController = new UserController();
+export { upload };

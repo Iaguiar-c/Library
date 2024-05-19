@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function ThemeButton() {
   const { darkMode, toggleDarkMode } = useTheme();
+
   return (
     <div className={darkMode ? "dark-mode" : "light-mode"}>
         {darkMode ? (
