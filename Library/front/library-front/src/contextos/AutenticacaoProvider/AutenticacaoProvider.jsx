@@ -42,7 +42,7 @@ export const AutenticacaoProvider = ({ children }) => {
   async function login(email, password) {
     try {
       const response = await Api.post(
-        "auth/login",
+        "user/login",
         { email, password },
         config
       );
