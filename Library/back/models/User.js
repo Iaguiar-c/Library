@@ -9,6 +9,7 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book',
   }],
+  profile: { type: Buffer }
 });
 
 const User = mongoose.model('User', userSchema);
