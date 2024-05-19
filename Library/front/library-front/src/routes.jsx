@@ -9,6 +9,7 @@ import NotFound from './pages/notfound';
 import { UsuarioProvider } from './contextos/UsuarioProvider/UsuarioProvider';
 import UserRegister from './pages/register';
 import Profile from './pages/profile';
+import ProtectedRoute from './components/ProtectedRoute'
 
 function AppRoutes() {
   return (
@@ -21,11 +22,13 @@ function AppRoutes() {
                 <Route path="/" element={<LoginUsuario />} />
                 <Route path="/login" element={<LoginUsuario />} />
                 <Route path="/register" element={<UserRegister />} />
-                <Route path="*" element={<NotFound />} />
-                <Route path="/" element={<Header />} >
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/profile" element={<Profile />} />
-                </Route>
+                {/* <Route element={<ProtectedRoute />} > */}
+                  <Route path="/" element={<Header />} >
+                    <Route path="*" element={<NotFound />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/profile" element={<Profile />} />
+                  </Route>
+                {/* </Route> */}
               </Routes>
             </UsuarioProvider>
           </LivrosProvider>

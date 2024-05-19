@@ -3,15 +3,15 @@ import Memeus from '../../assets/meme_us.jpg';
 import Memeesp from '../../assets/meme_esp.jpeg';
 import { useTranslation } from "react-i18next";
 import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
-import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { useState, useEffect } from 'react'; 
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import TypingAnimation from '../../components/TypingAnimation'
+import { Container } from './styles';
 
 const NotFound = () => {
     const { t } = useTranslation();
-    const { toggleTraducao } = useTraducao();
-    const { usuario } = useAutenticacao();
     const { traducao } = useTraducao();
-
+    const navigate = useNavigate();
     const [imagem, setImagem] = useState(Memeus);
 
     useEffect(() => {
@@ -30,27 +30,19 @@ const NotFound = () => {
 
     return (
         <>
-            <div>
-                Olá, {usuario?.name} bem-vindo(a) ao Bookster!
-                {t("ola_mundo")}
-                <button type="submit" onClick={() => toggleTraducao("pt")}>
-                    Português
+        
+            <Container>
+                <div className="bg-transparent text-black text-center py-2.5 px-5 rounded-lg mb-4">
+                    <TypingAnimation text={t("pagina_nao_encontrada")} />
+                </div>
+                <img src={imagem} alt="Meme" className="mb-4 rounded-lg shadow-lg max-w-full h-auto" />
+                <button
+                    onClick={() => navigate(-1)}
+                    className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-700"
+                >
+                    {t("botao_voltar")}
                 </button>
-                <button type="submit" onClick={() => toggleTraducao("en")}>
-                    Inglês
-                </button>
-                <button type="submit" onClick={() => toggleTraducao("es")}>
-                    Espanhol
-                </button>
-            </div>
-
-            <div>
-                {t("pagina_nao_encontrada")}
-            </div>
-            <img src={imagem} alt="" />
-            <button>
-                {t("botao_voltar")}
-            </button>
+            </Container>
         </>
     );
 };
