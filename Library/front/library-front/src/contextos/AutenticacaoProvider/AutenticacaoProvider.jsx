@@ -47,23 +47,15 @@ export const AutenticacaoProvider = ({ children }) => {
         config
       );
       const user = response.data.user;
-
-      // console.log(user)
-      // if (user.profile && user.profile.data) {
-      //   const buffer = user.profile.data;
-      //   const base64String = Buffer.from(buffer).toString('base64');
-      //   const mimeType = 'image/png'; 
-      //   user.profileUrl = `data:${mimeType};base64,${base64String}`;
-      // }
-  
+      const token = response.data.token;
+      
       setUsuario(user);
-      setToken(response.data.token);
-      await setUsuarioNoLocalStorage(user, response.data.token);
+      setToken(token);
+      await setUsuarioNoLocalStorage(user, token);
     } catch (error) {
       console.error("Erro ao fazer login:", error.message);
     }
   }
-  
 
   function logout() {
     setUsuario(null);

@@ -29,7 +29,7 @@ export class BookController {
         userId,
       } = req.body;
 
-      if(!isGoogle){
+      if(!isGoogle) {
         if(!Categoria.isValid(category)){
           return res.status(400).json({ error: 'Categoria Inválida' })
         }

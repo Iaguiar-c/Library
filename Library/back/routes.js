@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { UserController, upload } from './controllers/UserController.js';
+import { UserController, uploadMiddleware } from './controllers/UserController.js';
 import { BookController } from './controllers/BookController.js';
 import { authenticateToken } from './middlewares/authenticateToken.js';
 
@@ -18,7 +18,7 @@ routes.route('/user/logout/:id')
 
 // routes.route('/user/register')
 //   .post(userController.register);
-routes.post('/register', upload.single('profile'), userController.register.bind(userController));
+routes.post('/register', uploadMiddleware, userController.register.bind(userController));
 
 routes.route('/user/update/:id')
   .put(authenticateToken, userController.updateUser);

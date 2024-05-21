@@ -10,6 +10,7 @@ const UserRegister = () => {
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [profilepicture, setProfilepicture] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ const UserRegister = () => {
   const { postUsuario, message } = useUsuario();
   const { t } = useTranslation(); 
   const [swing, setSwing] = useState(false);
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +27,15 @@ const UserRegister = () => {
     if (name === 'confirmpassword') setConfirmPassword(value);
   };
 
+  const handleFileChange = (e) => {
+    console.log(e)
+    const file = e.target.files ? e.target.files[0] : null;
+    console.log(file);
+    if (file) {
+      setProfilepicture(file);
+    }
+  };
+  
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -48,10 +57,16 @@ const UserRegister = () => {
     }
   
     try {
-      await postUsuario(username, email, password, confirmpassword);
-      if (error.response && error.response.status === 500) {
-        enqueueSnackbar("Este email já está cadastrado. Por favor, use outro email.", { variant: "error" });
-      } 
+      const formData = new FormData();
+      formData.append('name', username);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('confirmpassword', confirmpassword);
+      formData.append('profilepicture', profilepicture);
+  
+      await postUsuario(formData);
+      enqueueSnackbar("Usuário registrado com sucesso!", { variant: "success" });
+      navigate("/login"); 
     } catch (error) {
       if (error.response && error.response.status === 500) {
         enqueueSnackbar("Este email já está cadastrado. Por favor, use outro email.", { variant: "error" });
@@ -64,7 +79,6 @@ const UserRegister = () => {
     }
   }
   
-
   const handleLoginClick = () => {
     navigate("/");
   };
@@ -169,6 +183,19 @@ const UserRegister = () => {
                   required
                 />
               </div>
+              <div>
+                  <label htmlFor="profilepicture" className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary">
+                    Foto de perfil
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="profilepicture"
+                    onChange={handleInputChange} 
+                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    required
+                  />
+                </div>
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input

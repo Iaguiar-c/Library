@@ -3,43 +3,50 @@ import { useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Outlet, useNavigate } from "react-router-dom";
 import ThemeButton from "../ThemeButton/ThemeButton";
-import { useTheme } from '../../contextos/ThemeProvider/ThemeProvider';
+import { useTheme } from "../../contextos/ThemeProvider/ThemeProvider";
 import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
 import { useTranslation } from "react-i18next";
-import Brasil from "../../assets/brasil.png"
-import Espanha from "../../assets/espanha.png"
-import Usa from "../../assets/usa.png"
-import { useEffect } from 'react'; 
-import LogoPreto from "../../assets/logoPreto.png"
-import LogoBranco from "../../assets/logoBom.png"
+import Brasil from "../../assets/brasil.png";
+import Espanha from "../../assets/espanha.png";
+import Usa from "../../assets/usa.png";
+import { useEffect } from "react";
+import LogoPreto from "../../assets/logoPreto.png";
+import LogoBranco from "../../assets/logoBom.png";
+import TranslationButtons from "../TranslationButtons";
+import { convertToImageUrl } from "../../services/profileService";
 
 export default function Header() {
-  const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState({});
   const { usuario, logout } = useAutenticacao();
   const [open, setOpen] = useState(false);
   const [openLanguage, setOpenLanguage] = useState(false);
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
-  const { toggleTraducao } = useTraducao();
   const { t } = useTranslation();
   const { traducao } = useTraducao();
+  const [profileUrl, setProfileUrl] = useState(null);
+  const [imagem, setImagem] = useState(Usa);
 
-    const [imagem, setImagem] = useState(Usa);
+  useEffect(() => {
+    const changeImage = () => {
+      if (traducao === "es") {
+        setImagem(Espanha);
+      } else if (traducao === "pt") {
+        setImagem(Brasil);
+      } else {
+        setImagem(Usa);
+      }
+    };
 
-    useEffect(() => {
-        const changeImage = () => {
-            if (traducao === 'es') {
-                setImagem(Espanha);
-            } else if (traducao === 'pt') {
-                setImagem(Brasil);
-            } else {
-                setImagem(Usa);
-            }
-        };
+    changeImage();
+  }, [traducao]);
 
-        changeImage();
-    }, [traducao]);
+  useEffect(() => {
+    if (usuario && usuario.profile && usuario.profile.data) {
+      const byteArray = usuario.profile.data;
+      const url = convertToImageUrl(byteArray);
+      setProfileUrl(url);
+    }
+  }, [usuario]);
 
   function openCloseUserMenu() {
     setOpen(!open);
@@ -59,9 +66,8 @@ export default function Header() {
 
   return (
     <>
-
       <div className="min-h-full">
-        <nav className={`bg-gray-800-${darkMode ? 'dark' : ''}`} >
+        <nav className={`bg-gray-800-${darkMode ? "dark" : ""}`}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
@@ -80,30 +86,6 @@ export default function Header() {
                       aria-current="page"
                     >
                       Home
-                    </a>
-                    <a
-                      href="#"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    >
-                      Team
-                    </a>
-                    <a
-                      href="#"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    >
-                      Projects
-                    </a>
-                    <a
-                      href="#"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    >
-                      Calendar
-                    </a>
-                    <a
-                      href="#"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    >
-                      Reports
                     </a>
                   </div>
                 </div>
@@ -133,7 +115,6 @@ export default function Header() {
                   </button>
                   <ThemeButton />
                   <div className="relative ml-3">
-
                     <div>
                       <button
                         type="button"
@@ -152,32 +133,7 @@ export default function Header() {
                         />
                       </button>
                     </div>
-                    {openLanguage ? (
-                      <div
-                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="user-menu-button"
-                        tabIndex="-1"
-                      >
-                        <div>
-                          <button type="submit" className="block px-4 py-2 text-sm text-gray-700"
-                            onClick={() => toggleTraducao("pt")}>
-                            Português
-                          </button>
-                          <button type="submit" className="block px-4 py-2 text-sm text-gray-700"
-                            onClick={() => toggleTraducao("en")}>
-                            Inglês
-                          </button>
-                          <button type="submit" className="block px-4 py-2 text-sm text-gray-700"
-                            onClick={() => toggleTraducao("es")}>
-                            Espanhol
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
+                    {openLanguage ? <TranslationButtons /> : ""}
                   </div>
 
                   <div className="relative ml-3">
@@ -194,7 +150,7 @@ export default function Header() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          src={profileUrl}
                           alt=""
                         />
                       </button>
@@ -219,14 +175,12 @@ export default function Header() {
                           onClick={(event) => doLogout(event)}
                           className="block px-4 py-2 text-sm text-gray-700"
                         >
-
                           Sign out
                         </button>
                       </div>
                     ) : (
                       ""
                     )}
-
                   </div>
                 </div>
               </div>
