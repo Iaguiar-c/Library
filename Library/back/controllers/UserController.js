@@ -4,11 +4,10 @@ import { User } from "../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
 import multer from 'multer';
-import { AppError } from "../helpers/api-errors.js";
 
 // Configuração do multer
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage }).single('profileImage');
 
 export class UserController {
   async startServer(req, res) {
@@ -234,4 +233,4 @@ export class UserController {
 
 // Exportar a instância do controlador e o middleware de upload
 export const userController = new UserController();
-export { upload };
+export const uploadMiddleware = multer({ storage }).single('profileImage');

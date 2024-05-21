@@ -122,7 +122,7 @@ const swaggerDefinition = {
                   type: "string",
                   description: "Confirmação da senha do usuário",
                 },
-                profile: {
+                profileImage: {
                   type: "string",
                   format: "binary",
                   description: "Imagem de perfil do usuário",
