@@ -14,9 +14,9 @@ export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState([]);
   const { config, logout } = useAutenticacao();
 
-  async function postUsuario(name, email, password, confirmpassword) {
+  async function postUsuario(name, email, password, confirmpassword, profilepicture) {
     try {
-      const response = await Api.post("user/register", { name, email, password, confirmpassword });
+      const response = await Api.post("user/register", { name, email, password, confirmpassword, profilepicture });
       setUsuario(response.data);
     } catch (error) {
       throw error; 

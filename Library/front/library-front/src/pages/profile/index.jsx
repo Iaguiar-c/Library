@@ -1,11 +1,12 @@
-// TODO: aplicar o contexto de internacionalização
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { faEdit, faTrash  } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSnackbar } from "notistack";
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
+import Teste from "../../assets/1.png";
+import { convertToImageUrl } from "../../services/profileService";
 
 export default function Profile() {
   const { usuario } = useAutenticacao();
@@ -15,20 +16,32 @@ export default function Profile() {
   const { deleteUsuario } = useUsuario();
   const navigate = useNavigate();
 
+  const [profileUrl, setProfileUrl] = useState(null);
+
+  useEffect(() => {
+    if (usuario && usuario.profile && usuario.profile.data) {
+      const byteArray = usuario.profile.data;
+      const url = convertToImageUrl(byteArray);
+      setProfileUrl(url);
+    }
+  }, [usuario]);
+
   const handleDeleteProfile = async () => {
     setLoading(true);
 
     try {
       if (usuario?._id) {
         await deleteUsuario(usuario._id);
-        enqueueSnackbar('Usuário deletado com sucesso!', { variant: 'success' });
-        navigate('/login');
+        enqueueSnackbar("Usuário deletado com sucesso!", {
+          variant: "success",
+        });
+        navigate("/login");
       } else {
-        setError('Usuário não encontrado para deleção.', { variant: 'error' });
+        setError("Usuário não encontrado para deleção.", { variant: "error" });
       }
     } catch {
-      console.error('Erro ao deletar usuário:', error);
-      setError('Ocorreu um erro ao deletar o usuário.', { variant: 'error' });
+      console.error("Erro ao deletar usuário:", error);
+      setError("Ocorreu um erro ao deletar o usuário.", { variant: "error" });
     } finally {
       setLoading(false);
     }
@@ -41,7 +54,7 @@ export default function Profile() {
           <div className="p-6">
             <div className="flex items-center justify-center">
               <img
-                src={usuario.avatarUrl}
+                src={profileUrl || ""}
                 alt="Avatar"
                 className="h-20 w-20 rounded-full object-cover"
               />
@@ -54,12 +67,12 @@ export default function Profile() {
                   className="text-gray-500 cursor-pointer"
                 />
                 <span className="ml-2">
-              <FontAwesomeIcon
-                icon={faTrash}
-                className="text-red-500 cursor-pointer"
-                onClick={handleDeleteProfile}
-              />
-            </span>
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-red-500 cursor-pointer"
+                    onClick={handleDeleteProfile}
+                  />
+                </span>
               </span>
             </h2>
             <p className="text-gray-600 mt-2">{usuario.email}</p>
