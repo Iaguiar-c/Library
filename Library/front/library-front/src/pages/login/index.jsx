@@ -4,6 +4,7 @@ import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { useTranslation } from "react-i18next";
 import PasswordField from "../../components/PasswordField/PasswordField";
+import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();
@@ -14,7 +15,6 @@ const LoginUsuario = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
-  const [swing, setSwing] = useState(false);
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
@@ -56,31 +56,9 @@ const LoginUsuario = () => {
     }
   }, [error, enqueueSnackbar, usuario]);
 
-  useEffect(() => {
-    const swingInterval = setInterval(() => {
-      setSwing(!swing);
-    }, 3000);
-
-    return () => clearInterval(swingInterval);
-  }, [swing]);
-
   return (
     <section className="bg-gradient-to-tl from-purple-950 to-purple-400 min-h-screen flex flex-row items-center justify-center">
-      <div className="flex-none p-10 md:ml-8 lg:ml-16">
-        <img
-          src={require("../../assets/fundoTela.png")}
-          alt="Imagem de Fundo"
-          style={{
-            width: "50rem",
-            height: "35rem",
-            marginTop: "100px",
-            marginLeft: "-100px",
-            transform: `rotate(${swing ? "-3deg" : "3deg"})`,
-            transition: "transform 1s ease-in-out",
-          }}
-          className="float-left"
-        />
-      </div>
+      <AnimacaoInicioBookster />
 
       <div className="flex-auto max-w-xs">
         <div className="flex justify-center items-center mb-8">
