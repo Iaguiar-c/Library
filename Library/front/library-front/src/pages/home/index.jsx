@@ -75,7 +75,7 @@ const Home = () => {
     <>
       <div>
         <button
-          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           onClick={openModal}
         >
           Adicionar Livros
@@ -93,10 +93,10 @@ const Home = () => {
 
       <div>
         <div className="flex justify-between items-center mt-6 mb-3">
-          <h2 className="text-xl font-semibold text-gray-900">Meus Livros</h2>
+          <h2 className="text-xl font-bold text-primary-900">Meus Livros</h2>
           <div className="flex gap-2">
             <button
-              className={`p-2 rounded ${viewMode === "card" ? "bg-blue-700 text-white" : "bg-gray-200"}`}
+              className={`p-2 rounded ${viewMode === "card" ? "bg-primary-700 text-white" : "bg-gray-200"}`}
               onClick={() => setViewMode("card")}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
@@ -104,7 +104,7 @@ const Home = () => {
               </svg>
             </button>
             <button
-              className={`p-2 rounded ${viewMode === "table" ? "bg-blue-700 text-white" : "bg-gray-200"}`}
+              className={`p-2 rounded ${viewMode === "table" ? "bg-primary-700 text-white" : "bg-gray-200"}`}
               onClick={() => setViewMode("table")}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">

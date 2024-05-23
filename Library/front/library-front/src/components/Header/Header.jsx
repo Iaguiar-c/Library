@@ -82,7 +82,7 @@ export default function Header() {
                   <div className="ml-10 flex items-baseline space-x-4">
                     <a
                       href="home"
-                      className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                      className="bg-primary-700 text-white rounded-md px-3 py-2 text-sm font-medium"
                       aria-current="page"
                     >
                       Home
