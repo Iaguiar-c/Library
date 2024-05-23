@@ -70,6 +70,8 @@ const Home = () => {
   };
 
   return (
+
+    <section className="bg-primary-50">
     <>
       <div>
         <button
@@ -128,6 +130,8 @@ const Home = () => {
         show={notification.show}
       />
     </>
+    
+    </section>
   );
 };
 
