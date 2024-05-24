@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { motion } from "framer-motion";
 import backgroundImage from "../../assets/backgroundLandingPage.png";
 import logoImage from "../../assets/logoBom.png";
+import FeatureSection from "./FeatureSection";
 
 const Header = styled.header`
   ${tw`w-full py-6 text-gray-100 z-20 relative`}
@@ -40,8 +41,8 @@ const SectionDescription = styled(motion.p)`
   font-size: 2rem;
 `;
 
-const PrimaryButton = styled.a`
-  ${tw`inline-block text-white rounded mt-4`}
+const PrimaryButton = styled(motion.a)`
+  ${tw`inline-block text-white rounded mt-4 cursor-pointer`}
   width: 150px;
   height: 50px;
   background-color: #783990;
@@ -56,11 +57,11 @@ const Container = styled.div`
 `;
 
 const ContentWithVerticalPadding = styled.div`
-  ${tw`py-40 flex flex-col items-center`}
+  ${tw`flex flex-col items-center`}
 `;
 
 const HeroSection = styled.div`
-  ${tw`relative bg-cover bg-center bg-no-repeat`}
+  ${tw`relative w-full min-h-screen bg-cover bg-center bg-no-repeat`}
   background-image: url(${backgroundImage});
   &:before {
     content: "";
@@ -88,11 +89,17 @@ export default function FeatureSectionWithHeader({
   heading1 = "BOOKSTER",
   heading2 = "DIGITAL LIBRARY",
   description2 = "onde cada página se transforma numa viagem, e cada história torna-se um mundo próprio.",
-  primaryButtonUrl = "https://google.com",
   primaryButtonText = "Saber mais",
   buttonRounded = true,
 }) {
+  const featureSectionRef = useRef(null);
   const buttonRoundedCss = buttonRounded ? tw`rounded-full` : "";
+
+  const scrollToFeatureSection = () => {
+    if (featureSectionRef.current) {
+      featureSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const navLinks = (
     <>
@@ -143,11 +150,12 @@ export default function FeatureSectionWithHeader({
                 </SectionDescription>
                 <div className="flex flex-col items-center">
                   <PrimaryButton
-                    href={primaryButtonUrl}
-                    css={buttonRoundedCss}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.8 }}
+                     onClick={scrollToFeatureSection}
+                     css={buttonRoundedCss}
+                     whileTap={{ scale: 0.95 }}
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ duration: 0.5, delay: 0.8 }}
                   >
                     {primaryButtonText}
                   </PrimaryButton>
@@ -157,6 +165,7 @@ export default function FeatureSectionWithHeader({
           </Container>
         </HeroContent>
       </HeroSection>
+      <FeatureSection ref={featureSectionRef} />
     </>
   );
 }

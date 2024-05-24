@@ -14,3 +14,16 @@
     --tw-bg-opacity: 1;
     background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
+
+.card-zoom {
+    @apply relative overflow-hidden shadow-xl w-80 h-80 rounded-2xl; /* Aumentando o tamanho do card */
+    left: -20px; /* Movendo o card para a esquerda */
+  }
+  
+  .card-zoom-image {
+    @apply absolute w-full h-full transition-all duration-500 ease-in-out transform bg-center;
+  }
+  
+  .card-zoom:hover .card-zoom-image {
+    @apply scale-150;
+  }
