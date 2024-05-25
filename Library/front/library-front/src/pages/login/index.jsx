@@ -22,6 +22,14 @@ const LoginUsuario = () => {
     navigate("/home");
   };
 
+  function forgotPassword() {
+    if(email === ""){
+      // enviar informações para o backend 
+    } 
+   
+    // open modal = forneça seu email 
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -102,12 +110,12 @@ const LoginUsuario = () => {
               <div className="mt-2">
                 <PasswordField passwordRef={passwordRef} />
                 <div className="text-sm text-right py-1.5">
-                  <a
-                    href="#"
+                  <button
                     className="font-semibold text-primary-500 hover:text-primary-500"
+                    onClick={() => forgotPassword()}
                   >
                     {t("esqueceu_a_senha")}
-                  </a>
+                  </button>
                 </div>
               </div>
 
