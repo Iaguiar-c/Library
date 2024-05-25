@@ -1,32 +1,9 @@
 import React, { useRef, useEffect, useState, forwardRef } from "react";
-import styled from "styled-components";
-import tw from "twin.macro";
-import { motion } from "framer-motion";
 import { Transition } from "@headlessui/react";
 import personalidade from "../../assets/personalidade.png";
 import seguranca from "../../assets/segurança.jpg";
 import ferramenta from "../../assets/ferramenta.jpg";
-
-const Container = styled.div`
-  ${tw`relative max-w-6xl mx-auto px-4 sm:px-6`}
-`;
-
-const Section = styled.section`
-  ${tw`relative`}
-  background: linear-gradient(to top left, #3b0a5a, #b794f4);
-`;
-
-const Heading = styled.h2`
-  ${tw`text-4xl font-bold text-center text-primary-200 mt-4`}
-  font-family: 'Inria Serif', serif;
-  font-size: 4.5rem;
-`;
-
-const Description = styled.p`
-  ${tw`text-lg text-primary-100 mt-2 py-12`}
-  font-family: 'Inria Serif', serif;
-  font-size: 2rem;
-`;
+import { Container, Description, Heading, Section } from "./styles";
 
 const FeatureSection = forwardRef((props, ref) => {
   const [tab, setTab] = useState(1);
