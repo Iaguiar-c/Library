@@ -5,6 +5,8 @@ import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
+import ModalGenerico from "../../components/ModalGenerico";
+import { termosContent } from '../../components/TermosECondicoes'
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
@@ -13,11 +15,14 @@ const UserRegister = () => {
   const [username, setUsername] = useState("");
   const [profilepicture, setProfilepicture] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { postUsuario, message } = useUsuario();
   const { t } = useTranslation();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
+  const openModal = () => setModalIsOpen(true);  
+  const closeModal = () => setModalIsOpen(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,14 +32,18 @@ const UserRegister = () => {
     if (name === "confirmpassword") setConfirmPassword(value);
   };
 
-  const handleFileChange = (e) => {
-    console.log(e);
-    const file = e.target.files ? e.target.files[0] : null;
-    console.log(file);
-    if (file) {
-      setProfilepicture(file);
-    }
+  const handleCheckboxChange = () => {
+    setIsTermsChecked(!isTermsChecked);
   };
+
+  // const handleFileChange = (e) => {
+  //   console.log(e);
+  //   const file = e.target.files ? e.target.files[0] : null;
+  //   console.log(file);
+  //   if (file) {
+  //     setProfilepicture(file);
+  //   }
+  // };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -59,6 +68,13 @@ const UserRegister = () => {
     if (password !== confirmpassword) {
       setLoading(false);
       return enqueueSnackbar("As senhas precisam ser iguais!", {
+        variant: "error",
+      });
+    }
+
+    if (!isTermsChecked) {
+      setLoading(false);
+      return enqueueSnackbar("Você deve aceitar os Termos e Condições.", {
         variant: "error",
       });
     }
@@ -207,6 +223,8 @@ const UserRegister = () => {
                       id="terms"
                       aria-describedby="terms"
                       type="checkbox"
+                      checked={isTermsChecked}
+                      onChange={handleCheckboxChange}
                       className="w-4 h-4 border border-primary-300 rounded bg-primary-50 focus:ring-3 focus:ring-primary-300 dark:bg-primary-700 dark:border-primary-600 dark:focus:ring-primary-600 dark:ring-offset-primary-800"
                       required
                     />
@@ -217,25 +235,30 @@ const UserRegister = () => {
                       className="font-light text-primary-950 dark:text-primary-300"
                     >
                       {t("eu_aceito_os")}{" "}
-                      <a
+                      <button
+                        onClick={openModal}
+                        type="button"
                         className="font-medium text-primary-500 hover:underline dark:text-primary-500"
-                        href="#"
                       >
                         {t("termos_e_condicoes")}
-                      </a>
+                      </button>
+                      <ModalGenerico isOpen={modalIsOpen} onRequestClose={closeModal} content={termosContent} />
                     </label>
                   </div>
                 </div>
                 <button
                   type="submit"
-                  className="w-full text-white bg-primary-700 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  disabled={!isTermsChecked}
+                  className={`w-full text-white ${
+                    isTermsChecked ? 'bg-primary-700 hover:bg-primary-700' : 'bg-gray-400 cursor-not-allowed'
+                  } focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
                 >
                   {t("criar_conta")}
                 </button>
                 <p className="text-sm font-light text-primary-950 dark:text-primary-400">
                   {t("ja_tem_conta")}{" "}
                   <a
-                    href="#"
+                    href="login"
                     className="font-medium text-primary-500 hover:underline dark:text-primary-500"
                     onClick={handleLoginClick}
                   >

@@ -1,4 +1,3 @@
-// TODO: aplicar o contexto de internacionalização
 import { useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -58,6 +57,10 @@ export default function Header() {
     setOpen(false);
   }
 
+  function goHome(){
+    navigate('/home');
+  }
+
   function doLogout(event) {
     event.preventDefault();
     logout();
@@ -73,6 +76,7 @@ export default function Header() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <img
+                    onClick={() => goHome()}
                     className="h-20 w-20 hover:transform hover:-translate-y-0.5"
                     src={LogoPreto}
                     alt="Your Company"
