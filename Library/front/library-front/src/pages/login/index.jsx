@@ -5,16 +5,21 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { useTranslation } from "react-i18next";
 import PasswordField from "../../components/PasswordField/PasswordField";
 import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
+import ModalGenerico from "../../components/ModalGenerico";
+import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { login, usuario } = useAutenticacao();
+  const { forgotPasswordCheckUser } = useUsuario();
   const navigate = useNavigate();
   const passwordRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const openModal = () => setModalIsOpen(true);
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
@@ -23,12 +28,37 @@ const LoginUsuario = () => {
   };
 
   function forgotPassword() {
-    if(email === ""){
-      // enviar informações para o backend 
-    } 
-   
-    // open modal = forneça seu email 
+    if (email === "") {
+      openModal();
+    } else {
+      // enviar informações para o backend
+      openModal();
+    }
   }
+
+  const handleInputChange = (e) => {};
+
+  const getUserExist = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await forgotPasswordCheckUser(email);
+
+      if (response && response.status === "success") {
+        setError(null);
+        handleSuccess();
+      } else {
+        setError("Credenciais inválidas. Por favor, tente novamente.");
+      }
+    } catch {
+      console.log(error);
+      setError("Credenciais inválidas. Por favor, tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,6 +146,32 @@ const LoginUsuario = () => {
                   >
                     {t("esqueceu_a_senha")}
                   </button>
+                  <ModalGenerico
+                    isOpen={modalIsOpen}
+                    content={
+                      <>
+                        <form className="space-y-6" onSubmit={getUserExist}>
+                          <div>
+                            <label
+                              htmlFor="email"
+                              className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                            >
+                              Forneça seu e-mail
+                            </label>
+                            <input
+                              type="text"
+                              name="email"
+                              value={email}
+                              onChange={handleInputChange}
+                              placeholder="Digite seu e-mail"
+                              className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              required
+                            />
+                          </div>
+                        </form>
+                      </>
+                    }
+                  />
                 </div>
               </div>
 

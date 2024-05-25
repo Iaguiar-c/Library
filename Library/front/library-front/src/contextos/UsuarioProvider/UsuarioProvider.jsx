@@ -12,6 +12,7 @@ UsuarioContext.displayName = "Usuario Context";
 
 export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState([]);
+  const [userExist, setUserExist] = useState([]);
   const { config, logout } = useAutenticacao();
 
   async function postUsuario(name, email, password, confirmpassword, profilepicture) {
@@ -22,13 +23,22 @@ export function UsuarioProvider({ children }) {
       throw error; 
     }
   }
-
+  
   async function deleteUsuario(id) {
     try {
       await Api.delete(`user/delete/${id}`, config);
       logout();
     } catch (error) {
       console.log(error);
+    }
+  }
+  
+  async function forgotPasswordCheckUser(email){
+    try {      
+      const response = await Api.get("user/userExist", { email });
+      setUserExist(response.data)
+    } catch (error){
+      throw error; 
     }
   }
 
@@ -38,7 +48,9 @@ export function UsuarioProvider({ children }) {
         postUsuario,
         deleteUsuario,
         usuario,
-        setUsuario
+        setUsuario,
+        userExist,
+        forgotPasswordCheckUser
       }}
     >
       {children}
