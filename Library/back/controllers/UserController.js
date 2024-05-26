@@ -121,6 +121,29 @@ export class UserController {
     }
   }
 
+  async checkUserByEmail(req, res) {
+    const { email } = req.params;
+
+    if (!email) {
+      return res
+        .status(422)
+        .json({ msg: "Por favor, forneça o email." });
+    }
+
+    try {
+      const user = await User.findOne({ email: email });
+
+      if (user) {
+        return res.status(200).json({ msg: "Usuário encontrado!", user });
+      } else {
+        return res.status(404).json({ msg: "Usuário não encontrado!" });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar usuário pelo email:", error.message);
+      res.status(500).json({ msg: "Erro no servidor ao verificar usuário." });
+    }
+  }
+
   async getUserById(req, res) {
     const id = req.params.id;
 

@@ -35,8 +35,8 @@ export function UsuarioProvider({ children }) {
   
   async function forgotPasswordCheckUser(email){
     try {      
-      const response = await Api.get("user/userExist", { email });
-      setUserExist(response.data)
+      const response = await Api.get(`user/check-email/${email}`);
+      setUserExist(response)
     } catch (error){
       throw error; 
     }

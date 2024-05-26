@@ -98,7 +98,7 @@ const swaggerDefinition = {
   "/register": {
     post: {
       summary: "Registra um novo usuário",
-      tags: ["Usuário"],
+      tags: ["User"],
       requestBody: {
         required: true,
         content: {
@@ -250,78 +250,95 @@ const swaggerDefinition = {
       },
     },
   },
-  // END: User Configuration
-  // BEGIN: Senha Configuration
-  "/password/forgot-password": {
-    post: {
-      summary: "Solicitação de recuperação de senha",
-      description: "Envia um e-mail com um link para redefinir a senha.",
-      tags: ["Senha"],
-      security: [{ bearerAuth: [] }], 
-      requestBody: {
-        required: true,
-        content: {
-          "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                email: {
-                  type: "string",
+  "/user/{email}": {
+    get: {
+      summary: "Verifica se o usuário existe a partir do e-mail",
+      tags: ["User"],
+      parameters: [
+        {
+          name: "email",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+          description: "E-mail do usuário a ser verificado",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Retorna se existe usuário com o e-mail fornecido",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  user: {
+                    type: "object",
+                    description: "Objeto",
+                  },
                 },
               },
             },
           },
-        },
-      },
-      responses: {
-        200: {
-          description: "E-mail de recuperação enviado com sucesso",
-        },
-        400: {
-          description: "Usuário não encontrado ou erro ao enviar e-mail",
-        },
-      },
-    },
-  },
-  "password/reset-password": {
-    post: {
-      summary: "Atualiza a senha com base no token",
-      description:
-        "Atualiza a senha do usuário com base no token de recuperação.",
-      tags: ["Senha"],
-      security: [{ bearerAuth: [] }], 
-      requestBody: {
-        required: true,
-        content: {
-          "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                token: {
-                  type: "string",
-                },
-                newPassword: {
-                  type: "string",
-                },
-              },
-            },
-          },
-        },
-      },
-      responses: {
-        200: {
-          description: "Senha atualizada com sucesso",
-        },
-        400: {
-          description: "Token inválido ou expirado",
         },
         404: {
           description: "Usuário não encontrado",
         },
+        500: {
+          description: "Erro ao buscar usuário",
+        },
       },
     },
   },
-  // END: Senha Configuration
+  "/user/check-email/{email}": {
+    get: {
+      summary: "Verifica se o usuário existe a partir do e-mail",
+      tags: ["User"],
+      parameters: [
+        {
+          name: "email",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+          description: "E-mail do usuário a ser verificado",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Usuário encontrado",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                  },
+                  user: {
+                    type: "object",
+                    description: "Objeto contendo informações do usuário",
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: "Usuário não encontrado",
+        },
+        422: {
+          description: "Erro de validação (e-mail não fornecido)",
+        },
+        500: {
+          description: "Erro no servidor",
+        },
+      },
+    },
+  },
+  // END: User Configuration
   // BEGIN: Book Configuration
   "/books/create": {
     post: {
