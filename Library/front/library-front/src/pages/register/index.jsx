@@ -15,14 +15,14 @@ const UserRegister = () => {
   const [username, setUsername] = useState("");
   const [profilepicture, setProfilepicture] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { postUsuario, message } = useUsuario();
   const { t } = useTranslation();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const openModal = () => setModalIsOpen(true);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
+  const openModal = () => setModalIsOpen(true);  
+  const closeModal = () => setModalIsOpen(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -242,7 +242,7 @@ const UserRegister = () => {
                       >
                         {t("termos_e_condicoes")}
                       </button>
-                      <ModalGenerico isOpen={modalIsOpen} content={termosContent} />
+                      <ModalGenerico isOpen={modalIsOpen} onRequestClose={closeModal} content={termosContent} />
                     </label>
                   </div>
                 </div>

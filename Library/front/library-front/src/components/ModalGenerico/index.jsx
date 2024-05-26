@@ -16,7 +16,7 @@ const ModalGenerico = ({ isOpen, onRequestClose, content }) => {
         },
       }}
     >
-        {content}
+      {content}
       <div
         style={{
           display: "flex",
@@ -26,7 +26,7 @@ const ModalGenerico = ({ isOpen, onRequestClose, content }) => {
         }}
       >
         <button
-          onClick={onRequestClose}
+          onClick={onRequestClose} 
           style={{
             cursor: "pointer",
             backgroundColor: "#FFD6D6",
