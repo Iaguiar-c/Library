@@ -13,6 +13,7 @@ import LogoPreto from "../../assets/logoPreto.png";
 import LogoBranco from "../../assets/logoBom.png";
 import TranslationButtons from "../TranslationButtons";
 import { convertToImageUrl } from "../../services/profileService";
+import LogoPadrao from "../../assets/logopadrao.png";
 
 export default function Header() {
   const { usuario, logout } = useAutenticacao();
@@ -44,6 +45,8 @@ export default function Header() {
       const byteArray = usuario.profile.data;
       const url = convertToImageUrl(byteArray);
       setProfileUrl(url);
+    } else {
+      setProfileUrl(LogoPadrao)
     }
   }, [usuario]);
 
@@ -155,7 +158,7 @@ export default function Header() {
                         <img
                           className="h-8 w-8 rounded-full"
                           src={profileUrl}
-                          alt=""
+                          alt="foto do usuário"
                         />
                       </button>
                     </div>
