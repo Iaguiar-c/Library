@@ -14,6 +14,7 @@ const ModalForm = ({
   book,
   onBookAdded,
   showManualUrlInput,
+  categorias,  
 }) => {
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +42,8 @@ const ModalForm = ({
       setIsTitleManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.authors) {
-      setAuthor(book.volumeInfo.authors);
+      console.log(book?.volumeInfo?.authors?.[0])
+      setAuthor(book?.volumeInfo?.authors?.[0]);
       setIsAuthorManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.publishedDate) {
@@ -49,7 +51,8 @@ const ModalForm = ({
       setIsPublicationYearManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.categories) {
-      setCategory(book.volumeInfo.categories);
+      console.log(book?.volumeInfo?.categories?.[0])
+      setCategory(book?.volumeInfo?.categories?.[0]);
       setIsCategoryManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.description) {
@@ -134,13 +137,12 @@ const ModalForm = ({
 
     const data = {
       title: title || book?.volumeInfo?.title || "",
+      isGoogle: isTitleManual ? false : true,
       author: author || book?.volumeInfo?.authors?.join(", ") || "",
       publicationYear: publicationYear || 0,
       category: category || book?.volumeInfo?.categories?.join(", ") || "",
       description: description || book?.volumeInfo?.description || "",
-      imageURL: showManualUrlInput
-        ? imageUrl
-        : book?.volumeInfo?.imageLinks?.thumbnail || "",
+      imageURL: showManualUrlInput ? imageUrl : book?.volumeInfo?.imageLinks?.thumbnail || "",
       status: status,
       userId: usuario?._id,
     };
@@ -225,8 +227,6 @@ const ModalForm = ({
                   </div>
                 </div>
 
-                
-
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="autor"
@@ -277,15 +277,31 @@ const ModalForm = ({
                     Categoria
                   </label>
                   <div className="mt-2">
-                    <input
-                      id="categoria"
-                      name="categoria"
-                      autoComplete="categoria"
-                      className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={category}
-                      onChange={handleCategoryChange}
-                      readOnly={!isCategoryManual}
-                    />
+                    {showManualUrlInput ? (
+                      <input
+                        id="categoria"
+                        name="categoria"
+                        autoComplete="categoria"
+                        className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        value={category}
+                        onChange={handleCategoryChange}
+                        readOnly={!isCategoryManual}
+                      />
+                    ) : (
+                      <select
+                        id="categoria"
+                        name="categoria"
+                        className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        value={category}
+                        onChange={handleCategoryChange}
+                      >
+                        {categorias.map((categoria) => (
+                          <option key={categoria} value={categoria}>
+                            {categoria}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                 </div>
 
@@ -346,7 +362,6 @@ const ModalForm = ({
                         autoComplete="imagem"
                         className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
                         onChange={handleImageInputChange}
-                       
                       />
                     </div>
                   </div>

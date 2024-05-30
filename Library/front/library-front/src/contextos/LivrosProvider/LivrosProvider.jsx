@@ -13,6 +13,7 @@ LivrosContext.displayName = "Livros Context";
 
 export function LivrosProvider({ children }) {
   const [livros, setLivros] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [search, setSearch] = useState("React");
   const { config } = useAutenticacao();
 
@@ -32,12 +33,25 @@ export function LivrosProvider({ children }) {
     }
   }
 
+  async function pegarCategorias() {
+    try {
+      const resposta = await Api.get("/books/categories", config);
+      console.log("Categorias:", resposta);
+      setCategorias(resposta.data.categories);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <LivrosContext.Provider
       value={{
         pegarLivrosApiGoogle,
+        pegarCategorias,
         livros,
         setLivros,
+        categorias,
+        setCategorias,
       }}
     >
       {children}

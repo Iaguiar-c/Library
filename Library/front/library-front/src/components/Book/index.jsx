@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Card } from '../Card';
 
 const Book = ({ srcImg, title, authors, published, id }) => (
   <div className="bg-white rounded-md p-4 shadow-md">
