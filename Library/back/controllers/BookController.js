@@ -29,16 +29,17 @@ export class BookController {
         userId,
       } = req.body;
 
-      if(!isGoogle) {
-        if(!Categoria.isValid(category)){
-          return res.status(400).json({ error: 'Categoria Inválida' })
+      
+      if (!isGoogle) {
+        if (!Categoria.isValid(category)) {
+          return res.status(400).json({ error: 'Categoria Inválida' });
         }
-
-        if(!Status.isValid(status)){
-          return res.status(400).json({ error: 'Status Inválido' })
+      
+        if (!Status.isValid(status)) {
+          return res.status(400).json({ error: 'Status Inválido' });
         }
       }
-      
+    
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado" });

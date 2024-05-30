@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
+import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
 
 const STATUS = {
   TO_READ: "to-read",
@@ -14,7 +15,6 @@ const ModalForm = ({
   book,
   onBookAdded,
   showManualUrlInput,
-  categorias,  
 }) => {
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
@@ -31,6 +31,7 @@ const ModalForm = ({
   const [isPublicationYearManual, setIsPublicationYearManual] = useState(true);
   const [isCategoryManual, setIsCategoryManual] = useState(true);
   const [isDescriptionManual, setIsDescriptionManual] = useState(true);
+   const { categorias, pegarCategorias } = useLivros();
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -59,6 +60,9 @@ const ModalForm = ({
       setDescription(book.volumeInfo.description);
       setIsDescriptionManual(false);
     }
+
+    pegarCategorias();
+    console.log(showManualUrlInput, isCategoryManual)
   }, [isOpen, book, showManualUrlInput]);
 
   const handleTitleChange = (event) => {
@@ -137,7 +141,7 @@ const ModalForm = ({
 
     const data = {
       title: title || book?.volumeInfo?.title || "",
-      isGoogle: isTitleManual ? false : true,
+      isGoogle: !isCategoryManual ? true : false,
       author: author || book?.volumeInfo?.authors?.join(", ") || "",
       publicationYear: publicationYear || 0,
       category: category || book?.volumeInfo?.categories?.join(", ") || "",
@@ -277,7 +281,7 @@ const ModalForm = ({
                     Categoria
                   </label>
                   <div className="mt-2">
-                    {showManualUrlInput ? (
+                    {!showManualUrlInput && !isCategoryManual ? (
                       <input
                         id="categoria"
                         name="categoria"
@@ -289,18 +293,32 @@ const ModalForm = ({
                       />
                     ) : (
                       <select
-                        id="categoria"
-                        name="categoria"
-                        className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                        value={category}
-                        onChange={handleCategoryChange}
-                      >
-                        {categorias.map((categoria) => (
-                          <option key={categoria} value={categoria}>
-                            {categoria}
-                          </option>
-                        ))}
-                      </select>
+                      id="categoria"
+                      name="categoria"
+                      className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                      value={category}
+                      onChange={handleCategoryChange}
+                    >
+                      <option value="">Selecione uma categoria</option>
+                      {categorias.map((categoria, index) => (
+                        <option key={index} value={categoria}>
+                          {categoria}
+                        </option>
+                      ))}
+                    </select>
+                      // <select
+                      //   id="categoria"
+                      //   name="categoria"
+                      //   className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                      //   value={category}
+                      //   onChange={handleCategoryChange}
+                      // >
+                      //   {categorias.map((categoria) => (
+                      //     <option key={categoria} value={categoria}>
+                      //       {categoria}
+                      //     </option>
+                      //   ))}
+                      // </select>
                     )}
                   </div>
                 </div>
