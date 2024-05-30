@@ -16,8 +16,8 @@
 }
 
 .card-zoom {
-    @apply relative overflow-hidden shadow-xl w-80 h-80 rounded-2xl; /* Aumentando o tamanho do card */
-    left: -20px; /* Movendo o card para a esquerda */
+    @apply relative overflow-hidden shadow-xl w-80 h-80 rounded-2xl; 
+    left: -20px; 
   }
   
   .card-zoom-image {
@@ -27,3 +27,22 @@
   .card-zoom:hover .card-zoom-image {
     @apply scale-150;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #FBF7FD;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #622F74;
+    border-radius: 5px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #431853;
+  }
+
+  
