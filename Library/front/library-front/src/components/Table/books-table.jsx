@@ -1,9 +1,48 @@
 import React, { useState } from "react";
+import InfoModal from "../Modals/info-book-modal";
+import DeleteModal from "../Modals/delete-book-modal";
+import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
+import { Api } from "../../services/api";
 
-const BooksTable = ({ books }) => {
+const BooksTable = ({ books, book, onBookDeleted }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedBooks, setSelectedBooks] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { usuario, token } = useAutenticacao();
+  const bookId = book ? book._id : null;
   const booksPerPage = 5;
+
+  const handleDeleteBook = async (userId, bookId) => {
+    try {
+      if (!usuario || !token) {
+        console.error(
+          "Token ou usuário não disponível. Realize o login novamente."
+        );
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await Api.delete(`/${userId}/books/${bookId}`, config);
+
+      if (onBookDeleted) {
+        onBookDeleted();
+      }
+    } catch (error) {
+      console.error("Erro ao excluir livro:", error.message);
+    }
+  };
+
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   const filteredBooks = books.filter((book) => {
     return (
@@ -20,6 +59,40 @@ const BooksTable = ({ books }) => {
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleCheckboxChange = (bookId) => {
+    const selectedIndex = selectedBooks.indexOf(bookId);
+    if (selectedIndex === -1) {
+      setSelectedBooks([...selectedBooks, bookId]);
+    } else {
+      setSelectedBooks(selectedBooks.filter((id) => id !== bookId));
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      if (selectedBooks.length > 0) {
+        await Promise.all(
+          selectedBooks.map((bookId) => handleDeleteBook(usuario._id, bookId))
+        );
+
+        if (onBookDeleted) {
+          onBookDeleted();
+        }
+      } else if (selectedBook) {
+        await handleDeleteBook(usuario._id, selectedBook._id);
+
+        if (onBookDeleted) {
+          onBookDeleted();
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao excluir livro:", error.message);
+    }
+    refreshPage();
+
+    setShowDeleteModal(false);
   };
 
   return (
@@ -53,6 +126,14 @@ const BooksTable = ({ books }) => {
           </svg>
         </span>
       </div>
+      <button
+        onClick={() => {
+          setShowDeleteModal(true);
+        }}
+        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Deletar
+      </button>
       <table className="w-full border-separate border-spacing-2">
         <thead className="text-xs text-primary-950 uppercase bg-primary-200 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -62,6 +143,15 @@ const BooksTable = ({ books }) => {
                   id="checkbox-all-search"
                   type="checkbox"
                   className="w-4 h-4 text-primary-600 checked:bg-primary-600 checked:border-primary-600 bg-primary-100 border-primary-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600"
+                  onChange={() => {
+                    if (selectedBooks.length === currentBooks.length) {
+                      setSelectedBooks([]);
+                    } else {
+                      const bookIds = currentBooks.map((book) => book._id);
+                      setSelectedBooks(bookIds);
+                    }
+                  }}
+                  checked={selectedBooks.length === currentBooks.length}
                 ></input>
                 <label htmlFor="checkbox-all-search" className="sr-only">
                   checkbox
@@ -97,6 +187,8 @@ const BooksTable = ({ books }) => {
                     id={`checkbox-table-search-${index + 1}`}
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={() => handleCheckboxChange(book._id)}
+                    checked={selectedBooks.includes(book._id)}
                   ></input>
                   <label
                     htmlFor={`checkbox-table-search-${index + 1}`}
@@ -118,7 +210,11 @@ const BooksTable = ({ books }) => {
               <td className="px-6 py-4">{book.status}</td>
               <td className="px-6 py-4 space-x-2">
                 <a
-                  href={`/books/details/${book._id}`}
+                  href="#!"
+                  onClick={() => {
+                    setSelectedBook(book);
+                    setShowInfoModal(true);
+                  }}
                   className="font-medium text-primary-900 dark:text-primary-900 hover:underline"
                 >
                   Ver
@@ -132,8 +228,13 @@ const BooksTable = ({ books }) => {
                 </a>
 
                 <a
-                  href={`/books/delete/${book._id}`}
-                  className="font-medium text-primary-900 dark:text-primary-900 hover:underline "
+                  href="#!"
+                  onClick={() => {
+                    setSelectedBook(book);
+
+                    setShowDeleteModal(true);
+                  }}
+                  className="font-medium text-primary-900 dark:text-primary-900 hover:underline"
                 >
                   Deletar
                 </a>
@@ -167,7 +268,6 @@ const BooksTable = ({ books }) => {
             </a>
           </li>
 
-          {/* Números das páginas */}
           {Array.from(
             { length: Math.ceil(filteredBooks.length / booksPerPage) },
             (_, index) => (
@@ -205,6 +305,20 @@ const BooksTable = ({ books }) => {
           </li>
         </ul>
       </nav>
+      <InfoModal
+        showModal={showInfoModal}
+        onClose={() => setShowInfoModal(false)}
+        book={selectedBook}
+      />
+
+      <DeleteModal
+        showModal={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        books={books}
+        selectedBooks={selectedBooks}
+        onCancel={() => setSelectedBooks([])}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };
