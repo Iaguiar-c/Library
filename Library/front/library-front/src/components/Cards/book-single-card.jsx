@@ -46,12 +46,13 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   };
 
   return (
-    <div>
       <div
-        className="bg-primary-300 opacity-70 relative shadow-md p-4 rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[400px] flex flex-col justify-between"
+        className="relative shadow-md p-4 rounded-1g transition-transform transform hover:scale-105 max-w-xs"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+      <div className="absolute inset-0 bg-primary-400 opacity-30 rounded 1g"></div>
+      <div classNmae="relative z-10">
         <div className="w-full overflow-hidden rounded-lg flex justify-center items-center">
           <img
             src={coverUrl || "https://via.placeholder.com/150"}
@@ -115,12 +116,12 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
             </svg>
           </button>
         </div>
-      </div>
       <DeleteModal
         showModal={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirmDelete}
       />
+    </div>
     </div>
   );
 };
