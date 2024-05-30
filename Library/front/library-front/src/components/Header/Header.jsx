@@ -328,7 +328,7 @@ export default function Header() {
           </div>
         </nav>
 
-        <header className="bg-white shadow">
+        <header className="">
           <Outlet />
         </header>
         <main>
