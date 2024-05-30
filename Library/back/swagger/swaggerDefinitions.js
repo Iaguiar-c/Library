@@ -456,6 +456,36 @@ const swaggerDefinition = {
       },
     },
   },
+  "/books/categories": {
+    get: {
+      summary: "Retorna a lista de categorias de livros",
+      tags: ["Books"],
+      security: [{ bearerAuth: [] }],
+      responses: {
+        200: {
+          description: "Lista de categorias de livros",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  categories: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Erro interno do servidor",
+        },
+      },
+    },
+  },
   "/{userId}/books/{bookId}": {
     put: {
       summary: "Atualiza um livro pelo ID",

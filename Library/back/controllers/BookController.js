@@ -86,6 +86,17 @@ export class BookController {
     }
   }
 
+  async getAllCategories(req, res){
+    try{
+      const categories = Object.values(Categoria.CATEGORIES);
+      
+      res.status(200).json({ categories });
+      console.log(categories); 
+    } catch (err) {
+      return handleErrors(res, err);
+    }
+  }
+  
   async getAllBooks(req, res) {
     try {
       const userId = req.query.userId;
@@ -204,5 +215,6 @@ export class BookController {
       return handleErrors(res, err);
     }
   }
+
 
 }
