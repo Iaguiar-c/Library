@@ -324,7 +324,7 @@ const ModalForm = ({
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
                     >
-                      <option value={STATUS.TO_READ}>Para Ler</option>
+                      <option value={STATUS.TO_READ}>Quero Ler</option>
                       <option value={STATUS.READING}>Lendo</option>
                       <option value={STATUS.READ}>Lido</option>
                     </select>

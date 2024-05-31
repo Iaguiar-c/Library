@@ -96,7 +96,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
   };
 
   return (
-    <div>
+    <div className="m-2">
       <div className="relative m-[2px] mb-3 mr-5 float-left">
         <label htmlFor="inputSearch" className="sr-only">
           Search
@@ -130,19 +130,23 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         onClick={() => {
           setShowDeleteModal(true);
         }}
-        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-primary-700 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
       >
         Deletar
       </button>
       <table className="w-full border-separate border-spacing-2">
-        <thead className="text-xs text-primary-950 uppercase bg-primary-200 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="text-xs text-primary-950 uppercase bg-primary-200 dark:bg-primary-700 dark:text-primay-400">
           <tr>
             <th scope="col" className="p-4">
               <div className="flex items-center">
                 <input
                   id="checkbox-all-search"
                   type="checkbox"
-                  className="w-4 h-4 text-primary-600 checked:bg-primary-600 checked:border-primary-600 bg-primary-100 border-primary-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600"
+                  className={`w-4 h-4 text-primary-700 ${
+                    selectedBooks.length === currentBooks.length
+                      ? "checked:accent-primary-700 checked:accent-border-primary-700"
+                      : ""
+                  } checked:accent-primary-700 border-primary-300 rounded-lg focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600`}
                   onChange={() => {
                     if (selectedBooks.length === currentBooks.length) {
                       setSelectedBooks([]);
@@ -173,20 +177,23 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
             <th scope="col" className="px-6 py-3">
               Status
             </th>
+            <th scope="col" className="px-6 py-3">
+              Ações
+            </th>
           </tr>
         </thead>
         <tbody>
           {currentBooks.map((book, index) => (
             <tr
               key={book._id}
-              className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-primary-200 dark:hover:bg-gray-600"
+              className="text-center bg-primary-100 border-b dark:bg-primary-800 dark:border-primary-700 hover:bg-primary-200 dark:hover:bg-primary-600"
             >
               <td className="w-4 p-4">
                 <div className="flex items-center">
                   <input
                     id={`checkbox-table-search-${index + 1}`}
                     type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="w-4 h-4 text-primary-600 bg-primary-100 border-primary-300 rounded-lg focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600"
                     onChange={() => handleCheckboxChange(book._id)}
                     checked={selectedBooks.includes(book._id)}
                   ></input>
@@ -200,7 +207,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
               </td>
               <th
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-primary-900 whitespace-nowrap dark:text-primary-950"
               >
                 {indexOfFirstBook + index + 1}
               </th>
@@ -260,7 +267,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         <ul className="list-style-none flex">
           <li>
             <a
-              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+              className="relative block rounded-lg bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-primary-950"
               href="#!"
               onClick={() => paginate(Math.max(1, currentPage - 1))}
             >
@@ -273,9 +280,9 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
             (_, index) => (
               <li key={index}>
                 <a
-                  className={`relative block rounded bg-transparent px-3 py-1.5 text-sm ${
+                  className={`relative block rounded-lg bg-transparent px-3 py-1.5 text-sm ${
                     currentPage === index + 1
-                      ? "font-medium text-primary-950 bg-blue-100"
+                      ? "font-medium text-primary-950 bg-primary-100"
                       : "text-neutral-600"
                   } transition-all duration-300`}
                   href="#!"
@@ -289,7 +296,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
 
           <li>
             <a
-              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+              className="relative block rounded-lg bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-primary dark:hover:bg-neutral-700 dark:hover:text-primary-950"
               href="#!"
               onClick={() =>
                 paginate(
@@ -305,6 +312,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
           </li>
         </ul>
       </nav>
+
       <InfoModal
         showModal={showInfoModal}
         onClose={() => setShowInfoModal(false)}
