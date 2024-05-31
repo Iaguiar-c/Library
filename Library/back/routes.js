@@ -34,6 +34,10 @@ routes
   .route("/books/categories")
   .get(authenticateToken, bookController.getAllCategories);
 
+routes
+  .route("/books/status")
+  .get(authenticateToken, bookController.getAllStatus);
+
 routes.route("/user/:id").get(authenticateToken, userController.getUserById);
 
 routes.route("/user/check-email/:email").get(userController.checkUserByEmail);
@@ -43,6 +47,10 @@ routes.route("/books").get(authenticateToken, bookController.getAllBooks);
 routes
   .route("/books/create")
   .post(authenticateToken, bookController.createBook);
+
+routes
+  .route("/books/create-multiple")
+  .post(authenticateToken, bookController.createMultipleBooks);
 
 routes.route("/books/:id").get(authenticateToken, bookController.getBookById);
 routes

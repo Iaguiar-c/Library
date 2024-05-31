@@ -397,6 +397,76 @@ const swaggerDefinition = {
       },
     },
   },
+  "/books/create-multiple": {
+    "post": {
+      "summary": "Cria novos livros",
+      "tags": ["Books"],
+      "security": [{ "bearerAuth": [] }],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "books": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "author": {
+                        "type": "string"
+                      },
+                      "publicationYear": {
+                        "type": "number"
+                      },
+                      "category": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "imageURL": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["title", "author", "publicationYear", "category", "status"]
+                  }
+                },
+                "isGoogle": {
+                  "type": "boolean"
+                },
+                "userId": {
+                  "type": "string"
+                }
+              },
+              "required": ["books", "userId"]
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Livros criados com sucesso"
+        },
+        "400": {
+          "description": "Erros de validação no corpo da requisição"
+        },
+        "404": {
+          "description": "Usuário não encontrado"
+        },
+        "500": {
+          "description": "Erro interno do servidor"
+        }
+      }
+    }
+  },  
   "/books": {
     get: {
       summary: "Retorna todos os livros de um usuário",
@@ -470,6 +540,36 @@ const swaggerDefinition = {
                 type: "object",
                 properties: {
                   categories: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Erro interno do servidor",
+        },
+      },
+    },
+  },
+  "/books/status": {
+    get: {
+      summary: "Retorna a lista de status de livros",
+      tags: ["Books"],
+      security: [{ bearerAuth: [] }],
+      responses: {
+        200: {
+          description: "Lista de status de livros",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  status: {
                     type: "array",
                     items: {
                       type: "string",

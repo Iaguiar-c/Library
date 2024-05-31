@@ -19,7 +19,7 @@ const ModalForm = ({
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [status, setStatus] = useState(STATUS.TO_READ);
+  const [statusSelected, setStatusSelected] = useState(STATUS.TO_READ);
   const { usuario, token, config } = useAutenticacao();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -31,7 +31,7 @@ const ModalForm = ({
   const [isPublicationYearManual, setIsPublicationYearManual] = useState(true);
   const [isCategoryManual, setIsCategoryManual] = useState(true);
   const [isDescriptionManual, setIsDescriptionManual] = useState(true);
-   const { categorias, pegarCategorias } = useLivros();
+  const { categorias, pegarCategorias, pegarStatus, status } = useLivros();
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -43,7 +43,7 @@ const ModalForm = ({
       setIsTitleManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.authors) {
-      console.log(book?.volumeInfo?.authors?.[0])
+      console.log(book?.volumeInfo?.authors?.[0]);
       setAuthor(book?.volumeInfo?.authors?.[0]);
       setIsAuthorManual(false);
     }
@@ -52,7 +52,7 @@ const ModalForm = ({
       setIsPublicationYearManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.categories) {
-      console.log(book?.volumeInfo?.categories?.[0])
+      console.log(book?.volumeInfo?.categories?.[0]);
       setCategory(book?.volumeInfo?.categories?.[0]);
       setIsCategoryManual(false);
     }
@@ -62,7 +62,7 @@ const ModalForm = ({
     }
 
     pegarCategorias();
-    console.log(showManualUrlInput, isCategoryManual)
+    pegarStatus();
   }, [isOpen, book, showManualUrlInput]);
 
   const handleTitleChange = (event) => {
@@ -146,8 +146,10 @@ const ModalForm = ({
       publicationYear: publicationYear || 0,
       category: category || book?.volumeInfo?.categories?.join(", ") || "",
       description: description || book?.volumeInfo?.description || "",
-      imageURL: showManualUrlInput ? imageUrl : book?.volumeInfo?.imageLinks?.thumbnail || "",
-      status: status,
+      imageURL: showManualUrlInput
+        ? imageUrl
+        : book?.volumeInfo?.imageLinks?.thumbnail || "",
+      status: statusSelected,
       userId: usuario?._id,
     };
 
@@ -293,32 +295,19 @@ const ModalForm = ({
                       />
                     ) : (
                       <select
-                      id="categoria"
-                      name="categoria"
-                      className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={category}
-                      onChange={handleCategoryChange}
-                    >
-                      <option value="">Selecione uma categoria</option>
-                      {categorias.map((categoria, index) => (
-                        <option key={index} value={categoria}>
-                          {categoria}
-                        </option>
-                      ))}
-                    </select>
-                      // <select
-                      //   id="categoria"
-                      //   name="categoria"
-                      //   className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      //   value={category}
-                      //   onChange={handleCategoryChange}
-                      // >
-                      //   {categorias.map((categoria) => (
-                      //     <option key={categoria} value={categoria}>
-                      //       {categoria}
-                      //     </option>
-                      //   ))}
-                      // </select>
+                        id="categoria"
+                        name="categoria"
+                        className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        value={category}
+                        onChange={handleCategoryChange}
+                      >
+                        <option value="">Selecione uma categoria</option>
+                        {categorias.map((categoria, index) => (
+                          <option key={index} value={categoria}>
+                            {categoria}
+                          </option>
+                        ))}
+                      </select>
                     )}
                   </div>
                 </div>
@@ -356,11 +345,14 @@ const ModalForm = ({
                       name="status"
                       className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
                       value={status}
-                      onChange={(e) => setStatus(e.target.value)}
+                      onChange={(e) => setStatusSelected(e.target.value)}
                     >
-                      <option value={STATUS.TO_READ}>Para Ler</option>
-                      <option value={STATUS.READING}>Lendo</option>
-                      <option value={STATUS.READ}>Lido</option>
+                      <option value="">Selecione um status</option>
+                      {status.map((statu, index) => (
+                        <option key={index} value={statu}>
+                          {statu}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

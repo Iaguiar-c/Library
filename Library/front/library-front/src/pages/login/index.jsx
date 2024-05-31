@@ -8,11 +8,13 @@ import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
 import ModalGenerico from "../../components/ModalGenerico";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { customStylesModal } from "./styles";
+import { useEmail } from "../../contextos/EmailProvider/EmailProvider";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { login, usuario } = useAutenticacao();
+  const { sendEmail } = useEmail()
   const { forgotPasswordCheckUser, userExist } = useUsuario();
   const navigate = useNavigate();
   const passwordRef = useRef(null);
@@ -20,8 +22,6 @@ const LoginUsuario = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
   const handleSuccess = () => {
@@ -52,7 +52,8 @@ const LoginUsuario = () => {
       
       if (userExist.status === 200) {
         setError(null);
-        enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", { variant: "success" });
+         await sendEmail(email);
+        
       } 
     } catch (error) {
       console.log(error);
@@ -62,8 +63,6 @@ const LoginUsuario = () => {
     }
   };
   
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

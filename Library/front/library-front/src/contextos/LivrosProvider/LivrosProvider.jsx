@@ -14,6 +14,7 @@ LivrosContext.displayName = "Livros Context";
 export function LivrosProvider({ children }) {
   const [livros, setLivros] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [status, setStatus] = useState([]);
   const [search, setSearch] = useState("React");
   const { config } = useAutenticacao();
 
@@ -36,8 +37,16 @@ export function LivrosProvider({ children }) {
   async function pegarCategorias() {
     try {
       const resposta = await Api.get("/books/categories", config);
-      console.log("Categorias:", resposta);
       setCategorias(resposta.data.categories);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function pegarStatus() {
+    try {
+      const resposta = await Api.get("/books/status", config);
+      setStatus(resposta.data.status);
     } catch (error) {
       console.log(error);
     }
@@ -52,6 +61,9 @@ export function LivrosProvider({ children }) {
         setLivros,
         categorias,
         setCategorias,
+        pegarStatus, 
+        status,
+        setStatus
       }}
     >
       {children}

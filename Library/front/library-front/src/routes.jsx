@@ -11,6 +11,7 @@ import UserRegister from "./pages/register";
 import Profile from "./pages/profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureSectionWithHeader from "./pages/landingPage/FeatureSectionWithHeader";
+import { EmailProvider } from "./contextos/EmailProvider/EmailProvider";
 
 
 function AppRoutes() {
@@ -20,6 +21,7 @@ function AppRoutes() {
         <TraducaoI18nProvider>
           <LivrosProvider>
             <UsuarioProvider>
+              <EmailProvider>
               <Routes>
                 <Route path="/" element={<FeatureSectionWithHeader  />} />
                 <Route path="/login" element={<LoginUsuario />} />
@@ -33,6 +35,7 @@ function AppRoutes() {
                 </Route>
                 {/* </Route> */}
               </Routes>
+              </EmailProvider>
             </UsuarioProvider>
           </LivrosProvider>
         </TraducaoI18nProvider>
