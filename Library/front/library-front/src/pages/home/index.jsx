@@ -7,6 +7,7 @@ import BooksTable from "../../components/Table/books-table";
 import Notification from "../../components/Notification/Notification";
 import FeatureHomeSection from "../../pages/home/FeatureHomeSection";
 import TabComponent from "../../pages/home/tablist";
+import DeleteModal from "../../components/Modals/delete-book-modal";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,11 +16,13 @@ const Home = () => {
   const [filteredLivros, setFilteredLivros] = useState([]);
   const [livroCovers, setLivroCovers] = useState({});
   const [viewMode, setViewMode] = useState("card");
+  const [selectedBooks, setSelectedBooks] = useState([]);
   const [notification, setNotification] = useState({
     message: "",
     variant: "",
     show: false,
   });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para o modal de deleção
 
   const fetchLivros = async () => {
     if (!usuario || !token) return;
@@ -87,20 +90,47 @@ const Home = () => {
     }
   };
 
+  const openDeleteModal = (books) => {
+    const selectedBooksArray = Array.isArray(books) ? books : [books]; // Garantindo que selectedBooksArray seja sempre um array
+    setSelectedBooks(selectedBooksArray);
+    setIsDeleteModalOpen(true);
+  };
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedBooks([]);
+  };
+
+  const handleDeleteBooks = async () => {
+    try {
+      // Assumindo que você tem uma API para deletar livros em lote
+      await Api.delete("/books", {
+        data: { bookIds: selectedBooks.map((book) => book._id) },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNotification({
+        message: "Livros deletados com sucesso!",
+        variant: "success",
+        show: true,
+      });
+      fetchLivros();
+    } catch (error) {
+      setNotification({
+        message: "Erro ao deletar livros.",
+        variant: "error",
+        show: true,
+      });
+      console.error("Erro ao deletar livros:", error.message);
+    } finally {
+      closeDeleteModal();
+    }
+  };
   return (
     <section className="bg-primary-50">
       <FeatureHomeSection />
       <div className="flex justify-between items-center m-6">
-        <TabComponent onTabChange={filterBooks} />
-
-        <button
-          className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          onClick={openModal}
-        >
-          Adicionar
-        </button>
-      </div>
-      <div className="flex gap-2 m-12">
+      <div className="flex gap-2 m-4">
         <button
           className={`p-2 rounded ${
             viewMode === "card" ? "bg-primary-700 text-white" : "bg-primary-200"
@@ -150,6 +180,29 @@ const Home = () => {
           </svg>
         </button>
       </div>
+        <TabComponent onTabChange={filterBooks} />
+
+        <button
+          className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+          onClick={openModal}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+        </button>
+      </div>
+      
 
       {isModalOpen && (
         <SelectModal
@@ -161,12 +214,24 @@ const Home = () => {
           }
         />
       )}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          showModal={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={handleDeleteBooks}
+          selectedBooksCount={selectedBooks.length} 
+        />
+      )}
       <div className="m-8">
         {filteredLivros.length > 0 ? (
           viewMode === "card" ? (
-            <BooksCard books={filteredLivros} covers={livroCovers} />
+            <BooksCard
+              books={filteredLivros}
+              covers={livroCovers}
+              onDelete={openDeleteModal}
+            />
           ) : (
-            <BooksTable books={filteredLivros} />
+            <BooksTable books={filteredLivros} onDelete={openDeleteModal} />
           )
         ) : (
           <p>Você ainda não possui livros adicionados.</p>

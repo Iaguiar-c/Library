@@ -1,6 +1,6 @@
 import React from "react";
 
-const DeleteModal = ({ showModal, onClose, onConfirm }) => {
+const DeleteModal = ({ showModal, onClose, onConfirm, selectedBooksCount }) => {
   if (!showModal) return null;
 
   return (
@@ -46,7 +46,10 @@ const DeleteModal = ({ showModal, onClose, onConfirm }) => {
             ></path>
           </svg>
           <p className="mb-4 text-gray-500 dark:text-gray-300">
-            Você tem certeza que deseja deletar este livro?
+            {selectedBooksCount > 1 
+              ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?` 
+              : "Você tem certeza que deseja deletar este livro?"
+            }
           </p>
           <div className="flex justify-center items-center space-x-4">
             <button

@@ -6,6 +6,8 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 
 const TabListContainer = styled.div`
   ${tw`w-full overflow-hidden`}
+  display: flex;
+  justify-content: center;
 `;
 
 const TabListWrapper = styled.div`
@@ -13,7 +15,7 @@ const TabListWrapper = styled.div`
 `;
 
 const TabList = styled.ul`
-  ${tw`relative flex m-6 list-none rounded-lg bg-primary-200 inline-flex items-center justify-center`}
+  ${tw`relative flex list-none rounded-lg bg-primary-200 inline-flex items-center justify-center`}
   width: 450px;
   height: 56px;
   border-radius: 12px;
