@@ -5,8 +5,8 @@ import { useSnackbar } from "notistack";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
-import Teste from "../../assets/1.png";
 import { convertToImageUrl } from "../../services/profileService";
+import LogoPadrao from "../../assets/logopadrao.png";
 
 export default function Profile() {
   const { usuario } = useAutenticacao();
@@ -23,6 +23,8 @@ export default function Profile() {
       const byteArray = usuario.profile.data;
       const url = convertToImageUrl(byteArray);
       setProfileUrl(url);
+    } else {
+      setProfileUrl(LogoPadrao)
     }
   }, [usuario]);
 
