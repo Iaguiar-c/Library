@@ -46,7 +46,7 @@ export function UsuarioProvider({ children }) {
   async function updatePassword(email, newPassword, confirmNewPassword){
     try{
       const response = await Api.post('user/change-password',  { email, newPassword, confirmNewPassword });
-      setIsPasswordUpdated(response)
+      return response
     } catch (error){
       throw error; 
     }

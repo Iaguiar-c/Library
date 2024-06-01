@@ -235,7 +235,6 @@ export class UserController {
 
   async changePassword(req, res) {
     const { email, newPassword, confirmNewPassword } = req.body;
-    console.log(req.body)
   
     if (!email || !newPassword || !confirmNewPassword) {
       return res
@@ -261,6 +260,11 @@ export class UserController {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
   
+      const isSamePassword = await bcrypt.compare(newPassword, user.password);
+      if (isSamePassword) {
+        return res.status(422).json({ msg: "A nova senha não pode ser igual à senha atual." });
+      }
+  
       const salt = await bcrypt.genSalt(12);
       const passwordHash = await bcrypt.hash(newPassword, salt);
   
@@ -272,7 +276,8 @@ export class UserController {
       console.error("Erro ao alterar senha:", error.message);
       res.status(500).json({ msg: "Erro no servidor ao alterar senha." });
     }
-  }  
+  }
+  
 }
 
 export const userController = new UserController();
