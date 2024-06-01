@@ -43,7 +43,7 @@ const LoginUsuario = () => {
     if (email === "") {
       enqueueSnackbar("Por favor, preencha seu e-mail", { variant: "warning" });
     } else {
-      await getUserExist();
+      await getUserExist(email);
     }
   };
 
@@ -51,7 +51,8 @@ const LoginUsuario = () => {
     setEmail(e.target.value);
   };
 
-  const getUserExist = async () => {
+  const getUserExist = async (email) => {
+    console.log(email)
     setLoading(true);
     setError(null);
 
@@ -84,6 +85,7 @@ const LoginUsuario = () => {
       });
       setVerificationCode("");
       closeVerificationModal();
+      setChangePasswordModalIsOpen(true);
     } else {
       enqueueSnackbar("Código de verificação inválido. Tente novamente.", {
         variant: "error",
@@ -103,12 +105,14 @@ const LoginUsuario = () => {
           "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
           { variant: "success" }
         );
+        closeChangePasswordModal();
       } else {
         enqueueSnackbar("As senhas precisam ser iguais.", { variant: "error" });
       }
     } catch (error) {
       console.log(error);
       setError("Não foi possível alterar a senha. Tente novamente mais tarde.");
+      closeChangePasswordModal();
     } finally {
       setLoading(false);
     }

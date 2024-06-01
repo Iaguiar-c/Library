@@ -35,16 +35,15 @@ export function EmailProvider({ children }) {
     storeVerificationCode(email, verificationCode);
 
     const templateParams = {
+      to_email: email,
       codigo_verificacao: verificationCode
     };
 
     try {
       const response = await emailjs.send('service_rdo7wtq', 'template_fq0v76b', templateParams, 'e2C5EiAdA7Mhaie9I');
       console.log("Email sent successfully:", response.status, response.text);
-      // enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", { variant: "success" });
     } catch (error) {
       console.error("Failed to send email:", error);
-      // setError("Erro ao enviar o email. Tente novamente mais tarde.");
     }
   }
 
