@@ -3,6 +3,7 @@ import InfoModal from "../Modals/info-book-modal";
 import DeleteModal from "../Modals/delete-book-modal";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
+import EditModal from "../Modals/edit-book-modal";
 
 const BooksTable = ({ books, book, onBookDeleted }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,6 +12,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const { usuario, token } = useAutenticacao();
   const bookId = book ? book._id : null;
   const booksPerPage = 5;
@@ -95,6 +97,11 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
     setShowDeleteModal(false);
   };
 
+  const handleEditBook = (book) => {
+    setSelectedBook(book);
+    setShowEditModal(true);
+  };
+
   return (
     <div className="m-2">
       <div className="relative m-[2px] mb-3 mr-5 float-left">
@@ -146,7 +153,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                     selectedBooks.length === currentBooks.length
                       ? "checked:accent-primary-700 checked:accent-border-primary-700"
                       : ""
-                  } checked:accent-primary-700 border-primary-300 rounded-lg focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600`}
+                  } checked:accent-primary-700 border-primary-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600`}
                   onChange={() => {
                     if (selectedBooks.length === currentBooks.length) {
                       setSelectedBooks([]);
@@ -193,7 +200,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                   <input
                     id={`checkbox-table-search-${index + 1}`}
                     type="checkbox"
-                    className="w-4 h-4 text-primary-600 bg-primary-100 border-primary-300 rounded-lg focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600"
+                    className="w-4 h-4 text-primary-600 bg-primary-100 border-primary-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-primary-800 dark:focus:ring-offset-primary-800 focus:ring-2 dark:bg-primary-700 dark:border-primary-600"
                     onChange={() => handleCheckboxChange(book._id)}
                     checked={selectedBooks.includes(book._id)}
                   ></input>
@@ -228,7 +235,8 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                 </a>
 
                 <a
-                  href={`/books/edit/${book._id}`}
+                  href="#!"
+                  onClick={() => handleEditBook(book)}
                   className="font-medium text-primary-900 dark:text-primary-900 hover:underline "
                 >
                   Editar
@@ -267,7 +275,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         <ul className="list-style-none flex">
           <li>
             <a
-              className="relative block rounded-lg bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-primary-950"
+              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-primary-950"
               href="#!"
               onClick={() => paginate(Math.max(1, currentPage - 1))}
             >
@@ -280,7 +288,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
             (_, index) => (
               <li key={index}>
                 <a
-                  className={`relative block rounded-lg bg-transparent px-3 py-1.5 text-sm ${
+                  className={`relative block rounded bg-transparent px-3 py-1.5 text-sm ${
                     currentPage === index + 1
                       ? "font-medium text-primary-950 bg-primary-100"
                       : "text-neutral-600"
@@ -296,7 +304,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
 
           <li>
             <a
-              className="relative block rounded-lg bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-primary dark:hover:bg-neutral-700 dark:hover:text-primary-950"
+              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-primary-950 transition-all duration-300 hover:bg-neutral-100 dark:text-primary dark:hover:bg-neutral-700 dark:hover:text-primary-950"
               href="#!"
               onClick={() =>
                 paginate(
@@ -326,6 +334,16 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         selectedBooks={selectedBooks}
         onCancel={() => setSelectedBooks([])}
         onConfirm={handleConfirmDelete}
+      />
+      <EditModal
+        showModal={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        book={selectedBook}
+        onBookUpdated={() => {
+          if (onBookDeleted) {
+            onBookDeleted();
+          }
+        }}
       />
     </div>
   );
