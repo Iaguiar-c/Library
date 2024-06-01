@@ -242,6 +242,8 @@ const Home = () => {
         variant={notification.variant}
         show={notification.show}
       />
+
+      
     </section>
   );
 };

@@ -5,18 +5,22 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Api } from "../../services/api";
 import DeleteModal from "../Modals/delete-book-modal";
 import InfoModal from "../Modals/info-book-modal";
+import EditModal from "../Modals/edit-book-modal";
 
 const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const { usuario, token } = useAutenticacao();
   const bookId = book._id;
 
   const handleDeleteBook = async (userId) => {
     try {
       if (!usuario || !token) {
-        console.error("Token ou usuário não disponível. Realize o login novamente.");
+        console.error(
+          "Token ou usuário não disponível. Realize o login novamente."
+        );
         return;
       }
 
@@ -60,10 +64,12 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
               src={coverUrl || "https://via.placeholder.com/150"}
               alt={book.title}
               className="w-full h-full object-cover"
-              style={{ aspectRatio: '2 / 3' }} 
+              style={{ aspectRatio: "2 / 3" }}
             />
           </div>
-          <div className="mt-1 text-lg font-medium text-primary-950">{book.title}</div>
+          <div className="mt-1 text-lg font-medium text-primary-950">
+            {book.title}
+          </div>
           <div className="mt-4 text-sm text-primary-900">{book.author}</div>
           <div className="mt-4 text-sm text-primary-900">{book.category}</div>
 
@@ -84,7 +90,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
                 />
               </svg>
             </button>
-            <Link to={`/books/edit/${book._id}`}>
+            <button onClick={() => setShowEditModal(true)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -99,7 +105,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
                 />
               </svg>
-            </Link>
+            </button>
             <button onClick={() => setShowDeleteModal(true)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -129,6 +135,11 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
         onClose={() => setShowInfoModal(false)}
         book={book}
         coverUrl={coverUrl}
+      />
+      <EditModal
+        showModal={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        book={book}
       />
     </div>
   );
