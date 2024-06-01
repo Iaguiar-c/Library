@@ -42,6 +42,10 @@ export function UsuarioProvider({ children }) {
     }
   }
 
+  async function updatePassword(){
+
+  }
+
   return (
     <UsuarioContext.Provider
       value={{
@@ -50,7 +54,8 @@ export function UsuarioProvider({ children }) {
         usuario,
         setUsuario,
         userExist,
-        forgotPasswordCheckUser
+        forgotPasswordCheckUser,
+        updatePassword
       }}
     >
       {children}

@@ -14,15 +14,19 @@ const LoginUsuario = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { login, usuario } = useAutenticacao();
-  const { sendEmail } = useEmail()
-  const { forgotPasswordCheckUser, userExist } = useUsuario();
+  const { sendEmail, validateVerificationCode } = useEmail();
+  const { forgotPasswordCheckUser, userExist, updatePassword } = useUsuario();
   const navigate = useNavigate();
   const passwordRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [verificationModalIsOpen, setVerificationModalIsOpen] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+
   const closeModal = () => setModalIsOpen(false);
+  const closeVerificationModal = () => setVerificationModalIsOpen(false);
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
@@ -46,15 +50,16 @@ const LoginUsuario = () => {
   const getUserExist = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       await forgotPasswordCheckUser(email);
-      
+
       if (userExist.status === 200) {
         setError(null);
-         await sendEmail(email);
-        
-      } 
+        await sendEmail(email);
+        enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", { variant: "success" });
+        setVerificationModalIsOpen(true); // Open the verification modal
+      }
     } catch (error) {
       console.log(error);
       setError("Não foi encontrado nenhum usuário correspondente a este e-mail");
@@ -62,7 +67,30 @@ const LoginUsuario = () => {
       setLoading(false);
     }
   };
-  
+
+  const handleVerificationSubmit = (e) => {
+    e.preventDefault();
+    if (validateVerificationCode(email, verificationCode)) {
+      enqueueSnackbar("Código de verificação validado com sucesso!", { variant: "success" });
+      setVerificationCode("");
+      closeVerificationModal();
+    } else {
+      enqueueSnackbar("Código de verificação inválido. Tente novamente.", { variant: "error" });
+    }
+  };
+
+  const updateUserPassword = async () => {
+    try{
+      await updatePassword();
+      enqueueSnackbar("Código de verificação validado com sucesso!", { variant: "success" });
+    } catch (error) {
+      console.log(error);
+      setError("Não foi possível alterar a senha. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -179,52 +207,77 @@ const LoginUsuario = () => {
                         <path
                           className="opacity-75"
                           fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.002 8.002 0 0120 12h-4a4 4 0 00-4-4V2.5"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                         ></path>
                       </svg>
                     </div>
                   ) : (
-                    "Entrar"
+                    t("entrar")
                   )}
                 </button>
               </div>
             </form>
-
-            <p className="mt-10 text-center text-sm text-primary-950">
-              {t("nao_tem_conta")}{" "}
-              <a
-                href="/register"
-                className="font-semibold leading-6 text-primary-500 hover:text-primary-500"
-              >
-                {t("cadastre_se")}
-              </a>
-            </p>
           </div>
         </div>
       </div>
+
+      {/* <ModalGenerico
+        isOpen={verificationModalIsOpen}
+        onRequestClose={closeVerificationModal}
+        contentLabel="Verification Modal"
+        customStyles={customStylesModal}
+      >
+        <h2>{t("verificacao_email")}</h2>
+        <form onSubmit={handleVerificationSubmit}>
+          <label htmlFor="verificationCode">{t("codigo_verificacao")}</label>
+          <input
+            type="text"
+            id="verificationCode"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+            required
+            className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+          />
+          <button
+            type="submit"
+            className="mt-4 w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+          >
+            {t("verificar")}
+          </button>
+        </form>
+      </ModalGenerico> */}
       <ModalGenerico
-        isOpen={modalIsOpen}
+        isOpen={verificationModalIsOpen}
         style={customStylesModal}
-        onRequestClose={closeModal}
+        onRequestClose={closeVerificationModal}
         content={
           <>
-            <form className="space-y-6" onSubmit={getUserExist}>
+            <form className="space-y-6" onSubmit={handleVerificationSubmit}>
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="verificationCode"
                   className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                 >
-                  Forneça seu e-mail
+                  Informe o código de verificação
                 </label>
                 <input
                   type="text"
-                  name="email"
-                  value={email}
-                  onChange={handleInputChange}
-                  placeholder="Digite seu e-mail"
+                  name="verificationCode"
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  placeholder="Digite o código de verificação"
                   className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required
                 />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                >
+                  Verificar
+                </button>
+                <button onClick={getUserExist}>Reenviar e-mail</button>
               </div>
             </form>
           </>
