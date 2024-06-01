@@ -168,7 +168,7 @@ const ModalForm = ({
   if (!modalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-primary bg-opacity-50 flex justify-center items-center">
       <div
         ref={modalRef}
         className="bg-primary-100 rounded-lg p-8 max-w-xl w-full"

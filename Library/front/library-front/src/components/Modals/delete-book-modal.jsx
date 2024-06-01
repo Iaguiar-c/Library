@@ -8,13 +8,13 @@ const DeleteModal = ({ showModal, onClose, onConfirm, selectedBooksCount }) => {
       id="deleteModal"
       tabIndex="-1"
       aria-hidden="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-primary-950 bg-opacity-30"
     >
       <div className="relative p-4 w-full max-w-md h-full md:h-auto">
-        <div className="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+        <div className="relative p-4 text-center bg-primary-100 rounded-lg shadow dark:bg-primary-800 sm:p-5">
           <button
             type="button"
-            className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            className="text-primary-800 absolute top-2.5 right-2.5 bg-transparent hover:text-gray-950 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-primary-900 dark:hover:text-primary-950"
             onClick={onClose}
           >
             <svg
@@ -33,7 +33,7 @@ const DeleteModal = ({ showModal, onClose, onConfirm, selectedBooksCount }) => {
             <span className="sr-only">Fechar</span>
           </button>
           <svg
-            className="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto"
+            className="text-primary-950 dark:text-primary-500 w-11 h-11 mb-3.5 mx-auto"
             aria-hidden="true"
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -45,22 +45,21 @@ const DeleteModal = ({ showModal, onClose, onConfirm, selectedBooksCount }) => {
               clipRule="evenodd"
             ></path>
           </svg>
-          <p className="mb-4 text-gray-500 dark:text-gray-300">
-            {selectedBooksCount > 1 
-              ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?` 
-              : "Você tem certeza que deseja deletar este livro?"
-            }
+          <p className="mb-4 text-primary-950">
+            {selectedBooksCount > 1
+              ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?`
+              : "Você tem certeza que deseja deletar este livro?"}
           </p>
           <div className="flex justify-center items-center space-x-4">
             <button
               onClick={onClose}
-              className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+              className="py-2 px-3 text-sm font-medium text-primary-950 bg-primary-200 rounded-lg border border-primary-200 hover:bg-primary-100 focus:ring-4"
             >
               Não, cancelar
             </button>
             <button
               onClick={onConfirm}
-              className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+              className="py-2 px-3 text-sm font-medium text-center text-primary-50 bg-primary-700 rounded-lg hover:bg-primary-950"
             >
               Sim, tenho certeza
             </button>

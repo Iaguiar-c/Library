@@ -95,12 +95,12 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
         show={showNotification}
       />
       <div
-        className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex justify-center items-center"
+        className="fixed inset-0 z-50 overflow-y-auto bg-primary-950 bg-opacity-30 flex justify-center items-center "
         onClick={handleModalClick}
       >
         <div
           ref={modalRef}
-          className="bg-primary-100 rounded-lg p-8 max-w-xl w-full"
+          className="bg-primary-100 rounded-lg p-8 max-w-xl w-full custom-scrollbar"
           style={{ maxHeight: "90%", overflowY: "auto" }}
         >
           <div className="flex justify-between items-center border-b pb-4">
@@ -227,7 +227,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                         id="sinopse"
                         name="sinopse"
                         rows="3"
-                        className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6 custom-scrollbar"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                       />
