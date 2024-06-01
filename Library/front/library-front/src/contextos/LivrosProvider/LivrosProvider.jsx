@@ -32,12 +32,24 @@ export function LivrosProvider({ children }) {
     }
   }
 
+  async function getAllBooksForUser(userId) {
+    try {
+      const response = await fetch(`/books/books-without-pagination?userId=${userId}`);
+      console.log(response.data)
+      setLivros(response.data)      
+    } catch (error) {
+      console.error('Error fetching books:', error);
+      throw error;
+    }
+  }
+
   return (
     <LivrosContext.Provider
       value={{
         pegarLivrosApiGoogle,
         livros,
         setLivros,
+        getAllBooksForUser
       }}
     >
       {children}

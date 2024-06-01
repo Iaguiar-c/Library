@@ -11,7 +11,7 @@ import UserRegister from "./pages/register";
 import Profile from "./pages/profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FeatureSectionWithHeader from "./pages/landingPage/FeatureSectionWithHeader";
-
+import Dashboard from "./pages/dashboards";
 
 function AppRoutes() {
   return (
@@ -24,6 +24,7 @@ function AppRoutes() {
                 <Route path="/" element={<FeatureSectionWithHeader  />} />
                 <Route path="/login" element={<LoginUsuario />} />
                 <Route path="/register" element={<UserRegister />} />
+                <Route path="/dashboard" element={<Dashboard />} />
 
                 {/* <Route element={<ProtectedRoute />} > */}
                 <Route path="/" element={<Header />}>

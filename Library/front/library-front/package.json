@@ -16,6 +16,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.16.0",
+    "aws-sdk": "^2.1631.0",
     "axios": "^1.6.8",
     "framer-motion": "^11.2.6",
     "heroicons": "^2.1.3",

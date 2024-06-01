@@ -32,6 +32,9 @@ routes.route('/user/:id')
 routes.route('/books')
   .get(authenticateToken, bookController.getAllBooks);
 
+routes.route('/books/books-without-pagination')
+  .get(authenticateToken, bookController.getAllBooksWithoutPagination);
+
 routes.route('/books/create')
   .post(authenticateToken, bookController.createBook);
 

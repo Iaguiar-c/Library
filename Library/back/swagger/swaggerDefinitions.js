@@ -551,6 +551,37 @@ const swaggerDefinition = {
       },
     },
   },
+  "/books/books-without-pagination": {
+    get: {
+      summary: "Retorna todos os livros de um usuário sem paginação",
+      tags: ["Books"],
+      security: [{ bearerAuth: [] }], 
+      parameters: [
+        {
+          in: "query",
+          name: "userId",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Lista de livros do usuário sem paginação",
+        },
+        400: {
+          description: "ID do usuário é obrigatório",
+        },
+        404: {
+          description: "Usuário não encontrado",
+        },
+        500: {
+          description: "Erro interno do servidor",
+        },
+      },
+    },
+  },
   // END: Book Configuration
 };
 
