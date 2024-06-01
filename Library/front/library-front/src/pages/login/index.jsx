@@ -51,6 +51,13 @@ const LoginUsuario = () => {
     setEmail(e.target.value);
   };
 
+  const sendEmailPassword = async (email) => {
+    await sendEmail(email);
+    enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", {
+      variant: "success",
+    });
+  }
+
   const getUserExist = async (email) => {
     console.log(email)
     setLoading(true);
@@ -61,10 +68,7 @@ const LoginUsuario = () => {
 
       if (userExist.status === 200) {
         setError(null);
-        await sendEmail(email);
-        enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", {
-          variant: "success",
-        });
+        sendEmailPassword(email);
         setVerificationModalIsOpen(true);
       }
     } catch (error) {
@@ -97,26 +101,27 @@ const LoginUsuario = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
       if (newPassword === confirmNewPassword) {
-        await updatePassword(email, newPassword, confirmNewPassword);
-        enqueueSnackbar(
-          "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
-          { variant: "success" }
-        );
-        closeChangePasswordModal();
+        const response = await updatePassword(email, newPassword, confirmNewPassword);
+        
+        if (response.status === 200) {
+          enqueueSnackbar("Sua senha foi alterada com sucesso! Por favor, faça login novamente", { variant: "success" });
+          closeChangePasswordModal();
+        } else {
+          enqueueSnackbar(response.data.msg, { variant: "error" });
+        }
       } else {
         enqueueSnackbar("As senhas precisam ser iguais.", { variant: "error" });
       }
     } catch (error) {
-      console.log(error);
-      setError("Não foi possível alterar a senha. Tente novamente mais tarde.");
-      closeChangePasswordModal();
+      enqueueSnackbar(error.response?.data?.msg || "Não foi possível alterar a senha. Tente novamente mais tarde.", { variant: "error" });
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -278,7 +283,7 @@ const LoginUsuario = () => {
                 >
                   Verificar
                 </button>
-                <button onClick={getUserExist}>Reenviar e-mail</button>
+                <button onClick={() => sendEmailPassword(email)}>Reenviar e-mail</button>
               </div>
             </form>
           </>
