@@ -16,11 +16,9 @@ export class UserController {
 
   async register(req, res) {
     const { name, email, password, confirmpassword } = req.body;
-    const profileImage = req.file; // Imagem carregada pelo multer
   
     console.log("Iniciando registro do usuário");
   
-    // Validações dos campos obrigatórios
     if (!name || !email || !password) {
       console.log("Campos obrigatórios faltando");
       return res
@@ -28,14 +26,12 @@ export class UserController {
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
   
-    // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       console.log("Formato de email inválido");
       return res.status(422).json({ msg: "Formato de email inválido." });
     }
   
-    // Validar a força da senha
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
     if (!passwordRegex.test(password)) {
       console.log("Senha fraca");
@@ -50,7 +46,6 @@ export class UserController {
     }
   
     try {
-      // Verifica se o usuário já existe no banco de dados
       const userExists = await User.findOne({ email: email });
   
       if (userExists) {
@@ -58,19 +53,15 @@ export class UserController {
         return res.status(422).json({ msg: "Este email já está cadastrado. Por favor, use outro email." });
       }
   
-      // Gera um hash da senha
       const salt = await bcrypt.genSalt(12);
       const passwordHash = await bcrypt.hash(password, salt);
   
-      // Cria um novo usuário com ou sem imagem de perfil
       const user = new User({
         name,
         email,
         password: passwordHash,
-        profile: profileImage ? profileImage.buffer : undefined, // Adiciona a imagem se fornecida
       });
   
-      // Salva o usuário no banco de dados
       await user.save();
   
       console.log("Usuário registrado com sucesso");
@@ -86,7 +77,6 @@ export class UserController {
   async login(req, res) {
     const { email, password } = req.body;
 
-    // Validações dos campos obrigatórios
     if (!email || !password) {
       return res
         .status(422)
@@ -94,15 +84,12 @@ export class UserController {
     }
 
     try {
-      // Verifica se o usuário existe no banco de dados
       const user = await User.findOne({ email: email });
 
-      // Retorna uma mensagem genérica em vez de "Usuário não encontrado" para evitar vazamento de informações
       if (!user) {
         return res.status(401).json({ msg: "Credenciais inválidas." });
       }
 
-      // Verifica se a senha está correta
       const checkPassword = await bcrypt.compare(password, user.password);
 
       if (!checkPassword) {
@@ -111,7 +98,6 @@ export class UserController {
 
       const secret = process.env.SECRET;
 
-      // Gera um token de autenticação
       const token = jwt.sign({ id: user._id }, secret);
 
       res.status(200).json({ msg: "Usuário autenticado!", token, user });
@@ -121,11 +107,33 @@ export class UserController {
     }
   }
 
+  async checkUserByEmail(req, res) {
+    const { email } = req.params;
+
+    if (!email) {
+      return res
+        .status(422)
+        .json({ msg: "Por favor, forneça o email." });
+    }
+
+    try {
+      const user = await User.findOne({ email: email });
+
+      if (user) {
+        return res.status(200).json({ msg: "Usuário encontrado!", user });
+      } else {
+        return res.status(404).json({ msg: "Usuário não encontrado!" });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar usuário pelo email:", error.message);
+      res.status(500).json({ msg: "Erro no servidor ao verificar usuário." });
+    }
+  }
+
   async getUserById(req, res) {
     const id = req.params.id;
 
     try {
-      // Verifica se o usuário existe no banco de dados
       const user = await User.findById(id, "-password");
 
       if (!user) {
@@ -144,13 +152,11 @@ export class UserController {
     const Id = req.params.Id;
 
     try {
-      // Verificar se o usuário existe antes de realizar o logout
       const user = await User.findById(Id);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado" });
       }
 
-      // Deslogar o usuário
       res.status(200).json({ msg: "Usuário desconectado com sucesso!" });
     } catch (error) {
       console.log(error);
@@ -161,7 +167,6 @@ export class UserController {
   async updateUser(req, res) {
     const id = req.params.id;
     const { name, email, password, confirmpassword } = req.body;
-    const profileImage = req.file; // Imagem carregada pelo multer
 
     if (!name || !email) {
       return res.status(422).json({ msg: "Por favor, forneça todos os campos obrigatórios." });
@@ -198,8 +203,8 @@ export class UserController {
         updates.password = passwordHash;
       }
 
-      if (profileImage) {
-        updates.profile = profileImage.buffer;
+      if (req.file) {
+        updates.profileImage = req.file.buffer;
       }
 
       await User.findByIdAndUpdate(id, updates);
@@ -215,10 +220,8 @@ export class UserController {
     const Id = req.params.id;
 
     try {
-      // Deleta o usuário diretamente pelo Id
       const deletedUser = await User.findByIdAndDelete(Id);
 
-      // Verifica se o usuário foi encontrado e deletado com sucesso
       if (!deletedUser) {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
@@ -229,8 +232,48 @@ export class UserController {
       res.status(500).json({ msg: "Erro no servidor ao deletar usuário." });
     }
   }
+
+  async changePassword(req, res) {
+    const { email, newPassword, confirmNewPassword } = req.body;
+    console.log(req.body)
+  
+    if (!email || !newPassword || !confirmNewPassword) {
+      return res
+        .status(422)
+        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+    }
+  
+    if (newPassword !== confirmNewPassword) {
+      return res.status(422).json({ msg: "As novas senhas precisam ser iguais." });
+    }
+  
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(422).json({
+        msg: "A nova senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+      });
+    }
+  
+    try {
+      const user = await User.findOne({ email: email });
+  
+      if (!user) {
+        return res.status(404).json({ msg: "Usuário não encontrado." });
+      }
+  
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(newPassword, salt);
+  
+      user.password = passwordHash;
+      await user.save();
+  
+      res.status(200).json({ msg: "Senha alterada com sucesso!" });
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error.message);
+      res.status(500).json({ msg: "Erro no servidor ao alterar senha." });
+    }
+  }  
 }
 
-// Exportar a instância do controlador e o middleware de upload
 export const userController = new UserController();
 export const uploadMiddleware = multer({ storage }).single('profileImage');

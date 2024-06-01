@@ -19,7 +19,7 @@ export default function FeatureHomeSection({
   return (
     <>
       <HeroSection>
-        <HeroContent>
+       
           <Container2>
             <ContentWithVerticalPadding>
               <div className="max-w-screen-2xl mx-auto sm:px-8 text-center">
@@ -46,7 +46,7 @@ export default function FeatureHomeSection({
               </div>
             </ContentWithVerticalPadding>
           </Container2>
-        </HeroContent>
+        
       </HeroSection>
     </>
   );

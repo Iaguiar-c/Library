@@ -98,7 +98,7 @@ const swaggerDefinition = {
   "/register": {
     post: {
       summary: "Registra um novo usuário",
-      tags: ["Usuário"],
+      tags: ["User"],
       requestBody: {
         required: true,
         content: {
@@ -250,14 +250,98 @@ const swaggerDefinition = {
       },
     },
   },
-  // END: User Configuration
-  // BEGIN: Senha Configuration
-  "/password/forgot-password": {
+  "/user/{email}": {
+    get: {
+      summary: "Verifica se o usuário existe a partir do e-mail",
+      tags: ["User"],
+      parameters: [
+        {
+          name: "email",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+          description: "E-mail do usuário a ser verificado",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Retorna se existe usuário com o e-mail fornecido",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  user: {
+                    type: "object",
+                    description: "Objeto",
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: "Usuário não encontrado",
+        },
+        500: {
+          description: "Erro ao buscar usuário",
+        },
+      },
+    },
+  },
+  "/user/check-email/{email}": {
+    get: {
+      summary: "Verifica se o usuário existe a partir do e-mail",
+      tags: ["User"],
+      parameters: [
+        {
+          name: "email",
+          in: "path",
+          required: true,
+          schema: {
+            type: "string",
+          },
+          description: "E-mail do usuário a ser verificado",
+        },
+      ],
+      responses: {
+        200: {
+          description: "Usuário encontrado",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                  },
+                  user: {
+                    type: "object",
+                    description: "Objeto contendo informações do usuário",
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: "Usuário não encontrado",
+        },
+        422: {
+          description: "Erro de validação (e-mail não fornecido)",
+        },
+        500: {
+          description: "Erro no servidor",
+        },
+      },
+    },
+  },
+  "/user/change-password": {
     post: {
-      summary: "Solicitação de recuperação de senha",
-      description: "Envia um e-mail com um link para redefinir a senha.",
-      tags: ["Senha"],
-      security: [{ bearerAuth: [] }], 
+      summary: "Altera a senha de um usuário.",
+      tags: ["User"],
       requestBody: {
         required: true,
         content: {
@@ -267,61 +351,94 @@ const swaggerDefinition = {
               properties: {
                 email: {
                   type: "string",
-                },
-              },
-            },
-          },
-        },
-      },
-      responses: {
-        200: {
-          description: "E-mail de recuperação enviado com sucesso",
-        },
-        400: {
-          description: "Usuário não encontrado ou erro ao enviar e-mail",
-        },
-      },
-    },
-  },
-  "password/reset-password": {
-    post: {
-      summary: "Atualiza a senha com base no token",
-      description:
-        "Atualiza a senha do usuário com base no token de recuperação.",
-      tags: ["Senha"],
-      security: [{ bearerAuth: [] }], 
-      requestBody: {
-        required: true,
-        content: {
-          "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                token: {
-                  type: "string",
+                  description: "Email do usuário",
+                  example: "user@example.com",
                 },
                 newPassword: {
                   type: "string",
+                  description: "Nova senha do usuário",
+                  example: "NewPassword123!",
+                },
+                confirmNewPassword: {
+                  type: "string",
+                  description: "Confirmação da nova senha",
+                  example: "NewPassword123!",
                 },
               },
+              required: ["email", "newPassword", "confirmNewPassword"],
             },
           },
         },
       },
       responses: {
         200: {
-          description: "Senha atualizada com sucesso",
+          description: "Senha alterada com sucesso",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Senha alterada com sucesso!",
+                  },
+                },
+              },
+            },
+          },
         },
-        400: {
-          description: "Token inválido ou expirado",
+        422: {
+          description: "Erro de validação",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Por favor, forneça todos os campos obrigatórios.",
+                  },
+                },
+              },
+            },
+          },
         },
         404: {
           description: "Usuário não encontrado",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Usuário não encontrado.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Erro no servidor ao alterar senha",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Erro no servidor ao alterar senha.",
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
-  },
-  // END: Senha Configuration
+  },  
+  // END: User Configuration
   // BEGIN: Book Configuration
   "/books/create": {
     post: {
@@ -380,6 +497,76 @@ const swaggerDefinition = {
       },
     },
   },
+  "/books/create-multiple": {
+    "post": {
+      "summary": "Cria novos livros",
+      "tags": ["Books"],
+      "security": [{ "bearerAuth": [] }],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "books": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "author": {
+                        "type": "string"
+                      },
+                      "publicationYear": {
+                        "type": "number"
+                      },
+                      "category": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "imageURL": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["title", "author", "publicationYear", "category", "status"]
+                  }
+                },
+                "isGoogle": {
+                  "type": "boolean"
+                },
+                "userId": {
+                  "type": "string"
+                }
+              },
+              "required": ["books", "userId"]
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Livros criados com sucesso"
+        },
+        "400": {
+          "description": "Erros de validação no corpo da requisição"
+        },
+        "404": {
+          "description": "Usuário não encontrado"
+        },
+        "500": {
+          "description": "Erro interno do servidor"
+        }
+      }
+    }
+  },  
   "/books": {
     get: {
       summary: "Retorna todos os livros de um usuário",
@@ -432,6 +619,66 @@ const swaggerDefinition = {
         },
         404: {
           description: "Livro não encontrado",
+        },
+        500: {
+          description: "Erro interno do servidor",
+        },
+      },
+    },
+  },
+  "/books/categories": {
+    get: {
+      summary: "Retorna a lista de categorias de livros",
+      tags: ["Books"],
+      security: [{ bearerAuth: [] }],
+      responses: {
+        200: {
+          description: "Lista de categorias de livros",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  categories: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Erro interno do servidor",
+        },
+      },
+    },
+  },
+  "/books/status": {
+    get: {
+      summary: "Retorna a lista de status de livros",
+      tags: ["Books"],
+      security: [{ bearerAuth: [] }],
+      responses: {
+        200: {
+          description: "Lista de status de livros",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  status: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         500: {
           description: "Erro interno do servidor",

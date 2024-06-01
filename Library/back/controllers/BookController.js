@@ -29,16 +29,17 @@ export class BookController {
         userId,
       } = req.body;
 
-      if(!isGoogle) {
-        if(!Categoria.isValid(category)){
-          return res.status(400).json({ error: 'Categoria Inválida' })
+      
+      if (!isGoogle) {
+        if (!Categoria.isValid(category)) {
+          return res.status(400).json({ error: 'Categoria Inválida' });
         }
-
-        if(!Status.isValid(status)){
-          return res.status(400).json({ error: 'Status Inválido' })
+      
+        if (!Status.isValid(status)) {
+          return res.status(400).json({ error: 'Status Inválido' });
         }
       }
-      
+    
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado" });
@@ -86,6 +87,26 @@ export class BookController {
     }
   }
 
+  async getAllCategories(req, res){
+    try{
+      const categories = Object.values(Categoria.CATEGORIES);
+      
+      res.status(200).json({ categories });
+    } catch (err) {
+      return handleErrors(res, err);
+    }
+  }
+
+  async getAllStatus(req, res){
+    try{
+      const status = Object.values(Status.STATUS);
+      
+      res.status(200).json({ status });
+    } catch (err) {
+      return handleErrors(res, err);
+    }
+  }
+  
   async getAllBooks(req, res) {
     try {
       const userId = req.query.userId;
@@ -205,4 +226,84 @@ export class BookController {
     }
   }
 
+  async createMultipleBooks(req, res) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      const { books, isGoogle, userId } = req.body;
+
+      if (!Array.isArray(books) || books.length === 0) {
+        return res.status(400).json({ error: 'Books must be a non-empty array.' });
+      }
+  
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ msg: "Usuário não encontrado" });
+      }
+  
+      const session = await Book.startSession();
+      session.startTransaction();
+
+      try {
+        const createdBooks = [];
+
+        for (const bookData of books) {
+          const {
+            title,
+            author,
+            publicationYear,
+            category,
+            description,
+            imageURL,
+            status,
+          } = bookData;
+
+          if (!isGoogle) {
+            if (!Categoria.isValid(category)) {
+              return res.status(400).json({ error: 'Categoria Inválida' });
+            }
+
+            if (!Status.isValid(status)) {
+              return res.status(400).json({ error: 'Status Inválido' });
+            }
+          }
+
+          const book = new Book({
+            title,
+            author,
+            publicationYear,
+            category,
+            description,
+            imageURL,
+            status,
+            isGoogle,
+            user: userId,
+          });
+
+          await book.save({ session });
+          user.books.push(book);
+          createdBooks.push(book);
+        }
+
+        await user.save({ session });
+        await session.commitTransaction();
+
+        res.status(201).json(createdBooks);
+      } catch (error) {
+        await session.abortTransaction();
+        console.error("Erro ao criar os livros:", error);
+        return res.status(500).json({
+          error: "Falha ao criar os livros. Por favor, tente novamente mais tarde.",
+        });
+      } finally {
+        session.endSession();
+      }
+    } catch (err) {
+      console.error("Erro ao processar a requisição:", err);
+      return res.status(500).json({ error: "Ocorreu um erro ao processar a requisição." });
+    }
+  }
 }

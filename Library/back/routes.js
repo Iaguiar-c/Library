@@ -1,44 +1,65 @@
-import { Router } from 'express';
-import { UserController, uploadMiddleware } from './controllers/UserController.js';
-import { BookController } from './controllers/BookController.js';
-import { authenticateToken } from './middlewares/authenticateToken.js';
+import { Router } from "express";
+import {
+  UserController,
+  uploadMiddleware,
+} from "./controllers/UserController.js";
+import { BookController } from "./controllers/BookController.js";
+import { authenticateToken } from "./middlewares/authenticateToken.js";
 
 const routes = Router();
 const userController = new UserController();
 const bookController = new BookController();
 
-routes.route('/user')
-  .get(userController.startServer);
+routes.route("/user").get(userController.startServer);
 
-routes.route('/user/login')
-  .post(userController.login);
+routes.route("/user/login").post(userController.login);
 
-routes.route('/user/logout/:id')
-  .post(userController.logout);
+routes.route("/user/logout/:id").post(userController.logout);
 
-// routes.route('/user/register')
-//   .post(userController.register);
-routes.post('/register', uploadMiddleware, userController.register.bind(userController));
+routes.post(
+  "/register",
+  uploadMiddleware,
+  userController.register.bind(userController)
+);
 
-routes.route('/user/update/:id')
+routes
+  .route("/user/update/:id")
   .put(authenticateToken, userController.updateUser);
 
-routes.route('/user/delete/:id')
+routes
+  .route("/user/delete/:id")
   .delete(authenticateToken, userController.deleteUser);
 
-routes.route('/user/:id')
-  .get(authenticateToken, userController.getUserById);
+routes
+  .route("/books/categories")
+  .get(authenticateToken, bookController.getAllCategories);
 
-routes.route('/books')
-  .get(authenticateToken, bookController.getAllBooks);
+routes
+  .route("/books/status")
+  .get(authenticateToken, bookController.getAllStatus);
 
-routes.route('/books/create')
+routes.route("/user/:id").get(authenticateToken, userController.getUserById);
+
+routes.route("/user/check-email/:email").get(userController.checkUserByEmail);
+routes.route("/user/change-password").post(userController.changePassword);
+
+routes.route("/books").get(authenticateToken, bookController.getAllBooks);
+
+routes
+  .route("/books/create")
   .post(authenticateToken, bookController.createBook);
 
-routes.route('/books/:id')
-  .get(authenticateToken, bookController.getBookById);
+routes
+  .route("/books/create-multiple")
+  .post(authenticateToken, bookController.createMultipleBooks);
 
-routes.route('/:userId/books/:bookId')
+routes.route("/books/:id").get(authenticateToken, bookController.getBookById);
+routes
+  .route("/books/categories")
+  .get(authenticateToken, bookController.getAllCategories);
+
+routes
+  .route("/:userId/books/:bookId")
   .put(authenticateToken, bookController.updateBook)
   .delete(authenticateToken, bookController.deleteBook);
 

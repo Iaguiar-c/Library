@@ -18,7 +18,7 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, s
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&maxResults=20`
+        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&maxResults=20`,
       );
       if (response.data.items && response.data.items.length > 0) {
         setSearchResults(response.data.items);
