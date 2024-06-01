@@ -41,6 +41,7 @@ routes
 routes.route("/user/:id").get(authenticateToken, userController.getUserById);
 
 routes.route("/user/check-email/:email").get(userController.checkUserByEmail);
+routes.route("/user/change-password").post(userController.changePassword);
 
 routes.route("/books").get(authenticateToken, bookController.getAllBooks);
 

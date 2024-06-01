@@ -13,6 +13,7 @@ UsuarioContext.displayName = "Usuario Context";
 export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState([]);
   const [userExist, setUserExist] = useState([]);
+  const [isPasswordUpdated, setIsPasswordUpdated] = useState([]);
   const { config, logout } = useAutenticacao();
 
   async function postUsuario(name, email, password, confirmpassword, profilepicture) {
@@ -42,8 +43,13 @@ export function UsuarioProvider({ children }) {
     }
   }
 
-  async function updatePassword(){
-
+  async function updatePassword(email, newPassword, confirmNewPassword){
+    try{
+      const response = await Api.post('user/change-password',  { email, newPassword, confirmNewPassword });
+      setIsPasswordUpdated(response)
+    } catch (error){
+      throw error; 
+    }
   }
 
   return (
@@ -55,7 +61,9 @@ export function UsuarioProvider({ children }) {
         setUsuario,
         userExist,
         forgotPasswordCheckUser,
-        updatePassword
+        updatePassword,
+        isPasswordUpdated,
+        setIsPasswordUpdated
       }}
     >
       {children}

@@ -338,6 +338,106 @@ const swaggerDefinition = {
       },
     },
   },
+  "/user/change-password": {
+    post: {
+      summary: "Altera a senha de um usuário.",
+      tags: ["User"],
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                email: {
+                  type: "string",
+                  description: "Email do usuário",
+                  example: "user@example.com",
+                },
+                newPassword: {
+                  type: "string",
+                  description: "Nova senha do usuário",
+                  example: "NewPassword123!",
+                },
+                confirmNewPassword: {
+                  type: "string",
+                  description: "Confirmação da nova senha",
+                  example: "NewPassword123!",
+                },
+              },
+              required: ["email", "newPassword", "confirmNewPassword"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Senha alterada com sucesso",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Senha alterada com sucesso!",
+                  },
+                },
+              },
+            },
+          },
+        },
+        422: {
+          description: "Erro de validação",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Por favor, forneça todos os campos obrigatórios.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: "Usuário não encontrado",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Usuário não encontrado.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Erro no servidor ao alterar senha",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Erro no servidor ao alterar senha.",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },  
   // END: User Configuration
   // BEGIN: Book Configuration
   "/books/create": {

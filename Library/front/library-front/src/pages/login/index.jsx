@@ -22,11 +22,15 @@ const LoginUsuario = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [verificationModalIsOpen, setVerificationModalIsOpen] = useState(false);
+  const [changePasswordModalIsOpen, setChangePasswordModalIsOpen] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
 
   const closeModal = () => setModalIsOpen(false);
   const closeVerificationModal = () => setVerificationModalIsOpen(false);
+  const closeChangePasswordModal = () => setChangePasswordModalIsOpen(false);
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
@@ -57,12 +61,16 @@ const LoginUsuario = () => {
       if (userExist.status === 200) {
         setError(null);
         await sendEmail(email);
-        enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", { variant: "success" });
-        setVerificationModalIsOpen(true); // Open the verification modal
+        enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", {
+          variant: "success",
+        });
+        setVerificationModalIsOpen(true);
       }
     } catch (error) {
       console.log(error);
-      setError("Não foi encontrado nenhum usuário correspondente a este e-mail");
+      setError(
+        "Não foi encontrado nenhum usuário correspondente a este e-mail"
+      );
     } finally {
       setLoading(false);
     }
@@ -71,25 +79,40 @@ const LoginUsuario = () => {
   const handleVerificationSubmit = (e) => {
     e.preventDefault();
     if (validateVerificationCode(email, verificationCode)) {
-      enqueueSnackbar("Código de verificação validado com sucesso!", { variant: "success" });
+      enqueueSnackbar("Código de verificação validado com sucesso!", {
+        variant: "success",
+      });
       setVerificationCode("");
       closeVerificationModal();
     } else {
-      enqueueSnackbar("Código de verificação inválido. Tente novamente.", { variant: "error" });
+      enqueueSnackbar("Código de verificação inválido. Tente novamente.", {
+        variant: "error",
+      });
     }
   };
 
-  const updateUserPassword = async () => {
-    try{
-      await updatePassword();
-      enqueueSnackbar("Código de verificação validado com sucesso!", { variant: "success" });
+  const handlePasswordChangeSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (newPassword === confirmNewPassword) {
+        await updatePassword(email, newPassword, confirmNewPassword);
+        enqueueSnackbar(
+          "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
+          { variant: "success" }
+        );
+      } else {
+        enqueueSnackbar("As senhas precisam ser iguais.", { variant: "error" });
+      }
     } catch (error) {
       console.log(error);
       setError("Não foi possível alterar a senha. Tente novamente mais tarde.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -220,32 +243,6 @@ const LoginUsuario = () => {
           </div>
         </div>
       </div>
-
-      {/* <ModalGenerico
-        isOpen={verificationModalIsOpen}
-        onRequestClose={closeVerificationModal}
-        contentLabel="Verification Modal"
-        customStyles={customStylesModal}
-      >
-        <h2>{t("verificacao_email")}</h2>
-        <form onSubmit={handleVerificationSubmit}>
-          <label htmlFor="verificationCode">{t("codigo_verificacao")}</label>
-          <input
-            type="text"
-            id="verificationCode"
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-            required
-            className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-          />
-          <button
-            type="submit"
-            className="mt-4 w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
-          >
-            {t("verificar")}
-          </button>
-        </form>
-      </ModalGenerico> */}
       <ModalGenerico
         isOpen={verificationModalIsOpen}
         style={customStylesModal}
@@ -278,6 +275,59 @@ const LoginUsuario = () => {
                   Verificar
                 </button>
                 <button onClick={getUserExist}>Reenviar e-mail</button>
+              </div>
+            </form>
+          </>
+        }
+      />
+      <ModalGenerico
+        isOpen={changePasswordModalIsOpen}
+        style={customStylesModal}
+        onRequestClose={closeChangePasswordModal}
+        content={
+          <>
+            <form className="space-y-6" onSubmit={handlePasswordChangeSubmit}>
+              <div>
+                <label
+                  htmlFor="newPassword"
+                  className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                >
+                  Nova Senha
+                </label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Nova senha"
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="confirmNewPassword"
+                  className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                >
+                  Confirmar Nova Senha
+                </label>
+                <input
+                  type="password"
+                  name="confirmNewPassword"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="Confirmar nova senha"
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                >
+                  Alterar Senha
+                </button>
               </div>
             </form>
           </>
