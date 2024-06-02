@@ -24,9 +24,9 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
         categories: [],
         description: null,
         imageLinks: {
-          thumbnail: null
-        }
-      }
+          thumbnail: null,
+        },
+      },
     });
   };
 
@@ -55,7 +55,7 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
           id="select-modal"
           tabIndex="-1"
           aria-hidden={!isOpen}
-          className={`fixed top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center bg-black bg-opacity-50 overflow-y-auto`}
+          className={`fixed top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center bg-primary-950 bg-opacity-30 overflow-y-auto`}
           onClick={onClose}
         >
           <div
