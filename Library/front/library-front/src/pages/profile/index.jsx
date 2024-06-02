@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { convertToImageUrl } from "../../services/profileService";
 import LogoPadrao from "../../assets/logopadrao.png";
+import ModalGenerico from "../../components/ModalGenerico";
+import DeleteModal from "../../components/Modals/delete-book-modal";
 
 export default function Profile() {
   const { usuario } = useAutenticacao();
@@ -15,8 +17,8 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const { deleteUsuario } = useUsuario();
   const navigate = useNavigate();
-
   const [profileUrl, setProfileUrl] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (usuario && usuario.profile && usuario.profile.data) {
@@ -24,7 +26,7 @@ export default function Profile() {
       const url = convertToImageUrl(byteArray);
       setProfileUrl(url);
     } else {
-      setProfileUrl(LogoPadrao)
+      setProfileUrl(LogoPadrao);
     }
   }, [usuario]);
 
@@ -72,7 +74,7 @@ export default function Profile() {
                   <FontAwesomeIcon
                     icon={faTrash}
                     className="text-red-500 cursor-pointer"
-                    onClick={handleDeleteProfile}
+                    onClick={() => setShowDeleteModal(true)}
                   />
                 </span>
               </span>
@@ -93,6 +95,13 @@ export default function Profile() {
             </p>
           </div>
         )}
+
+        <DeleteModal
+          showModal={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteProfile}
+          isUserDelete={true}
+        />
       </div>
     </>
   );

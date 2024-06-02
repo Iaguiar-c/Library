@@ -5,7 +5,7 @@ const swaggerDefinition = {
       summary:
         "Retorna uma mensagem indicando que o servidor está funcionando corretamente.",
       tags: ["User"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       responses: {
         200: {
           description: "Retorna uma mensagem de sucesso",
@@ -29,7 +29,7 @@ const swaggerDefinition = {
     get: {
       summary: "Obtém informações de um usuário específico pelo ID.",
       tags: ["User"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",
@@ -76,7 +76,7 @@ const swaggerDefinition = {
     post: {
       summary: "Desconecta um usuário pelo ID.",
       tags: ["User"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",
@@ -109,25 +109,30 @@ const swaggerDefinition = {
                 name: {
                   type: "string",
                   description: "Nome do usuário",
+                  example: "John Doe",
                 },
                 email: {
                   type: "string",
                   description: "Email do usuário",
+                  example: "johndoe@example.com",
                 },
                 password: {
                   type: "string",
                   description: "Senha do usuário",
+                  example: "P@ssw0rd",
                 },
                 confirmpassword: {
                   type: "string",
                   description: "Confirmação da senha do usuário",
+                  example: "P@ssw0rd",
                 },
-                profileImage: {
+                profile: {
                   type: "string",
                   format: "binary",
                   description: "Imagem de perfil do usuário",
                 },
               },
+              required: ["name", "email", "password", "confirmpassword"],
             },
           },
         },
@@ -135,12 +140,52 @@ const swaggerDefinition = {
       responses: {
         201: {
           description: "Usuário registrado com sucesso",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Usuário registrado com sucesso!",
+                  },
+                },
+              },
+            },
+          },
         },
         422: {
           description: "Erro de validação",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example: "Por favor, forneça todos os campos obrigatórios.",
+                  },
+                },
+              },
+            },
+          },
         },
         500: {
           description: "Erro no servidor",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  msg: {
+                    type: "string",
+                    example:
+                      "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -181,7 +226,7 @@ const swaggerDefinition = {
     put: {
       summary: "Atualiza informações de um usuário pelo ID.",
       tags: ["User"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",
@@ -205,7 +250,7 @@ const swaggerDefinition = {
                 },
                 email: {
                   type: "string",
-                }
+                },
               },
             },
           },
@@ -228,7 +273,7 @@ const swaggerDefinition = {
     delete: {
       summary: "Deleta um usuário pelo ID.",
       tags: ["User"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",
@@ -437,14 +482,14 @@ const swaggerDefinition = {
         },
       },
     },
-  },  
+  },
   // END: User Configuration
   // BEGIN: Book Configuration
   "/books/create": {
     post: {
       summary: "Cria um novo livro",
       tags: ["Books"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
         content: {
@@ -498,80 +543,86 @@ const swaggerDefinition = {
     },
   },
   "/books/create-multiple": {
-    "post": {
-      "summary": "Cria novos livros",
-      "tags": ["Books"],
-      "security": [{ "bearerAuth": [] }],
-      "requestBody": {
-        "required": true,
-        "content": {
+    post: {
+      summary: "Cria novos livros",
+      tags: ["Books"],
+      security: [{ bearerAuth: [] }],
+      requestBody: {
+        required: true,
+        content: {
           "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "books": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "title": {
-                        "type": "string"
+            schema: {
+              type: "object",
+              properties: {
+                books: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      title: {
+                        type: "string",
                       },
-                      "author": {
-                        "type": "string"
+                      author: {
+                        type: "string",
                       },
-                      "publicationYear": {
-                        "type": "number"
+                      publicationYear: {
+                        type: "number",
                       },
-                      "category": {
-                        "type": "string"
+                      category: {
+                        type: "string",
                       },
-                      "description": {
-                        "type": "string"
+                      description: {
+                        type: "string",
                       },
-                      "imageURL": {
-                        "type": "string"
+                      imageURL: {
+                        type: "string",
                       },
-                      "status": {
-                        "type": "string"
-                      }
+                      status: {
+                        type: "string",
+                      },
                     },
-                    "required": ["title", "author", "publicationYear", "category", "status"]
-                  }
+                    required: [
+                      "title",
+                      "author",
+                      "publicationYear",
+                      "category",
+                      "status",
+                    ],
+                  },
                 },
-                "isGoogle": {
-                  "type": "boolean"
+                isGoogle: {
+                  type: "boolean",
                 },
-                "userId": {
-                  "type": "string"
-                }
+                userId: {
+                  type: "string",
+                },
               },
-              "required": ["books", "userId"]
-            }
-          }
-        }
+              required: ["books", "userId"],
+            },
+          },
+        },
       },
-      "responses": {
-        "201": {
-          "description": "Livros criados com sucesso"
+      responses: {
+        201: {
+          description: "Livros criados com sucesso",
         },
-        "400": {
-          "description": "Erros de validação no corpo da requisição"
+        400: {
+          description: "Erros de validação no corpo da requisição",
         },
-        "404": {
-          "description": "Usuário não encontrado"
+        404: {
+          description: "Usuário não encontrado",
         },
-        "500": {
-          "description": "Erro interno do servidor"
-        }
-      }
-    }
-  },  
+        500: {
+          description: "Erro interno do servidor",
+        },
+      },
+    },
+  },
   "/books": {
     get: {
       summary: "Retorna todos os livros de um usuário",
       tags: ["Books"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "query",
@@ -602,7 +653,7 @@ const swaggerDefinition = {
     get: {
       summary: "Retorna um livro pelo ID",
       tags: ["Books"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",
@@ -690,7 +741,7 @@ const swaggerDefinition = {
     put: {
       summary: "Atualiza um livro pelo ID",
       tags: ["Books"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",
@@ -763,7 +814,7 @@ const swaggerDefinition = {
     delete: {
       summary: "Deleta um livro pelo ID",
       tags: ["Books"],
-      security: [{ bearerAuth: [] }], 
+      security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: "path",

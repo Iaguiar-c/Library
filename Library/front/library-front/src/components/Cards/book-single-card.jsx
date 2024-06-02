@@ -129,6 +129,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleConfirmDelete}
+        isUserDelete={false}
       />
       <InfoModal
         showModal={showInfoModal}

@@ -220,6 +220,7 @@ const Home = () => {
           onClose={closeDeleteModal}
           onConfirm={handleDeleteBooks}
           selectedBooksCount={selectedBooks.length} 
+          isUserDelete={false}
         />
       )}
       <div className="m-8">

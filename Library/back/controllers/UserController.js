@@ -7,7 +7,7 @@ import multer from "multer";
 
 // Configuração do multer
 const storage = multer.memoryStorage();
-const upload = multer({ storage }).single("profileImage");
+const upload = multer({ storage }).single("profile");
 
 export class UserController {
   async startServer(req, res) {
@@ -15,74 +15,69 @@ export class UserController {
   }
 
   async register(req, res) {
-    const { name, email, password, confirmpassword } = req.body;
-    let profilepicture; 
-
-    if(req.file){
-      profilepicture = req.file.buffer;
-    }
-
-    console.log("Iniciando registro do usuário");
-
-    if (!name || !email || !password) {
-      console.log("Campos obrigatórios faltando");
-      return res
-        .status(422)
-        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      console.log("Formato de email inválido");
-      return res.status(422).json({ msg: "Formato de email inválido." });
-    }
-
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      console.log("Senha fraca");
-      return res.status(422).json({
-        msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
-      });
-    }
-
-    if (password !== confirmpassword) {
-      console.log("Senhas não coincidem");
-      return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
-    }
-
-    try {
-      const userExists = await User.findOne({ email: email });
-
-      if (userExists) {
-        console.log("Usuário já existe");
-        return res
-          .status(422)
-          .json({
-            msg: "Este email já está cadastrado. Por favor, use outro email.",
-          });
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ msg: err.message });
+      } else if (err) {
+        return res.status(500).json({ msg: err.message });
       }
 
-      const salt = await bcrypt.genSalt(12);
-      const passwordHash = await bcrypt.hash(password, salt);
+      const { name, email, password, confirmpassword } = req.body;
+      let profile; 
 
-      const user = new User({
-        name,
-        email,
-        password: passwordHash,
-        profile: profilepicture, 
-      });
+      if (req.file) {
+        profile = req.file.buffer;
+      }
 
-      await user.save();
+      if (!name || !email || !password || !confirmpassword) {
+        return res.status(422).json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+      }
 
-      console.log("Usuário registrado com sucesso");
-      res.status(201).json({ msg: "Usuário registrado com sucesso!" });
-    } catch (error) {
-      console.error("Erro ao registrar usuário:", error.message);
-      res.status(500).json({
-        msg: "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
-      });
-    }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(422).json({ msg: "Formato de email inválido." });
+      }
+
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        return res.status(422).json({
+          msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+        });
+      }
+
+      if (password !== confirmpassword) {
+        return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
+      }
+
+      try {
+        const userExists = await User.findOne({ email });
+
+        if (userExists) {
+          return res.status(422).json({
+            msg: "Este email já está cadastrado. Por favor, use outro email.",
+          });
+        }
+
+        const salt = await bcrypt.genSalt(12);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        const user = new User({
+          name,
+          email,
+          password: passwordHash,
+          profile: profile,
+        });
+
+        await user.save();
+
+        res.status(201).json({ msg: "Usuário registrado com sucesso!" });
+      } catch (error) {
+        console.error("Erro ao registrar usuário:", error.message);
+        res.status(500).json({
+          msg: "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
+        });
+      }
+    });
   }
 
   async login(req, res) {
@@ -297,4 +292,4 @@ export class UserController {
 }
 
 export const userController = new UserController();
-export const uploadMiddleware = multer({ storage }).single("profileImage");
+export const uploadMiddleware = multer({ storage }).single("profile");

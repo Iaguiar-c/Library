@@ -1,6 +1,12 @@
 import React from "react";
 
-const DeleteModal = ({ showModal, onClose, onConfirm, selectedBooksCount }) => {
+const DeleteModal = ({
+  showModal,
+  onClose,
+  onConfirm,
+  selectedBooksCount,
+  isUserDelete,
+}) => {
   if (!showModal) return null;
 
   return (
@@ -45,12 +51,22 @@ const DeleteModal = ({ showModal, onClose, onConfirm, selectedBooksCount }) => {
               clipRule="evenodd"
             ></path>
           </svg>
-          <p className="mb-4 text-gray-500 dark:text-gray-300">
-            {selectedBooksCount > 1 
-              ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?` 
-              : "Você tem certeza que deseja deletar este livro?"
-            }
-          </p>
+
+          {isUserDelete ? (
+            <>
+              <p className="mb-4 text-gray-500 dark:text-gray-300">
+                Tem certeza que deseja excluir este usuário?
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mb-4 text-gray-500 dark:text-gray-300">
+                {selectedBooksCount > 1
+                  ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?`
+                  : "Você tem certeza que deseja deletar este livro?"}
+              </p>
+            </>
+          )}
           <div className="flex justify-center items-center space-x-4">
             <button
               onClick={onClose}

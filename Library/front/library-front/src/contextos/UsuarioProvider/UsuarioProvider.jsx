@@ -19,6 +19,7 @@ export function UsuarioProvider({ children }) {
   async function postUsuario(userData) {
     try {
       const response = await Api.post("user/register", userData);
+      console.log('userData', userData)
       setUsuario(response.data);
     } catch (error) {
       throw error; 
