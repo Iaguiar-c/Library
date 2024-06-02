@@ -3,11 +3,11 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
-import multer from 'multer';
+import multer from "multer";
 
 // Configuração do multer
 const storage = multer.memoryStorage();
-const upload = multer({ storage }).single('profileImage');
+const upload = multer({ storage }).single("profileImage");
 
 export class UserController {
   async startServer(req, res) {
@@ -16,54 +16,65 @@ export class UserController {
 
   async register(req, res) {
     const { name, email, password, confirmpassword } = req.body;
-  
+    let profilepicture; 
+
+    if(req.file){
+      profilepicture = req.file.buffer;
+    }
+
     console.log("Iniciando registro do usuário");
-  
+
     if (!name || !email || !password) {
       console.log("Campos obrigatórios faltando");
       return res
         .status(422)
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
-  
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       console.log("Formato de email inválido");
       return res.status(422).json({ msg: "Formato de email inválido." });
     }
-  
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+
+    const passwordRegex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
     if (!passwordRegex.test(password)) {
       console.log("Senha fraca");
       return res.status(422).json({
         msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
       });
     }
-  
+
     if (password !== confirmpassword) {
       console.log("Senhas não coincidem");
       return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
     }
-  
+
     try {
       const userExists = await User.findOne({ email: email });
-  
+
       if (userExists) {
         console.log("Usuário já existe");
-        return res.status(422).json({ msg: "Este email já está cadastrado. Por favor, use outro email." });
+        return res
+          .status(422)
+          .json({
+            msg: "Este email já está cadastrado. Por favor, use outro email.",
+          });
       }
-  
+
       const salt = await bcrypt.genSalt(12);
       const passwordHash = await bcrypt.hash(password, salt);
-  
+
       const user = new User({
         name,
         email,
         password: passwordHash,
+        profile: profilepicture, 
       });
-  
+
       await user.save();
-  
+
       console.log("Usuário registrado com sucesso");
       res.status(201).json({ msg: "Usuário registrado com sucesso!" });
     } catch (error) {
@@ -73,7 +84,7 @@ export class UserController {
       });
     }
   }
-  
+
   async login(req, res) {
     const { email, password } = req.body;
 
@@ -111,9 +122,7 @@ export class UserController {
     const { email } = req.params;
 
     if (!email) {
-      return res
-        .status(422)
-        .json({ msg: "Por favor, forneça o email." });
+      return res.status(422).json({ msg: "Por favor, forneça o email." });
     }
 
     try {
@@ -169,7 +178,9 @@ export class UserController {
     const { name, email, password, confirmpassword } = req.body;
 
     if (!name || !email) {
-      return res.status(422).json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+      return res
+        .status(422)
+        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -178,7 +189,8 @@ export class UserController {
     }
 
     if (password) {
-      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+      const passwordRegex =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
       if (!passwordRegex.test(password)) {
         return res.status(422).json({
           msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
@@ -235,50 +247,54 @@ export class UserController {
 
   async changePassword(req, res) {
     const { email, newPassword, confirmNewPassword } = req.body;
-  
+
     if (!email || !newPassword || !confirmNewPassword) {
       return res
         .status(422)
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
-  
+
     if (newPassword !== confirmNewPassword) {
-      return res.status(422).json({ msg: "As novas senhas precisam ser iguais." });
+      return res
+        .status(422)
+        .json({ msg: "As novas senhas precisam ser iguais." });
     }
-  
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+
+    const passwordRegex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       return res.status(422).json({
         msg: "A nova senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
       });
     }
-  
+
     try {
       const user = await User.findOne({ email: email });
-  
+
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
-  
+
       const isSamePassword = await bcrypt.compare(newPassword, user.password);
       if (isSamePassword) {
-        return res.status(422).json({ msg: "A nova senha não pode ser igual à senha atual." });
+        return res
+          .status(422)
+          .json({ msg: "A nova senha não pode ser igual à senha atual." });
       }
-  
+
       const salt = await bcrypt.genSalt(12);
       const passwordHash = await bcrypt.hash(newPassword, salt);
-  
+
       user.password = passwordHash;
       await user.save();
-  
+
       res.status(200).json({ msg: "Senha alterada com sucesso!" });
     } catch (error) {
       console.error("Erro ao alterar senha:", error.message);
       res.status(500).json({ msg: "Erro no servidor ao alterar senha." });
     }
   }
-  
 }
 
 export const userController = new UserController();
-export const uploadMiddleware = multer({ storage }).single('profileImage');
+export const uploadMiddleware = multer({ storage }).single("profileImage");

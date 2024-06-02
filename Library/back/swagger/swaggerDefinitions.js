@@ -95,7 +95,7 @@ const swaggerDefinition = {
       },
     },
   },
-  "/register": {
+  "/user/register": {
     post: {
       summary: "Registra um novo usuário",
       tags: ["User"],
