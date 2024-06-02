@@ -3,12 +3,6 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Api } from "../../services/api";
 import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
 
-const STATUS = {
-  TO_READ: "to-read",
-  READING: "reading",
-  READ: "read",
-};
-
 const ModalForm = ({
   isOpen,
   onClose,
@@ -19,7 +13,7 @@ const ModalForm = ({
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [statusSelected, setStatusSelected] = useState(STATUS.TO_READ);
+  const [statusSelected, setStatusSelected] = useState();
   const { usuario, token, config } = useAutenticacao();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -168,17 +162,17 @@ const ModalForm = ({
   if (!modalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-primary bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-primary-950 bg-opacity-30 flex justify-center items-center">
       <div
         ref={modalRef}
-        className="bg-primary-100 rounded-lg p-8 max-w-xl w-full"
+        className="bg-primary-100 rounded-lg p-8 max-w-4xl w-full custom-scrollbar"
         onClick={handleModalClick}
         style={{
           maxHeight: "90%",
           overflowY: "auto",
         }}
       >
-        <div className="flex justify-between items-center border-b pb-4">
+        <div className="flex justify-between items-center border-b ">
           <h2 className="text-xl font-semibold text-primary-950">
             Adicionar Livro
           </h2>
@@ -297,7 +291,7 @@ const ModalForm = ({
                       <select
                         id="categoria"
                         name="categoria"
-                        className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        className="py-2 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6 custom-select custom-scrollbar"
                         value={category}
                         onChange={handleCategoryChange}
                       >
@@ -311,7 +305,6 @@ const ModalForm = ({
                     )}
                   </div>
                 </div>
-
                 <div className="col-span-full">
                   <label
                     htmlFor="sinopse"
@@ -324,7 +317,7 @@ const ModalForm = ({
                       id="sinopse"
                       name="sinopse"
                       rows="3"
-                      className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                      className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6 custom-scrollbar"
                       value={description}
                       onChange={handleDescriptionChange}
                       readOnly={!isDescriptionManual}
