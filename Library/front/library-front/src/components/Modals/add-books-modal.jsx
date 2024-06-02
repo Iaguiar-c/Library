@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
+import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
 
 const STATUS = {
   TO_READ: "to-read",
@@ -18,7 +19,7 @@ const ModalForm = ({
   const modalRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [status, setStatus] = useState(STATUS.TO_READ);
+  const [statusSelected, setStatusSelected] = useState(STATUS.TO_READ);
   const { usuario, token, config } = useAutenticacao();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -30,6 +31,7 @@ const ModalForm = ({
   const [isPublicationYearManual, setIsPublicationYearManual] = useState(true);
   const [isCategoryManual, setIsCategoryManual] = useState(true);
   const [isDescriptionManual, setIsDescriptionManual] = useState(true);
+  const { categorias, pegarCategorias, pegarStatus, status } = useLivros();
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -41,7 +43,8 @@ const ModalForm = ({
       setIsTitleManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.authors) {
-      setAuthor(book.volumeInfo.authors);
+      console.log(book?.volumeInfo?.authors?.[0]);
+      setAuthor(book?.volumeInfo?.authors?.[0]);
       setIsAuthorManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.publishedDate) {
@@ -49,13 +52,17 @@ const ModalForm = ({
       setIsPublicationYearManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.categories) {
-      setCategory(book.volumeInfo.categories);
+      console.log(book?.volumeInfo?.categories?.[0]);
+      setCategory(book?.volumeInfo?.categories?.[0]);
       setIsCategoryManual(false);
     }
     if (!showManualUrlInput && book?.volumeInfo?.description) {
       setDescription(book.volumeInfo.description);
       setIsDescriptionManual(false);
     }
+
+    pegarCategorias();
+    pegarStatus();
   }, [isOpen, book, showManualUrlInput]);
 
   const handleTitleChange = (event) => {
@@ -134,6 +141,7 @@ const ModalForm = ({
 
     const data = {
       title: title || book?.volumeInfo?.title || "",
+      isGoogle: !isCategoryManual ? true : false,
       author: author || book?.volumeInfo?.authors?.join(", ") || "",
       publicationYear: publicationYear || 0,
       category: category || book?.volumeInfo?.categories?.join(", ") || "",
@@ -141,7 +149,7 @@ const ModalForm = ({
       imageURL: showManualUrlInput
         ? imageUrl
         : book?.volumeInfo?.imageLinks?.thumbnail || "",
-      status: status,
+      status: statusSelected,
       userId: usuario?._id,
     };
 
@@ -160,7 +168,7 @@ const ModalForm = ({
   if (!modalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-primary bg-opacity-50 flex justify-center items-center">
       <div
         ref={modalRef}
         className="bg-primary-100 rounded-lg p-8 max-w-xl w-full"
@@ -225,8 +233,6 @@ const ModalForm = ({
                   </div>
                 </div>
 
-                
-
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="autor"
@@ -277,15 +283,32 @@ const ModalForm = ({
                     Categoria
                   </label>
                   <div className="mt-2">
-                    <input
-                      id="categoria"
-                      name="categoria"
-                      autoComplete="categoria"
-                      className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={category}
-                      onChange={handleCategoryChange}
-                      readOnly={!isCategoryManual}
-                    />
+                    {!showManualUrlInput && !isCategoryManual ? (
+                      <input
+                        id="categoria"
+                        name="categoria"
+                        autoComplete="categoria"
+                        className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        value={category}
+                        onChange={handleCategoryChange}
+                        readOnly={!isCategoryManual}
+                      />
+                    ) : (
+                      <select
+                        id="categoria"
+                        name="categoria"
+                        className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
+                        value={category}
+                        onChange={handleCategoryChange}
+                      >
+                        <option value="">Selecione uma categoria</option>
+                        {categorias.map((categoria, index) => (
+                          <option key={index} value={categoria}>
+                            {categoria}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                 </div>
 
@@ -322,11 +345,14 @@ const ModalForm = ({
                       name="status"
                       className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
                       value={status}
-                      onChange={(e) => setStatus(e.target.value)}
+                      onChange={(e) => setStatusSelected(e.target.value)}
                     >
-                      <option value={STATUS.TO_READ}>Para Ler</option>
-                      <option value={STATUS.READING}>Lendo</option>
-                      <option value={STATUS.READ}>Lido</option>
+                      <option value="">Selecione um status</option>
+                      {status.map((statu, index) => (
+                        <option key={index} value={statu}>
+                          {statu}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -346,7 +372,6 @@ const ModalForm = ({
                         autoComplete="imagem"
                         className="py-1 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
                         onChange={handleImageInputChange}
-                       
                       />
                     </div>
                   </div>

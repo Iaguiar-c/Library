@@ -9,7 +9,7 @@ const bookSchema = new Schema(
     title: { type: String, required: true },
     author: { type: String },
     publicationYear: { type: Number },
-    category: { type: String, enum: Object.values(Categoria.CATEGORIES), required: true },
+    category: { type: String },
     isGoogle: { type: Boolean, required: false },
     description: { type: String },
     imageURL: { type: String },
@@ -18,6 +18,16 @@ const bookSchema = new Schema(
   },
   { timestamps: true }
 );
+
+bookSchema.pre('validate', function(next) {
+  if (!this.isGoogle) {
+    const isValidCategoria = Categoria.isValid(this.category);
+    if (!isValidCategoria) {
+      this.invalidate('category', 'Categoria inválida');
+    }
+  }
+  next();
+});
 
 const Book = mongoose.model("Book", bookSchema);
 

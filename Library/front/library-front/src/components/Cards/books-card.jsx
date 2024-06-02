@@ -24,7 +24,7 @@ const BooksCard = ({ books }) => {
           placeholder="Título, Gênero, Autor..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="block w-full max-w-xs rounded-lg border py-2 pl-10 pr-4 text-sm focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
+          className="block w-64 rounded-lg border border-primary-400 dark:border-none dark:bg-text-primary-950 py-2 pl-10 pr-4 text-sm focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 placeholder-primary-300"
         />
         <span className="absolute left-3 top-1/2 -translate-y-1/2 transform">
           <svg

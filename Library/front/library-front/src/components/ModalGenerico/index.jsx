@@ -1,21 +1,21 @@
 import React from "react";
 import Modal from "react-modal";
 
-const ModalGenerico = ({ isOpen, onRequestClose, content }) => {
+const ModalGenerico = ({ isOpen, onRequestClose, content,  customStyles  }) => {
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      contentLabel="Termos e Condições"
-      style={{
+      style={customStyles}
+      >
+      {/* style={{
         content: {
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
           paddingRight: "20px",
         },
-      }}
-    >
+      }} */}
       {content}
       <div
         style={{

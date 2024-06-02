@@ -5,16 +5,32 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { useTranslation } from "react-i18next";
 import PasswordField from "../../components/PasswordField/PasswordField";
 import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
+import ModalGenerico from "../../components/ModalGenerico";
+import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
+import { customStylesModal } from "./styles";
+import { useEmail } from "../../contextos/EmailProvider/EmailProvider";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { login, usuario } = useAutenticacao();
+  const { sendEmail, validateVerificationCode } = useEmail();
+  const { forgotPasswordCheckUser, userExist, updatePassword } = useUsuario();
   const navigate = useNavigate();
   const passwordRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [verificationModalIsOpen, setVerificationModalIsOpen] = useState(false);
+  const [changePasswordModalIsOpen, setChangePasswordModalIsOpen] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+
+  const closeModal = () => setModalIsOpen(false);
+  const closeVerificationModal = () => setVerificationModalIsOpen(false);
+  const closeChangePasswordModal = () => setChangePasswordModalIsOpen(false);
 
   const handleSuccess = () => {
     enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
@@ -22,13 +38,90 @@ const LoginUsuario = () => {
     navigate("/home");
   };
 
-  function forgotPassword() {
-    if(email === ""){
-      // enviar informações para o backend 
-    } 
-   
-    // open modal = forneça seu email 
+  const forgotPassword = async (e) => {
+    e.preventDefault();
+    if (email === "") {
+      enqueueSnackbar("Por favor, preencha seu e-mail", { variant: "warning" });
+    } else {
+      await getUserExist(email);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const sendEmailPassword = async (email) => {
+    await sendEmail(email);
+    enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", {
+      variant: "success",
+    });
   }
+
+  const getUserExist = async (email) => {
+    console.log(email)
+    setLoading(true);
+    setError(null);
+
+    try {
+      await forgotPasswordCheckUser(email);
+
+      if (userExist.status === 200) {
+        setError(null);
+        sendEmailPassword(email);
+        setVerificationModalIsOpen(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setError(
+        "Não foi encontrado nenhum usuário correspondente a este e-mail"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerificationSubmit = (e) => {
+    e.preventDefault();
+    if (validateVerificationCode(email, verificationCode)) {
+      enqueueSnackbar("Código de verificação validado com sucesso!", {
+        variant: "success",
+      });
+      setVerificationCode("");
+      closeVerificationModal();
+      setChangePasswordModalIsOpen(true);
+    } else {
+      enqueueSnackbar("Código de verificação inválido. Tente novamente.", {
+        variant: "error",
+      });
+    }
+  };
+
+  const handlePasswordChangeSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+  
+    try {
+      if (newPassword === confirmNewPassword) {
+        const response = await updatePassword(email, newPassword, confirmNewPassword);
+        
+        if (response.status === 200) {
+          enqueueSnackbar("Sua senha foi alterada com sucesso! Por favor, faça login novamente", { variant: "success" });
+          closeChangePasswordModal();
+        } else {
+          enqueueSnackbar(response.data.msg, { variant: "error" });
+        }
+      } else {
+        enqueueSnackbar("As senhas precisam ser iguais.", { variant: "error" });
+      }
+    } catch (error) {
+      enqueueSnackbar(error.response?.data?.msg || "Não foi possível alterar a senha. Tente novamente mais tarde.", { variant: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,7 +186,7 @@ const LoginUsuario = () => {
                 >
                   {t("email")}
                 </label>
-                <div className="mt-2">
+                <div className="mt=2">
                   <input
                     id="email"
                     name="email"
@@ -111,8 +204,9 @@ const LoginUsuario = () => {
                 <PasswordField passwordRef={passwordRef} />
                 <div className="text-sm text-right py-1.5">
                   <button
+                    type="button"
                     className="font-semibold text-primary-500 hover:text-primary-500"
-                    onClick={() => forgotPassword()}
+                    onClick={forgotPassword}
                   >
                     {t("esqueceu_a_senha")}
                   </button>
@@ -145,29 +239,109 @@ const LoginUsuario = () => {
                         <path
                           className="opacity-75"
                           fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.002 8.002 0 0120 12h-4a4 4 0 00-4-4V2.5"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                         ></path>
                       </svg>
                     </div>
                   ) : (
-                    "Entrar"
+                    t("entrar")
                   )}
                 </button>
               </div>
             </form>
-
-            <p className="mt-10 text-center text-sm text-primary-950">
-              {t("nao_tem_conta")}{" "}
-              <a
-                href="/register"
-                className="font-semibold leading-6 text-primary-500 hover:text-primary-500"
-              >
-                {t("cadastre_se")}
-              </a>
-            </p>
           </div>
         </div>
       </div>
+      <ModalGenerico
+        isOpen={verificationModalIsOpen}
+        style={customStylesModal}
+        onRequestClose={closeVerificationModal}
+        content={
+          <>
+            <form className="space-y-6" onSubmit={handleVerificationSubmit}>
+              <div>
+                <label
+                  htmlFor="verificationCode"
+                  className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                >
+                  Informe o código de verificação
+                </label>
+                <input
+                  type="text"
+                  name="verificationCode"
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  placeholder="Digite o código de verificação"
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                >
+                  Verificar
+                </button>
+                <button onClick={() => sendEmailPassword(email)}>Reenviar e-mail</button>
+              </div>
+            </form>
+          </>
+        }
+      />
+      <ModalGenerico
+        isOpen={changePasswordModalIsOpen}
+        style={customStylesModal}
+        onRequestClose={closeChangePasswordModal}
+        content={
+          <>
+            <form className="space-y-6" onSubmit={handlePasswordChangeSubmit}>
+              <div>
+                <label
+                  htmlFor="newPassword"
+                  className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                >
+                  Nova Senha
+                </label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Nova senha"
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="confirmNewPassword"
+                  className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                >
+                  Confirmar Nova Senha
+                </label>
+                <input
+                  type="password"
+                  name="confirmNewPassword"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="Confirmar nova senha"
+                  className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                >
+                  Alterar Senha
+                </button>
+              </div>
+            </form>
+          </>
+        }
+      />
     </section>
   );
 };

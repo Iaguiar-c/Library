@@ -1,7 +1,7 @@
 export const termosContent = (
   <>
     <strong>
-      <h2>Termos e Condições de Uso da Secure-Her Digital Library</h2>
+      <h1>Termos e Condições de Uso da Secure-Her Digital Library</h1>
     </strong>
     <br />
     <p>

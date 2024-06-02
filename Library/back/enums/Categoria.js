@@ -4,6 +4,7 @@ class Categoria {
         NON_FICTION: 'Non-fiction',
         ROMANCE: 'Romance',
         SCIENCE_FICTION: 'Science-fiction',
+        JUVENILE_FICTION: 'Juvenile Fiction',
         FANTASY: 'Fantasy',
         MYSTERY: 'Mystery',
         HORROR: 'Horror',
