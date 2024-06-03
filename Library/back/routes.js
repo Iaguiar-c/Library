@@ -17,7 +17,7 @@ routes.route("/user/login").post(userController.login);
 routes.route("/user/logout/:id").post(userController.logout);
 
 routes.post(
-  "/register",
+  "/user/register",
   uploadMiddleware,
   userController.register.bind(userController)
 );
@@ -42,6 +42,7 @@ routes.route("/user/:id").get(authenticateToken, userController.getUserById);
 
 routes.route("/user/check-email/:email").get(userController.checkUserByEmail);
 routes.route("/user/change-password").post(userController.changePassword);
+routes.route('/export/csv', userController.exportUsersToCSV);
 
 routes.route("/books").get(authenticateToken, bookController.getAllBooks);
 
@@ -57,6 +58,8 @@ routes.route("/books/:id").get(authenticateToken, bookController.getBookById);
 routes
   .route("/books/categories")
   .get(authenticateToken, bookController.getAllCategories);
+
+
 
 routes
   .route("/:userId/books/:bookId")

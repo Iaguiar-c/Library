@@ -1,27 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
 import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
 import ModalGenerico from "../../components/ModalGenerico";
-import { termosContent } from '../../components/TermosECondicoes'
+import { termosContent } from "../../components/TermosECondicoes";
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [profilepicture, setProfilepicture] = useState(null);
+  const [profilepicture, setProfilepicture] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { postUsuario, message } = useUsuario();
+  const { postUsuario } = useUsuario();
   const { t } = useTranslation();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
-  const openModal = () => setModalIsOpen(true);  
+  const { forgotPasswordCheckUser } = useUsuario();
+  const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
   const handleInputChange = (e) => {
@@ -30,24 +30,31 @@ const UserRegister = () => {
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
     if (name === "confirmpassword") setConfirmPassword(value);
+    if (name === "profile") setProfilepicture(value);
   };
 
   const handleCheckboxChange = () => {
     setIsTermsChecked(!isTermsChecked);
   };
 
-  // const handleFileChange = (e) => {
-  //   console.log(e);
-  //   const file = e.target.files ? e.target.files[0] : null;
-  //   console.log(file);
-  //   if (file) {
-  //     setProfilepicture(file);
-  //   }
-  // };
-
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
+
+    try {
+      await forgotPasswordCheckUser(email);
+
+      enqueueSnackbar(
+        "Esse e-mail usuário já existe. Por favor insira um e-mail diferente.",
+        {
+          variant: "warning",
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
 
     if (!username || !email || !password || !confirmpassword) {
       setLoading(false);
@@ -85,7 +92,7 @@ const UserRegister = () => {
       formData.append("email", email);
       formData.append("password", password);
       formData.append("confirmpassword", confirmpassword);
-      formData.append("profilepicture", profilepicture);
+      formData.append("profile", profilepicture);
 
       await postUsuario(formData);
       enqueueSnackbar("Usuário registrado com sucesso!", {
@@ -93,18 +100,11 @@ const UserRegister = () => {
       });
       navigate("/login");
     } catch (error) {
-      if (error.response && error.response.status === 500) {
-        enqueueSnackbar(
-          "Este email já está cadastrado. Por favor, use outro email.",
-          { variant: "error" }
-        );
-      } else {
-        console.error("Erro ao registrar usuário:", error.message);
-        enqueueSnackbar(
-          "Erro ao registrar usuário. Por favor, tente novamente mais tarde.",
-          { variant: "error" }
-        );
-      }
+      console.log(error);
+      enqueueSnackbar(
+        "Erro ao registrar usuário. Por favor, tente novamente mais tarde.",
+        { variant: "error" }
+      );
     } finally {
       setLoading(false);
     }
@@ -203,18 +203,18 @@ const UserRegister = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="profilepicture"
+                    htmlFor="profile"
                     className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                   >
                     Foto de perfil
                   </label>
                   <input
-                    type="file"
-                    accept="image/*"
-                    name="profilepicture"
+                    type="text"
+                    name="profile"
+                    value={profilepicture}
                     onChange={handleInputChange}
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    required
+                    className="bg-gray-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Insira a URL da imagem"
                   />
                 </div>
                 <div className="flex items-start">
@@ -242,7 +242,11 @@ const UserRegister = () => {
                       >
                         {t("termos_e_condicoes")}
                       </button>
-                      <ModalGenerico isOpen={modalIsOpen} onRequestClose={closeModal} content={termosContent} />
+                      <ModalGenerico
+                        isOpen={modalIsOpen}
+                        onRequestClose={closeModal}
+                        content={termosContent}
+                      />
                     </label>
                   </div>
                 </div>
@@ -250,7 +254,9 @@ const UserRegister = () => {
                   type="submit"
                   disabled={!isTermsChecked}
                   className={`w-full text-white ${
-                    isTermsChecked ? 'bg-primary-700 hover:bg-primary-700' : 'bg-gray-400 cursor-not-allowed'
+                    isTermsChecked
+                      ? "bg-primary-700 hover:bg-primary-700"
+                      : "bg-gray-400 cursor-not-allowed"
                   } focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
                 >
                   {t("criar_conta")}

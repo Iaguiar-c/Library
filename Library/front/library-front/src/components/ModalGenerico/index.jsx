@@ -8,14 +8,6 @@ const ModalGenerico = ({ isOpen, onRequestClose, content,  customStyles  }) => {
       onRequestClose={onRequestClose}
       style={customStyles}
       >
-      {/* style={{
-        content: {
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          paddingRight: "20px",
-        },
-      }} */}
       {content}
       <div
         style={{
