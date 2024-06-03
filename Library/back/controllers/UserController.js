@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import multer from "multer";
 
-// Configuração do multer
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("profile");
 
@@ -15,19 +14,7 @@ export class UserController {
   }
 
   async register(req, res) {
-    upload(req, res, async function (err) {
-      if (err instanceof multer.MulterError) {
-        return res.status(400).json({ msg: err.message });
-      } else if (err) {
-        return res.status(500).json({ msg: err.message });
-      }
-
-      const { name, email, password, confirmpassword } = req.body;
-      let profile; 
-
-      if (req.file) {
-        profile = req.file.buffer;
-      }
+      const { name, email, password, confirmpassword, profile } = req.body;
 
       if (!name || !email || !password || !confirmpassword) {
         return res.status(422).json({ msg: "Por favor, forneça todos os campos obrigatórios." });
@@ -48,7 +35,7 @@ export class UserController {
       if (password !== confirmpassword) {
         return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
       }
-
+      
       try {
         const userExists = await User.findOne({ email });
 
@@ -65,7 +52,7 @@ export class UserController {
           name,
           email,
           password: passwordHash,
-          profile: profile,
+          profile,
         });
 
         await user.save();
@@ -77,7 +64,6 @@ export class UserController {
           msg: "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
         });
       }
-    });
   }
 
   async login(req, res) {
@@ -170,68 +156,59 @@ export class UserController {
 
   async updateUser(req, res) {
     const id = req.params.id;
-    const { name, email, password, confirmpassword } = req.body;
-  
-    // Verificação de campos obrigatórios
-    if (!name || !email) {
+    const { name, email, password, confirmpassword, profile } = req.body;
+
+    if (!name || !email || !profile) {
       return res
         .status(422)
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
-  
-    // Validação de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(422).json({ msg: "Formato de email inválido." });
-    }
-  
-    // Validação de senha
-    if (password) {
-      const passwordRegex =
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-      if (!passwordRegex.test(password)) {
-        return res.status(422).json({
-          msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
-        });
-      }
-  
-      if (password !== confirmpassword) {
-        return res.status(422).json({ msg: "As senhas precisam ser iguais." });
-      }
-    }
-  
+
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(email)) {
+    //   return res.status(422).json({ msg: "Formato de email inválido." });
+    // }
+
+    // if (password) {
+    //   const passwordRegex =
+    //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    //   if (!passwordRegex.test(password)) {
+    //     return res.status(422).json({
+    //       msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+    //     });
+    //   }
+
+    //   if (password !== confirmpassword) {
+    //     return res.status(422).json({ msg: "As senhas precisam ser iguais." });
+    //   }
+    // }
+
     try {
       const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
-  
-      // Verificação de duplicidade de email
+
       const existingUser = await User.findOne({ email });
       if (existingUser && existingUser._id.toString() !== id) {
         return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
       }
-  
-      const updates = { name, email };
-      if (password) {
-        const salt = await bcrypt.genSalt(12);
-        const passwordHash = await bcrypt.hash(password, salt);
-        updates.password = passwordHash;
-      }
-  
-      if (req.file) {
-        updates.profileImage = req.file.buffer;
-      }
-  
+
+      const updates = { name, email, profile };
+      // if (password) {
+      //   const salt = await bcrypt.genSalt(12);
+      //   const passwordHash = await bcrypt.hash(password, salt);
+      //   updates.password = passwordHash;
+      // }
+
       await User.findByIdAndUpdate(id, updates);
-  
+
       res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error.message);
       res.status(500).json({ msg: "Erro no servidor ao atualizar usuário." });
     }
   }
-  
 
   async deleteUser(req, res) {
     const Id = req.params.id;

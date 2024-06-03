@@ -17,24 +17,24 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const { deleteUsuario, editUsuario } = useUsuario();
   const navigate = useNavigate();
-  const [profileUrl, setProfileUrl] = useState(null);
+  const [profileUrl, setProfileUrl] = useState(LogoPadrao);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [profile, setProfile] = useState("");
   const closeModal = () => setShowEditModal(false);
 
   useEffect(() => {
-    if (usuario && usuario.profile && usuario.profile.data) {
-      const byteArray = usuario.profile.data;
-      const url = convertToImageUrl(byteArray);
-      setProfileUrl(url);
+    if (usuario && usuario.profile) {
+      setProfileUrl(usuario.profile);
     } else {
       setProfileUrl(LogoPadrao);
     }
 
     setUsername(usuario?.name || "");
     setEmail(usuario?.email || "");
+    setProfile(usuario?.profile || "");
   }, [usuario]);
 
   const handleEditChangeSubmit = async (e) => {
@@ -43,9 +43,9 @@ export default function Profile() {
     setError(null);
 
     try {
-      await editUsuario(usuario._id, { name: username, email: email });
+      await editUsuario(usuario._id, { name: username, email: email, profile: profile });
 
-      setUsuario((prev) => ({ ...prev, name: username, email: email }));
+      setUsuario((prev) => ({ ...prev, name: username, email: email,  profile: profile }));
 
       enqueueSnackbar("Seu usuário foi alterado com sucesso.", {
         variant: "success",
@@ -168,6 +168,23 @@ export default function Profile() {
                     name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Editar e-mail"
+                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="profile"
+                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                  >
+                    Foto de Perfil 
+                  </label>
+                  <input
+                    type="text"
+                    name="profile"
+                    value={profile}
+                    onChange={(e) => setProfile(e.target.value)}
                     placeholder="Editar e-mail"
                     className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     required

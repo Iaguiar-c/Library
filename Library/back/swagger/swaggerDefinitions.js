@@ -102,7 +102,7 @@ const swaggerDefinition = {
       requestBody: {
         required: true,
         content: {
-          "multipart/form-data": {
+          "application/json": {
             schema: {
               type: "object",
               properties: {
@@ -128,7 +128,6 @@ const swaggerDefinition = {
                 },
                 profile: {
                   type: "string",
-                  format: "binary",
                   description: "Imagem de perfil do usuário",
                 },
               },
@@ -190,6 +189,7 @@ const swaggerDefinition = {
       },
     },
   },
+  
   "/user/login": {
     post: {
       summary: "Autentica um usuário com email e senha.",
@@ -249,6 +249,9 @@ const swaggerDefinition = {
                   type: "string",
                 },
                 email: {
+                  type: "string",
+                },
+                profile: {
                   type: "string",
                 },
               },

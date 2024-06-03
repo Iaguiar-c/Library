@@ -12,7 +12,7 @@ const UserRegister = () => {
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [profilepicture, setProfilepicture] = useState(null);
+  const [profilepicture, setProfilepicture] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -20,7 +20,6 @@ const UserRegister = () => {
   const { t } = useTranslation();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
-  const [error, setError] = useState(null);
   const { forgotPasswordCheckUser } = useUsuario();
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -31,23 +30,12 @@ const UserRegister = () => {
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
     if (name === "confirmpassword") setConfirmPassword(value);
+    if (name === "profile") setProfilepicture(value);
   };
 
   const handleCheckboxChange = () => {
     setIsTermsChecked(!isTermsChecked);
   };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files ? e.target.files[0] : null;
-
-    if (file) {
-      setProfilepicture(file);
-    }
-  };
-
-  useEffect(() => {
-    console.log("Profile picture mudou:", profilepicture);
-  }, [profilepicture]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -104,8 +92,7 @@ const UserRegister = () => {
       formData.append("email", email);
       formData.append("password", password);
       formData.append("confirmpassword", confirmpassword);
-      if (profilepicture)
-        formData.append("profile", profilepicture);
+      formData.append("profile", profilepicture);
 
       await postUsuario(formData);
       enqueueSnackbar("Usuário registrado com sucesso!", {
@@ -145,11 +132,7 @@ const UserRegister = () => {
               <h1 className="text-xl text-center  font-bold leading-tight tracking-tight text-primary-950 md:text-2xl dark:text-primary">
                 {t("criar_conta")}
               </h1>
-              <form
-                className="space-y-4 md:space-y-6"
-                onSubmit={handleSubmit}
-                encType="multipart/form-data"
-              >
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="username"
@@ -226,10 +209,12 @@ const UserRegister = () => {
                     Foto de perfil
                   </label>
                   <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    type="text"
+                    name="profile"
+                    value={profilepicture}
+                    onChange={handleInputChange}
+                    className="bg-gray-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Insira a URL da imagem"
                   />
                 </div>
                 <div className="flex items-start">

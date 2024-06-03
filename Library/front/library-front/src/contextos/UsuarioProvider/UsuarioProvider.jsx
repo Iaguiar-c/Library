@@ -29,6 +29,7 @@ export function UsuarioProvider({ children }) {
   async function editUsuario(id, userData){
     try{
       const response = await Api.put(`user/update/${id}`, userData, config)
+      return response;
     } catch (error){
       throw error; 
     }

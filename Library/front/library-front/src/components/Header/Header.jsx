@@ -41,10 +41,8 @@ export default function Header() {
   }, [traducao]);
 
   useEffect(() => {
-    if (usuario && usuario.profile && usuario.profile.data) {
-      const byteArray = usuario.profile.data;
-      const url = convertToImageUrl(byteArray);
-      setProfileUrl(url);
+    if (usuario && usuario.profile) {
+      setProfileUrl(usuario.profile);
     } else {
       setProfileUrl(LogoPadrao)
     }
@@ -157,7 +155,7 @@ export default function Header() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={profileUrl}
+                          src={profileUrl || ""}
                           alt="foto do usuário"
                         />
                       </button>
