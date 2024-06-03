@@ -20,6 +20,10 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [showNotification, setShowNotification] = useState(false);
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   useEffect(() => {
     if (book) {
       setTitle(book.title || "");
@@ -73,6 +77,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
 
       setShowNotification(true);
       onClose();
+        refreshPage();
     } catch (error) {
       console.error("Erro ao atualizar livro:", error.message);
       if (error.response) {

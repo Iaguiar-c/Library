@@ -31,7 +31,7 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-primary-200 p-6 text-left align-middle shadow-xl transition-all relative">
+              <Dialog.Panel className="w-full max-w-7xl transform overflow-hidden rounded-2xl bg-primary-200 p-6 text-left align-middle shadow-xl transition-all relative ">
                 <div className="absolute top-4 right-4">
                   <button
                     type="button"
@@ -56,11 +56,11 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
                 </div>
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-bold leading-6 text-primary-950"
+                  className="text-lg font-bold leading-6 text-primary-950 "
                 >
                   Avaliações dos Livros que foram Lidos
                 </Dialog.Title>
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ">
                   {filteredBooks.map((book) => (
                     <div
                       key={book._id}

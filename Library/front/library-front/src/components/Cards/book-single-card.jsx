@@ -58,7 +58,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   return (
     <div>
       <div
-        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[400px] flex flex-col justify-between"
+        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[500px] flex flex-col justify-between"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
