@@ -171,18 +171,21 @@ export class UserController {
   async updateUser(req, res) {
     const id = req.params.id;
     const { name, email, password, confirmpassword } = req.body;
-
+  
+    // Verificação de campos obrigatórios
     if (!name || !email) {
       return res
         .status(422)
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
     }
-
+  
+    // Validação de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(422).json({ msg: "Formato de email inválido." });
     }
-
+  
+    // Validação de senha
     if (password) {
       const passwordRegex =
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
@@ -191,37 +194,44 @@ export class UserController {
           msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
         });
       }
-
+  
       if (password !== confirmpassword) {
         return res.status(422).json({ msg: "As senhas precisam ser iguais." });
       }
     }
-
+  
     try {
       const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
-
+  
+      // Verificação de duplicidade de email
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== id) {
+        return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
+      }
+  
       const updates = { name, email };
       if (password) {
         const salt = await bcrypt.genSalt(12);
         const passwordHash = await bcrypt.hash(password, salt);
         updates.password = passwordHash;
       }
-
+  
       if (req.file) {
         updates.profileImage = req.file.buffer;
       }
-
+  
       await User.findByIdAndUpdate(id, updates);
-
+  
       res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error.message);
       res.status(500).json({ msg: "Erro no servidor ao atualizar usuário." });
     }
   }
+  
 
   async deleteUser(req, res) {
     const Id = req.params.id;

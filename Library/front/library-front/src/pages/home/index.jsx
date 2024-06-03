@@ -126,6 +126,12 @@ const Home = () => {
       closeDeleteModal();
     }
   };
+  
+  
+	if (!usuario) {
+		window.location.pathname = "/login";
+	}
+
   return (
     <section className="bg-primary-50">
       <FeatureHomeSection />

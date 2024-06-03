@@ -11,14 +11,18 @@ import ModalGenerico from "../../components/ModalGenerico";
 import DeleteModal from "../../components/Modals/delete-book-modal";
 
 export default function Profile() {
-  const { usuario } = useAutenticacao();
+  const { usuario, setUsuario } = useAutenticacao();
   const { enqueueSnackbar } = useSnackbar();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { deleteUsuario } = useUsuario();
+  const { deleteUsuario, editUsuario } = useUsuario();
   const navigate = useNavigate();
   const [profileUrl, setProfileUrl] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const closeModal = () => setShowEditModal(false);
 
   useEffect(() => {
     if (usuario && usuario.profile && usuario.profile.data) {
@@ -28,7 +32,34 @@ export default function Profile() {
     } else {
       setProfileUrl(LogoPadrao);
     }
+
+    setUsername(usuario?.name || "");
+    setEmail(usuario?.email || "");
   }, [usuario]);
+
+  const handleEditChangeSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await editUsuario(usuario._id, { name: username, email: email });
+
+      setUsuario((prev) => ({ ...prev, name: username, email: email }));
+
+      enqueueSnackbar("Seu usuário foi alterado com sucesso.", {
+        variant: "success",
+      });
+      setShowEditModal(false);
+    } catch (error) {
+      console.error(error);
+
+      const errorMessage = error.response?.data?.error || 'Não foi possível editar o usuário. Por favor, tente novamente.';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDeleteProfile = async () => {
     setLoading(true);
@@ -43,13 +74,17 @@ export default function Profile() {
       } else {
         setError("Usuário não encontrado para deleção.", { variant: "error" });
       }
-    } catch {
+    } catch (error) {
       console.error("Erro ao deletar usuário:", error);
       setError("Ocorreu um erro ao deletar o usuário.", { variant: "error" });
     } finally {
       setLoading(false);
     }
   };
+
+	if (!usuario) {
+		window.location.pathname = "/login";
+	}
 
   return (
     <>
@@ -69,6 +104,7 @@ export default function Profile() {
                 <FontAwesomeIcon
                   icon={faEdit}
                   className="text-gray-500 cursor-pointer"
+                  onClick={() => setShowEditModal(true)}
                 />
                 <span className="ml-2">
                   <FontAwesomeIcon
@@ -80,11 +116,6 @@ export default function Profile() {
               </span>
             </h2>
             <p className="text-gray-600 mt-2">{usuario.email}</p>
-            <div className="mt-4">
-              <p className="text-sm text-gray-500">
-                Data de Nascimento: {usuario.birthDate}
-              </p>
-            </div>
           </div>
         )}
 
@@ -101,6 +132,58 @@ export default function Profile() {
           onClose={() => setShowDeleteModal(false)}
           onConfirm={handleDeleteProfile}
           isUserDelete={true}
+        />
+        <ModalGenerico
+          isOpen={showEditModal}
+          onRequestClose={closeModal}
+          content={
+            <>
+              <form className="space-y-6" onSubmit={handleEditChangeSubmit}>
+                <div>
+                  <label
+                    htmlFor="username"
+                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                  >
+                    Nome de usuário
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Editar nome de usuário"
+                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                  >
+                    E-mail
+                  </label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Editar e-mail"
+                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <button
+                    type="submit"
+                    className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                  >
+                    Editar
+                  </button>
+                </div>
+              </form>
+            </>
+          }
         />
       </div>
     </>

@@ -25,6 +25,14 @@ export function UsuarioProvider({ children }) {
       throw error; 
     }
   }
+
+  async function editUsuario(id, userData){
+    try{
+      const response = await Api.put(`user/update/${id}`, userData, config)
+    } catch (error){
+      throw error; 
+    }
+  }
   
   async function deleteUsuario(id) {
     try {
@@ -64,7 +72,8 @@ export function UsuarioProvider({ children }) {
         forgotPasswordCheckUser,
         updatePassword,
         isPasswordUpdated,
-        setIsPasswordUpdated
+        setIsPasswordUpdated,
+        editUsuario
       }}
     >
       {children}
