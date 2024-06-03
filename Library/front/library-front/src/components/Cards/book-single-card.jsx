@@ -1,6 +1,6 @@
 // BookSingleCard.js
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
 import DeleteModal from "../Modals/delete-book-modal";
@@ -15,7 +15,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const { usuario, token } = useAutenticacao();
   const { t } = useTranslation();
-
+  const [isFavorite, setIsFavorite] = useState(false);
   const bookId = book._id;
 
   const handleDeleteBook = async (userId) => {
@@ -56,7 +56,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   return (
     <div>
       <div
-        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[400px] flex flex-col justify-between"
+        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[500px] flex flex-col justify-between"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -125,6 +125,8 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
                 />
               </svg>
             </button>
+            
+            
           </div>
         </div>
       </div>

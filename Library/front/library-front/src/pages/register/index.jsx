@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
 import ModalGenerico from "../../components/ModalGenerico";
 import { termosContent } from "../../components/TermosECondicoes";
+import { SectionHeading, SectionDescription } from "../landingPage/styles";
+import backgroundImage from "../../assets/backgroundLandingPage.png";
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
@@ -115,163 +117,183 @@ const UserRegister = () => {
   };
 
   return (
-    <section className="bg-gradient-to-tl from-purple-950 to-purple-400 min-h-screen flex flex-row items-center justify-center">
-      <AnimacaoInicioBookster />
-      <div className="flex-auto max-w-xs">
-        <div className="flex justify-center items-center mb-8">
-          <img
-            src={require("../../assets/logoBom.png")}
-            alt="Logo"
-            style={{ width: "10rem", height: "11rem" }}
-          />
-        </div>
+    <section className="bg-gradient-to-tl from-purple-950 to-purple-800 min-h-screen flex flex-row items-center justify-center">
+      <div class="min-h-screen flex flex-col items-center justify-center">
+        <div
+          class="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full p-4 m-4 shadow rounded-md"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="text-center m-4">
+            <SectionDescription>
+              Abra a capa para aventuras sem fim em
+            </SectionDescription>
+            <SectionHeading>BOOKSTER</SectionHeading>
+            <SectionHeading>Digital Library</SectionHeading>
+          </div>
+          <div class="md:max-w-md w-full py-4">
+            <div className="flex-auto">
+              <div className="flex justify-center items-center mb-8">
+                <img
+                  src={require("../../assets/logoBom.png")}
+                  alt="Logo"
+                  style={{ width: "10rem", height: "11rem" }}
+                />
+              </div>
 
-        <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
-          <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl text-center  font-bold leading-tight tracking-tight text-primary-950 md:text-2xl dark:text-primary">
-                {t("criar_conta")}
-              </h1>
-              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-                <div>
-                  <label
-                    htmlFor="username"
-                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
-                  >
-                    {t("usuario")}
-                  </label>
-                  <input
-                    type="username"
-                    name="name"
-                    value={username}
-                    onChange={handleInputChange}
-                    className="bg-gray-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="docinho123"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
-                  >
-                    {t("email")}
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={handleInputChange}
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-primary-600 dark:placeholder-gray-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="docinho@gmail.com"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
-                  >
-                    {t("senha")}
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleInputChange}
-                    placeholder="••••••••"
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="confirmpassword"
-                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
-                  >
-                    {t("confirmar_senha")}
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmpassword"
-                    value={confirmpassword}
-                    onChange={handleInputChange}
-                    placeholder="••••••••"
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="profile"
-                    className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
-                  >
-                    Foto de perfil
-                  </label>
-                  <input
-                    type="text"
-                    name="profile"
-                    value={profilepicture}
-                    onChange={handleInputChange}
-                    className="bg-gray-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="Insira a URL da imagem"
-                  />
-                </div>
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="terms"
-                      aria-describedby="terms"
-                      type="checkbox"
-                      checked={isTermsChecked}
-                      onChange={handleCheckboxChange}
-                      className="w-4 h-4 border border-primary-300 rounded bg-primary-50 focus:ring-3 focus:ring-primary-300 dark:bg-primary-700 dark:border-primary-600 dark:focus:ring-primary-600 dark:ring-offset-primary-800"
-                      required
-                    />
+              <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
+                <div className="p-6 space-y-4 md:space-y-6 ">
+                  <div className="sm:mx-auto sm:w-full">
+                    <h1 className="text-center text-2xl font-bold leading-9 text-primary-950">
+                      {t("criar_conta")}
+                    </h1>
                   </div>
-                  <div className="ml-3 text-sm">
-                    <label
-                      htmlFor="terms"
-                      className="font-light text-primary-950 dark:text-primary-300"
-                    >
-                      {t("eu_aceito_os")}{" "}
-                      <button
-                        onClick={openModal}
-                        type="button"
-                        className="font-medium text-primary-500 hover:underline dark:text-primary-500"
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div className="mt-2">
+                      <label
+                        htmlFor="username"
+                        className="block text-sm font-medium leading-6 text-primary-950"
                       >
-                        {t("termos_e_condicoes")}
-                      </button>
-                      <ModalGenerico
-                        isOpen={modalIsOpen}
-                        onRequestClose={closeModal}
-                        content={termosContent}
+                        {t("usuario")}
+                      </label>
+                      <input
+                        type="username"
+                        name="name"
+                        value={username}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
+                        placeholder="docinho123"
+                        required
                       />
-                    </label>
-                  </div>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                      >
+                        {t("email")}
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
+                        placeholder="docinho@gmail.com"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="password"
+                        className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                      >
+                        {t("senha")}
+                      </label>
+                      <input
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={handleInputChange}
+                        placeholder="••••••••"
+                        className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="confirmpassword"
+                        className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                      >
+                        {t("confirmar_senha")}
+                      </label>
+                      <input
+                        type="password"
+                        name="confirmpassword"
+                        value={confirmpassword}
+                        onChange={handleInputChange}
+                        placeholder="••••••••"
+                        className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="profile"
+                        className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
+                      >
+                        Foto de perfil
+                      </label>
+                      <input
+                        type="text"
+                        name="profile"
+                        value={profilepicture}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
+                        placeholder="Insira a URL da imagem"
+                      />
+                    </div>
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="terms"
+                          aria-describedby="terms"
+                          type="checkbox"
+                          checked={isTermsChecked}
+                          onChange={handleCheckboxChange}
+                          className="w-4 h-4 border border-primary-300 rounded bg-primary-50 accent-primary-700 focus:ring-3 focus:ring-primary-300 dark:bg-primary-700 dark:border-primary-600 dark:focus:ring-primary-600 dark:ring-offset-primary-800"
+                          required
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="terms"
+                          className="font-light text-primary-950 dark:text-primary-300"
+                        >
+                          {t("eu_aceito_os")}{" "}
+                          <button
+                            onClick={openModal}
+                            type="button"
+                            className="font-medium text-primary-500 hover:underline dark:text-primary-500"
+                          >
+                            {t("termos_e_condicoes")}
+                          </button>
+                          <ModalGenerico
+                            isOpen={modalIsOpen}
+                            onRequestClose={closeModal}
+                            content={termosContent}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={!isTermsChecked}
+                      className={`w-full text-white ${
+                        isTermsChecked
+                          ? "bg-primary-700 hover:bg-primary-700"
+                          : "bg-primary-400 cursor-not-allowed"
+                      } focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
+                    >
+                      {t("criar_conta")}
+                    </button>
+                    <p className="text-sm font-light text-primary-950 dark:text-primary-400">
+                      {t("ja_tem_conta")}{" "}
+                      <a
+                        href="login"
+                        className="font-medium text-primary-500 hover:underline dark:text-primary-500"
+                        onClick={handleLoginClick}
+                      >
+                        {t("login")}
+                      </a>
+                    </p>
+                  </form>
                 </div>
-                <button
-                  type="submit"
-                  disabled={!isTermsChecked}
-                  className={`w-full text-white ${
-                    isTermsChecked
-                      ? "bg-primary-700 hover:bg-primary-700"
-                      : "bg-gray-400 cursor-not-allowed"
-                  } focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
-                >
-                  {t("criar_conta")}
-                </button>
-                <p className="text-sm font-light text-primary-950 dark:text-primary-400">
-                  {t("ja_tem_conta")}{" "}
-                  <a
-                    href="login"
-                    className="font-medium text-primary-500 hover:underline dark:text-primary-500"
-                    onClick={handleLoginClick}
-                  >
-                    {t("login")}
-                  </a>
-                </p>
-              </form>
+              </div>
             </div>
           </div>
         </div>
