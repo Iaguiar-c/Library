@@ -58,7 +58,7 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
                   as="h3"
                   className="text-lg font-bold leading-6 text-primary-950"
                 >
-                  Avaliações dos Livros Favoritos
+                  Avaliações dos Livros que foram Lidos
                 </Dialog.Title>
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredBooks.map((book) => (
