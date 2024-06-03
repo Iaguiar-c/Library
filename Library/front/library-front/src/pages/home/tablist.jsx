@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { Api } from "../../services/api";
@@ -62,16 +62,14 @@ const TabComponent = ({ onTabChange }) => {
   const { usuario, token } = useAutenticacao();
   const tabsRef = useRef([]);
 
-  const fetchBooks = async (status = "ALL") => {
+  const fetchBooks = useCallback(async (status = "ALL") => {
+    if (!usuario || !token) {
+      console.error("Token ou usuário não disponível. Realize o login novamente.");
+      return;
+    }
+
     setLoading(true);
     try {
-      if (!usuario || !token) {
-        console.error(
-          "Token ou usuário não disponível. Realize o login novamente."
-        );
-        return;
-      }
-
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -91,16 +89,16 @@ const TabComponent = ({ onTabChange }) => {
       console.error("Erro ao buscar livros:", error.message);
     }
     setLoading(false);
-  };
+  }, [usuario, token]);
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [fetchBooks]);
 
   useEffect(() => {
     fetchBooks(activeTab);
-    onTabChange(activeTab); // Notifica o Home sobre a mudança na aba
-  }, [activeTab, onTabChange]);
+    onTabChange(activeTab);
+  }, [activeTab, onTabChange, fetchBooks]);
 
   useEffect(() => {
     const activeTabElement = tabsRef.current[activeTab];
@@ -141,4 +139,4 @@ const TabComponent = ({ onTabChange }) => {
   );
 };
 
-export default TabComponent;
+export default React.memo(TabComponent);
