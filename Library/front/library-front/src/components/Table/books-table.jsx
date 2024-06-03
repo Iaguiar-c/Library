@@ -334,6 +334,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         selectedBooks={selectedBooks}
         onCancel={() => setSelectedBooks([])}
         onConfirm={handleConfirmDelete}
+        isUserDelete={false}
       />
       <EditModal
         showModal={showEditModal}

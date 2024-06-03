@@ -28,7 +28,6 @@ const LoginUsuario = () => {
   const [changePasswordModalIsOpen, setChangePasswordModalIsOpen] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
 
-  const closeModal = () => setModalIsOpen(false);
   const closeVerificationModal = () => setVerificationModalIsOpen(false);
   const closeChangePasswordModal = () => setChangePasswordModalIsOpen(false);
 
@@ -45,10 +44,6 @@ const LoginUsuario = () => {
     } else {
       await getUserExist(email);
     }
-  };
-
-  const handleInputChange = (e) => {
-    setEmail(e.target.value);
   };
 
   const sendEmailPassword = async (email) => {
@@ -95,6 +90,10 @@ const LoginUsuario = () => {
         variant: "error",
       });
     }
+  };
+
+  const handleRegisterClick = () => {
+    navigate("/register");
   };
 
   const handlePasswordChangeSubmit = async (e) => {
@@ -212,6 +211,16 @@ const LoginUsuario = () => {
                   </button>
                 </div>
               </div>
+              <p className="text-sm font-light text-primary-950 dark:text-primary-400">
+                  Ainda não tem uma conta? {" "}
+                  <a
+                    href="register"
+                    className="font-medium text-primary-500 hover:underline dark:text-primary-500"
+                    onClick={handleRegisterClick}
+                  >
+                      Registre-se
+                  </a>
+                </p>
 
               <div className="mt-6">
                 <button

@@ -16,11 +16,21 @@ export function UsuarioProvider({ children }) {
   const [isPasswordUpdated, setIsPasswordUpdated] = useState([]);
   const { config, logout } = useAutenticacao();
 
-  async function postUsuario(name, email, password, confirmpassword, profilepicture) {
+  async function postUsuario(userData) {
     try {
-      const response = await Api.post("user/register", { name, email, password, confirmpassword, profilepicture });
+      const response = await Api.post("user/register", userData);
+      console.log('userData', userData)
       setUsuario(response.data);
     } catch (error) {
+      throw error; 
+    }
+  }
+
+  async function editUsuario(id, userData){
+    try{
+      const response = await Api.put(`user/update/${id}`, userData, config)
+      return response;
+    } catch (error){
       throw error; 
     }
   }
@@ -63,7 +73,8 @@ export function UsuarioProvider({ children }) {
         forgotPasswordCheckUser,
         updatePassword,
         isPasswordUpdated,
-        setIsPasswordUpdated
+        setIsPasswordUpdated,
+        editUsuario
       }}
     >
       {children}

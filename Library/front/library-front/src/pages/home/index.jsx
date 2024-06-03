@@ -170,7 +170,6 @@ const Home = () => {
           }
         />
       )}
-
       <div className="m-8">
         {filteredLivros.length > 0 ? (
           viewMode === "card" ? (
