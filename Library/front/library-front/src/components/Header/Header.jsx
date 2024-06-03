@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import LogoPreto from "../../assets/logoPreto.png";
 import LogoBranco from "../../assets/logoBom.png";
 import TranslationButtons from "../TranslationButtons";
-import { convertToImageUrl } from "../../services/profileService";
 import LogoPadrao from "../../assets/logopadrao.png";
 
 export default function Header() {

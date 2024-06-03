@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import ModalForm from "../Modals/add-books-modal";
+import { useTranslation } from "react-i18next";
 
 const BookCard = ({ book }) => {
   const { volumeInfo } = book;
   const { title, authors, imageLinks } = volumeInfo;
   const imageUrl = imageLinks?.thumbnail || "https://via.placeholder.com/150";
-
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleAddToLibrary = () => {
@@ -22,14 +23,14 @@ const BookCard = ({ book }) => {
       <div className="bg-primary-200 rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full">
         <div className="mb-8">
           <p className="text-sm text-primary-900 flex items-center">
-            {authors ? `${authors.join(", ")}` : "Autor Desconhecido"}
+            {authors ? `${authors.join(", ")}` : t("autor_desconhecido")}
           </p>
           <div className="text-primary-950 font-bold text-xl mb-2">{title}</div>
         </div>
         <div className="flex items-center">
           <div className="text-sm">
             <p className="text-primary-900">
-              {volumeInfo.categories || "Desconhecido"}
+              {volumeInfo.categories || t("desconhecido")}
             </p>
           </div>
           <button

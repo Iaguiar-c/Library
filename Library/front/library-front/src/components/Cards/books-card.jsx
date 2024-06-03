@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import BookSingleCard from "./book-single-card";
+import { useTranslation } from "react-i18next";
 
 const BooksCard = ({ books }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { t } = useTranslation();
 
   const filteredBooks = books.filter((book) => {
     return (
@@ -15,13 +17,13 @@ const BooksCard = ({ books }) => {
   return (
     <div className="relative m-4">
       <label htmlFor="inputSearch" className="sr-only">
-        Search
+        {t("pesquisar")}
       </label>
       <div className="relative mb-4">
         <input
           id="inputSearch"
           type="text"
-          placeholder="Título, Gênero, Autor..."
+          placeholder={t("titulo_genero_autor")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="block w-64 rounded-lg border border-primary-400 dark:border-none dark:bg-text-primary-950 py-2 pl-10 pr-4 text-sm focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 placeholder-primary-300"
@@ -46,7 +48,6 @@ const BooksCard = ({ books }) => {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {filteredBooks.map((book) => {
-          console.log("Conteúdo da imageUrl:", book.imageUrl);
           return (
             <BookSingleCard
               key={book._id}

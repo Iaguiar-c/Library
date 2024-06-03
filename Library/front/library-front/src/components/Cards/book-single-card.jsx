@@ -6,6 +6,7 @@ import { Api } from "../../services/api";
 import DeleteModal from "../Modals/delete-book-modal";
 import InfoModal from "../Modals/info-book-modal";
 import EditModal from "../Modals/edit-book-modal";
+import { useTranslation } from "react-i18next";
 
 const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -13,13 +14,15 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const { usuario, token } = useAutenticacao();
+  const { t } = useTranslation();
+
   const bookId = book._id;
 
   const handleDeleteBook = async (userId) => {
     try {
       if (!usuario || !token) {
         console.error(
-          "Token ou usuário não disponível. Realize o login novamente."
+          t("realize_o_login_novamente")
         );
         return;
       }
@@ -36,7 +39,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
         onBookDeleted();
       }
     } catch (error) {
-      console.error("Erro ao excluir livro:", error.message);
+      console.error(t("erro_ao_excluir_livro"), error.message);
     }
   };
 
