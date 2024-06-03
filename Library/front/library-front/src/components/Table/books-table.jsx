@@ -13,6 +13,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [rating, setRating] = useState(0);
   const { usuario, token } = useAutenticacao();
   const bookId = book ? book._id : null;
   const booksPerPage = 5;
@@ -102,6 +103,27 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
     setShowEditModal(true);
   };
 
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i}>
+          <svg
+            className={`w-6 h-6 cursor-pointer ${
+              i <= rating ? "text-primary-900" : "text-primary-400"
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.175 3.621a1 1 0 00.95.69h3.801c.969 0 1.372 1.24.588 1.81l-3.073 2.228a1 1 0 00-.364 1.118l1.175 3.621c.3.921-.755 1.688-1.54 1.118l-3.073-2.228a1 1 0 00-1.175 0l-3.073 2.228c-.784.57-1.84-.197-1.54-1.118l1.175-3.621a1 1 0 00-.364-1.118L2.34 8.048c-.784-.57-.38-1.81.588-1.81h3.801a1 1 0 00.95-.69l1.175-3.621z" />
+          </svg>
+        </span>
+      );
+    }
+    return stars;
+  };
+
   return (
     <div className="m-2">
       <div className="relative m-[2px] mb-3 mr-5 float-left">
@@ -185,6 +207,9 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
               Status
             </th>
             <th scope="col" className="px-6 py-3">
+              Avaliação
+            </th>
+            <th scope="col" className="px-6 py-3">
               Ações
             </th>
           </tr>
@@ -222,6 +247,11 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
               <td className="px-6 py-4">{book.author}</td>
               <td className="px-6 py-4">{book.category}</td>
               <td className="px-6 py-4">{book.status}</td>
+              <td className="px-6 py-4">
+                <div className="flex justify-center">
+                  {renderStars(book.rating)}
+                </div>
+              </td>
               <td className="px-6 py-4 space-x-2">
                 <a
                   href="#!"

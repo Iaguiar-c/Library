@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import SelectModal from "../../components/Modals/select-add-books-modal";
+import ReviewModal from "./ReviewModal";
 import { Api } from "../../services/api";
 import BooksCard from "../../components/Cards/books-card";
 import BooksTable from "../../components/Table/books-table";
@@ -10,6 +11,7 @@ import TabComponent from "../../pages/home/tablist";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const { usuario, token } = useAutenticacao();
   const [livros, setLivros] = useState([]);
   const [filteredLivros, setFilteredLivros] = useState([]);
@@ -140,25 +142,33 @@ const Home = () => {
           </button>
         </div>
         <TabComponent onTabChange={filterBooks} />
-        <button
-          className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6"
+        <div className="flex gap-2">
+          <button
+            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            onClick={() => setIsReviewModalOpen(true)}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-        </button>
+            Avaliações
+          </button>
+          <button
+            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       {isModalOpen && (
         <SelectModal
@@ -168,6 +178,13 @@ const Home = () => {
           showNotification={(message, variant) =>
             setNotification({ message, variant, show: true })
           }
+        />
+      )}
+      {isReviewModalOpen && (
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          books={livros}
         />
       )}
       <div className="m-8">
