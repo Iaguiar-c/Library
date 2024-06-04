@@ -295,7 +295,8 @@ i18n.use(initReactI18next).init({
         erro_ao_registrar_usuario: "Erro ao registrar usuário. Por favor, tente novamente mais tarde.",
         usuario123: "usuario123", 
         email_usuario: "usuario@gmail.com",
-        insira_a_url_da_imagem: "Insira a URL da imagem"
+        insira_a_url_da_imagem: "Insira a URL da imagem",
+        voce_ja_esta_utilizando_este_valor: "Você não pode alterar o valor para o mesmo valor salvo anteriormente"
       },
     },
     es: {

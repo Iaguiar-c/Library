@@ -43,10 +43,21 @@ export default function Profile() {
     setLoading(true);
     setError(null);
 
-    try {
-      await editUsuario(usuario._id, { name: username, email: email, profile: profile });
+    if (username === usuario.name && email === usuario.email && profile === usuario.profile) {
+      enqueueSnackbar(t("voce_ja_esta_utilizando_este_valor"), { variant: "warning" });
+      setLoading(false);
+      return;
+    }
 
-      setUsuario((prev) => ({ ...prev, name: username, email: email,  profile: profile }));
+    const updates = {};
+    if (username !== usuario.name) updates.name = username;
+    if (email !== usuario.email) updates.email = email;
+    if (profile !== usuario.profile) updates.profile = profile || "";  
+
+    try {
+      await editUsuario(usuario._id, updates);
+
+      setUsuario((prev) => ({ ...prev, ...updates }));
 
       enqueueSnackbar(t("usuario_alterado_com_sucesso"), {
         variant: "success",
@@ -55,7 +66,7 @@ export default function Profile() {
     } catch (error) {
       console.error(error);
 
-      const errorMessage = error.response?.data?.error || t("nao_foi_possivel_editar_o_usuario");
+      const errorMessage = error.response?.data?.msg || t("nao_foi_possivel_editar_o_usuario");
       enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setLoading(false);
@@ -188,7 +199,6 @@ export default function Profile() {
                     onChange={(e) => setProfile(e.target.value)}
                     placeholder={t("editar_foto_de_perfil")}
                     className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    required
                   />
                 </div>
                 <div>
