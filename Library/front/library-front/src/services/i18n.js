@@ -73,6 +73,47 @@ i18n.use(initReactI18next).init({
         configuracoes: "Configurações",
         mais: "Mais",
         fechar: "Fechar",
+        digite_algo_para_pesquisar: "Por favor, digite algo para pesquisar.",
+        titulo_nao_encontrado: "Nenhum título encontrado.",
+        erro_buscar_livros: "Erro ao buscar livros:",
+        erro_livros_tente_mais_tarde: "Erro ao buscar livros. Tente novamente mais tarde.",
+        livro_adicionado: "Livro adicionado com sucesso!",
+        adicionar_google_livros: "Adicionar com Google Livros",
+        titulo_livro: "Digite o título do livro",
+        carregando: "Carregando...",
+        nenhum_resultado_encontrado: "Nenhum resultado encontrado.",
+        excluir_usuario: "Tem certeza que deseja excluir este usuário?",
+        tem_certeza_deletar: "Você tem certeza que deseja deletar esses",
+        livros: "livros?",
+        voce_certeza_deletar: "Você tem certeza que deseja deletar este livro?",
+        nao_cancelar: "Não, cancelar",
+        sim_tenho_certeza: "Sim, tenho certeza",
+        token: "Token ou usuário não disponível. Realize o login novamente.",
+        erro_excluir_livro: "Erro ao excluir livro:",
+        deletar: "Deletar",
+        titulo: "Título",
+        genero: "Gênero",
+        status: "Status",
+        avaliacao: "Avaliação",
+        acoes: "Ações",
+        ver: "Ver",
+        editar: "Editar",
+        mostrar: "Mostrando",
+        de: "de",
+        anterior: "Anterior",
+        proximo: "Próximo",
+        portugues: "Português",
+        ingles: "Inglês",
+        espanhol: "Espanhol",
+        descubra_livros: "Descubra livros, adicione-os, marque seu progresso",
+        
+        
+
+
+
+
+        
+
         
         
       },
