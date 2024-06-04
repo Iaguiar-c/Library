@@ -5,6 +5,8 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: {
+        ola: "Hello",
+        bem_vindo_ao: "welcome to Bookster",
         ola_mundo: "Hello World",
         entre_na_sua_conta: "Enter Your Account",
         senha: "Password",
@@ -150,6 +152,9 @@ i18n.use(initReactI18next).init({
     },
     pt: {
       translation: {
+        ola: "Olá", 
+        bem_vindo_ao:  "bem-vindo ao Bookster", 
+        bookster: "BOOKSTER", 
         ola_mundo: "Olá mundo",
         entre_na_sua_conta: "Entre na Sua Conta",
         senha: "Senha",
@@ -295,6 +300,8 @@ i18n.use(initReactI18next).init({
     },
     es: {
       translation: {
+        ola: "Hola",
+        bem_vindo_ao: "bienvenido a Bookster",
         ola_mundo: "¡Hola mundo!",
         entre_na_sua_conta: "Ingresa a tu cuenta",
         senha: "Contraseña",

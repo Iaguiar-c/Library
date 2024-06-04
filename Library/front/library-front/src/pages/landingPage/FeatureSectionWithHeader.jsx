@@ -17,11 +17,6 @@ const HeaderComponent = ({ links }) => (
 );
 
 export default function FeatureSectionWithHeader({
-  description1 = "Abra a capa para aventuras sem fim em",
-  heading1 = "BOOKSTER",
-  heading2 = "DIGITAL LIBRARY",
-  description2 = "onde cada página se transforma numa viagem, e cada história torna-se um mundo próprio.",
-  primaryButtonText = "Saber mais",
   buttonRounded = true,
 }) {
   const featureSectionRef = useRef(null);
@@ -58,28 +53,28 @@ export default function FeatureSectionWithHeader({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {description1}
+                  {t("abra_a_capa_para_aventuras_sem_fim")}
                 </SectionDescription>
                 <SectionHeading
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  {heading1}
+                  {t("bookster")}
                 </SectionHeading>
                 <SectionHeading
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  {heading2}
+                  {t("biblioteca_digital")}
                 </SectionHeading>
                 <SectionDescription
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
                 >
-                  {description2}
+                  {t("onde_cada_pagina_se_transforma")}
                 </SectionDescription>
                 <div className="flex flex-col items-center">
                   <PrimaryButton
@@ -90,7 +85,7 @@ export default function FeatureSectionWithHeader({
                      animate={{ opacity: 1, y: 0 }}
                      transition={{ duration: 0.5, delay: 0.8 }}
                   >
-                    {primaryButtonText}
+                    {t("saber_mais")}
                   </PrimaryButton>
                 </div>
               </div>
