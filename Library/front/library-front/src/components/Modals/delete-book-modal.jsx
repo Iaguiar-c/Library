@@ -1,15 +1,53 @@
 import React from "react";
+import { useSnackbar } from "notistack";
+import { Api } from "../../services/api";
 import { useTranslation } from "react-i18next";
 
 const DeleteModal = ({
   showModal,
   onClose,
   onConfirm,
-  selectedBooksCount,
+  bookId,
+  userId,
+  token,
   isUserDelete,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
+
   if (!showModal) return null;
+
+  const handleDeleteBook = async () => {
+    try {
+      if (!userId || !token) {
+        console.error(
+          t("realize_o_login_novamente")
+        );
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await Api.delete(`/${userId}/books/${bookId}`, config);
+
+      if (onConfirm) {
+        onConfirm();
+      }
+
+      enqueueSnackbar(t("livro_deletado_com_sucesso"), { variant: "success" });
+
+      window.location.reload();
+    } catch (error) {
+      console.error(t("erro_ao_excluir_livro"), error.message);
+
+      enqueueSnackbar(t("erro_ao_excluir_livro"), { variant: "error" });
+    }
+  };
+
   return (
     <div
       id="deleteModal"
@@ -62,9 +100,7 @@ const DeleteModal = ({
           ) : (
             <>
               <p className="mb-4 text-gray-500 dark:text-gray-300">
-                {selectedBooksCount > 1
-                  ? `${t("tem_certeza_deletar")} ${selectedBooksCount} ${t("livros")}`
-                  : t("voce_certeza_deletar")}
+                {t("voce_certeza_deletar")}
               </p>
             </>
           )}
@@ -76,7 +112,7 @@ const DeleteModal = ({
               {t("nao_cancelar")}
             </button>
             <button
-              onClick={onConfirm}
+              onClick={handleDeleteBook}
               className="py-2 px-3 text-sm font-medium text-center text-primary-50 bg-primary-700 rounded-lg hover:bg-primary-950"
             >
               {t("sim_tenho_certeza")}
