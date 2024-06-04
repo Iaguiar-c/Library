@@ -1,6 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const HomeBookCard = ({ livro, coverUrl }) => {
+  const { t } = useTranslation();
+
   if (!livro || !coverUrl) {
     console.error("Livro ou URL da capa não definidos");
     return null;
@@ -14,7 +17,7 @@ const HomeBookCard = ({ livro, coverUrl }) => {
         <div className="aspect-w-2 aspect-h-3 overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75">
           <img
             src={coverUrl}
-            alt="Capa do Livro"
+            alt={t("capa_do_livro")}
             className="object-cover w-full h-full"
             onError={(e) => {
               e.target.onerror = null;

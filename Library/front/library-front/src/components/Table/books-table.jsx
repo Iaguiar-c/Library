@@ -4,6 +4,7 @@ import DeleteModal from "../Modals/delete-book-modal";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
 import EditModal from "../Modals/edit-book-modal";
+import { useTranslation } from "react-i18next";
 
 const BooksTable = ({ books, book, onBookDeleted }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,12 +18,13 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
   const { usuario, token } = useAutenticacao();
   const bookId = book ? book._id : null;
   const booksPerPage = 5;
+  const { t } = useTranslation();
 
   const handleDeleteBook = async (userId, bookId) => {
     try {
       if (!usuario || !token) {
         console.error(
-          "Token ou usuário não disponível. Realize o login novamente."
+          t("token")
         );
         return;
       }
@@ -39,7 +41,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         onBookDeleted();
       }
     } catch (error) {
-      console.error("Erro ao excluir livro:", error.message);
+      console.error(t("erro_excluir_livro"), error.message);
     }
   };
 
@@ -133,7 +135,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         <input
           id="inputSearch"
           type="text"
-          placeholder="Título, Gênero, Autor..."
+          placeholder={t("titulo_genero_autor")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="block w-64 rounded-lg border border-primary-400 dark:border-none dark:bg-text-primary-950 py-2 pl-10 pr-4 text-sm focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-500 placeholder-primary-300"
@@ -161,7 +163,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         }}
         className="bg-primary-700 hover:bg-primary-900 text-white font-bold py-2 px-4 rounded-lg"
       >
-        Deletar
+        {t("deletar")}
       </button>
       <table className="w-full border-separate border-spacing-2">
         <thead className="text-xs text-primary-950 uppercase bg-primary-200 dark:bg-primary-700 dark:text-primay-400">
@@ -195,22 +197,22 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
               Nº
             </th>
             <th scope="col" className="px-6 py-3">
-              Título
+            {t("titulo")}
             </th>
             <th scope="col" className="px-6 py-3">
-              Autor
+            {t("autor")}
             </th>
             <th scope="col" className="px-6 py-3">
-              Gênero
+            {t("genero")}
             </th>
             <th scope="col" className="px-6 py-3">
-              Status
+            {t("status")}
             </th>
             <th scope="col" className="px-6 py-3">
-              Avaliação
+            {t("avaliacao")}
             </th>
             <th scope="col" className="px-6 py-3">
-              Ações
+            {t("acoes")}
             </th>
           </tr>
         </thead>
@@ -261,7 +263,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                   }}
                   className="font-medium text-primary-900 dark:text-primary-900 hover:underline"
                 >
-                  Ver
+                  {t("ver")}
                 </a>
 
                 <a
@@ -269,7 +271,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                   onClick={() => handleEditBook(book)}
                   className="font-medium text-primary-900 dark:text-primary-900 hover:underline "
                 >
-                  Editar
+                  {t("editar")}
                 </a>
 
                 <a
@@ -281,7 +283,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                   }}
                   className="font-medium text-primary-900 dark:text-primary-900 hover:underline"
                 >
-                  Deletar
+                  {t("deletar")}
                 </a>
               </td>
             </tr>
@@ -294,12 +296,12 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         aria-label="Page navigation example"
       >
         <p className="text-primary-950">
-          Mostrando{" "}
+        {t("mostrar")}{" "}
           <strong>
             {indexOfFirstBook + 1}-
             {Math.min(indexOfLastBook, filteredBooks.length)}
           </strong>{" "}
-          de <strong>{filteredBooks.length}</strong>
+          {t("de")} <strong>{filteredBooks.length}</strong>
         </p>
 
         <ul className="list-style-none flex">
@@ -309,7 +311,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
               href="#!"
               onClick={() => paginate(Math.max(1, currentPage - 1))}
             >
-              Anterior
+              {t("anterior")}
             </a>
           </li>
 
@@ -345,7 +347,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
                 )
               }
             >
-              Próximo
+              {t("proximo")}
             </a>
           </li>
         </ul>

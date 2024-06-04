@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import BookCard from "../Cards/modal-book-card";
+import { useTranslation } from "react-i18next";
 
 const GoogleBooksModal = ({
   isOpen,
@@ -13,10 +14,11 @@ const GoogleBooksModal = ({
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const handleSearch = async () => {
     if (!searchTerm) {
-      setError("Por favor, digite algo para pesquisar.");
+      setError(t("digite_algo_para_pesquisar"));
       return;
     }
 
@@ -30,11 +32,11 @@ const GoogleBooksModal = ({
         setSearchResults(response.data.items);
       } else {
         setSearchResults([]);
-        setError("Nenhum título encontrado.");
+        setError(t("titulo_nao_encontrado"));
       }
     } catch (error) {
-      console.error("Erro ao buscar livros:", error.message);
-      setError("Erro ao buscar livros. Tente novamente mais tarde.");
+      console.error(t("erro_buscar_livros"), error.message);
+      setError(t("erro_livros_tente_mais_tarde"));
     } finally {
       setLoading(false);
     }
@@ -44,7 +46,7 @@ const GoogleBooksModal = ({
     onClose();
     onSelectBook(book);
     if (typeof showNotification === "function") {
-      showNotification("Livro adicionado com sucesso!", "success");
+      showNotification(t("livro_adicionado"), "success");
     }
   };
 
@@ -89,7 +91,7 @@ const GoogleBooksModal = ({
             </svg>
           </button>
           <h3 className="text-xl font-semibold text-primary-950">
-            Adicionar com Google Livros
+          {t("adicionar_google_livros")}
           </h3>
           <button
             type="button"
@@ -116,7 +118,7 @@ const GoogleBooksModal = ({
           <input
             type="text"
             className="w-full placeholder-primary-300 border border-primary-800 focus:border-primary-800 focus:outline-none bg-primary-50 rounded-lg px-3 py-2 mb-3 text-primary-900"
-            placeholder="Digite o título do livro"
+            placeholder={t("titulo_livro")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -126,7 +128,7 @@ const GoogleBooksModal = ({
             onClick={handleSearch}
             disabled={loading}
           >
-            {loading ? "Carregando..." : "Pesquisar"}
+            {loading ? t("carregando") : t("pesquisar")}
           </button>
           {error && <div className="mt-2 text-primary-800">{error}</div>}
 
@@ -142,7 +144,7 @@ const GoogleBooksModal = ({
             ))}
             {searchResults.length === 0 && !loading && !error && (
               <div className="text-center text-primary-800">
-                Nenhum resultado encontrado.
+                {t("nenhum_resultado_encontrado")}
               </div>
             )}
           </div>

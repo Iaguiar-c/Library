@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import DeleteModal from "../Modals/delete-book-modal";
 import InfoModal from "../Modals/info-book-modal";

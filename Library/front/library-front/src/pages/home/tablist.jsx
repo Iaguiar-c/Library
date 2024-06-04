@@ -3,6 +3,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { Api } from "../../services/api";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
+import { useTranslation } from "react-i18next";
 
 const TabListContainer = styled.div`
   ${tw`w-full overflow-hidden`}
@@ -62,10 +63,11 @@ const TabComponent = ({ onTabChange }) => {
   const [indicatorStyle, setIndicatorStyle] = useState({});
   const { usuario, token } = useAutenticacao();
   const tabsRef = useRef([]);
+  const { t } = useTranslation();
 
   const fetchBooks = useCallback(async (status = "ALL") => {
     if (!usuario || !token) {
-      console.error("Token ou usuário não disponível. Realize o login novamente.");
+      console.error(t("token"));
       return;
     }
 
@@ -87,7 +89,7 @@ const TabComponent = ({ onTabChange }) => {
 
       setBooks(response.data.books);
     } catch (error) {
-      console.error("Erro ao buscar livros:", error.message);
+      console.error(t("erro_ao_buscar_livros"), error.message);
     }
     setLoading(false);
   }, [usuario, token]);

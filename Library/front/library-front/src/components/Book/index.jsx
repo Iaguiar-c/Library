@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const Book = ({ srcImg, title, authors, published, id }) => (
+function Book({ srcImg, title, authors, published, id }) {
+  const { t } = useTranslation();
+
+  return(
+
   <div className="bg-white rounded-md p-4 shadow-md">
     <div className="flex flex-col md:flex-row">
       <div className="flex-shrink-0">
@@ -18,21 +23,22 @@ const Book = ({ srcImg, title, authors, published, id }) => (
             <Link to={`books/${id}`}>{title}</Link>
           </h2>
           <h3 className="text-sm text-gray-600">
-            Author: {authors?.join(', ') || 'Unknown'}
+            {t("autor")}: {authors?.join(', ') || 'Unknown'}
           </h3>
           <p className="text-sm text-gray-600">
-            Published: <time>{published || 'Unknown'}</time>
+            {t("publicacao")}: <time>{published || 'Unknown'}</time>
           </p>
         </div>
         <Link to={`books/${id}`} className="mt-4 md:mt-0">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            More Info
+            {t("mais_informacoes")}
           </button>
         </Link>
       </div>
     </div>
   </div>
-);
+  )
+};
 
 Book.propTypes = {
   srcImg: PropTypes.string,
