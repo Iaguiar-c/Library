@@ -3,6 +3,7 @@ import tw from "twin.macro";
 import logoImage from "../../assets/logoBom.png";
 import FeatureSection from "./FeatureSection";
 import { Container2, ContentWithVerticalPadding, Header, HeroContent, HeroSection, NavLink, NavLinks, PrimaryButton, PrimaryLink, SectionDescription, SectionHeading } from "./styles";
+import { useTranslation } from "react-i18next";
 
 const HeaderComponent = ({ links }) => (
   <Header>
@@ -25,6 +26,7 @@ export default function FeatureSectionWithHeader({
 }) {
   const featureSectionRef = useRef(null);
   const buttonRoundedCss = buttonRounded ? tw`rounded-full` : "";
+  const { t } = useTranslation();
 
   const scrollToFeatureSection = () => {
     if (featureSectionRef.current) {
@@ -35,10 +37,10 @@ export default function FeatureSectionWithHeader({
   const navLinks = (
     <>
       <NavLink href="/login" css={tw`ml-8`}>
-        Entrar
+        {t("entrar")}
       </NavLink>
       <PrimaryLink href="/register" css={buttonRoundedCss}>
-        Cadastre-se
+        {t("cadastre_se")}
       </PrimaryLink>
     </>
   );

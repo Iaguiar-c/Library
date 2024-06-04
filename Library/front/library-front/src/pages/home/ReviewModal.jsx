@@ -1,9 +1,11 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { useTranslation } from "react-i18next";
 
 const ReviewModal = ({ isOpen, onClose, books }) => {
   const filteredBooks = books.filter((book) => book.status === "read");
+  const { t } = useTranslation();
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -58,7 +60,7 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
                   as="h3"
                   className="text-lg font-bold leading-6 text-primary-950 "
                 >
-                  Avaliações dos Livros que foram Lidos
+                  {t("avaliacoes_dos_livros_que_foram_lidos")}
                 </Dialog.Title>
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ">
                   {filteredBooks.map((book) => (

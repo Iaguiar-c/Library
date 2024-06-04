@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { useTranslation } from "react-i18next";
-import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
 import ModalGenerico from "../../components/ModalGenerico";
 import { termosContent } from "../../components/TermosECondicoes";
 import { SectionHeading, SectionDescription } from "../landingPage/styles";
@@ -47,7 +46,7 @@ const UserRegister = () => {
       await forgotPasswordCheckUser(email);
 
       enqueueSnackbar(
-        "Esse e-mail usuário já existe. Por favor insira um e-mail diferente.",
+        t("esse_email_de_usuario_ja_existe"),
         {
           variant: "warning",
         }
@@ -61,7 +60,7 @@ const UserRegister = () => {
     if (!username || !email || !password || !confirmpassword) {
       setLoading(false);
       return enqueueSnackbar(
-        "Por favor, preencha todos os campos obrigatórios.",
+        t("por_favor_preencha_todos_os_campos"),
         { variant: "error" }
       );
     }
@@ -69,21 +68,21 @@ const UserRegister = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setLoading(false);
-      return enqueueSnackbar("Formato de email inválido.", {
+      return enqueueSnackbar(t("formato_de_email_invalido"), {
         variant: "error",
       });
     }
 
     if (password !== confirmpassword) {
       setLoading(false);
-      return enqueueSnackbar("As senhas precisam ser iguais!", {
+      return enqueueSnackbar(t("as_senhas_precisam_ser_iguais"), {
         variant: "error",
       });
     }
 
     if (!isTermsChecked) {
       setLoading(false);
-      return enqueueSnackbar("Você deve aceitar os Termos e Condições.", {
+      return enqueueSnackbar(t("voce_deve_aceitar_os_termos_e_condicoes"), {
         variant: "error",
       });
     }
@@ -97,14 +96,14 @@ const UserRegister = () => {
       formData.append("profile", profilepicture);
 
       await postUsuario(formData);
-      enqueueSnackbar("Usuário registrado com sucesso!", {
+      enqueueSnackbar(t("usuario_registrado_com_sucesso"), {
         variant: "success",
       });
       navigate("/login");
     } catch (error) {
       console.log(error);
       enqueueSnackbar(
-        "Erro ao registrar usuário. Por favor, tente novamente mais tarde.",
+        t("erro_ao_registrar_usuario"),
         { variant: "error" }
       );
     } finally {
@@ -129,10 +128,10 @@ const UserRegister = () => {
         >
           <div className="text-center m-4">
             <SectionDescription>
-              Abra a capa para aventuras sem fim em
+              {t("abra_a_capa_para_aventuras_sem_fim")}
             </SectionDescription>
             <SectionHeading>BOOKSTER</SectionHeading>
-            <SectionHeading>Digital Library</SectionHeading>
+            <SectionHeading>{t("biblioteca_digital")}</SectionHeading>
           </div>
           <div class="md:max-w-md w-full py-4">
             <div className="flex-auto">
@@ -165,7 +164,7 @@ const UserRegister = () => {
                         value={username}
                         onChange={handleInputChange}
                         className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-                        placeholder="docinho123"
+                        placeholder={t("usuario123")}
                         required
                       />
                     </div>
@@ -182,7 +181,7 @@ const UserRegister = () => {
                         value={email}
                         onChange={handleInputChange}
                         className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-                        placeholder="docinho@gmail.com"
+                        placeholder={t("email_usuario")}
                         required
                       />
                     </div>
@@ -226,7 +225,7 @@ const UserRegister = () => {
                         htmlFor="profile"
                         className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                       >
-                        Foto de perfil
+                        {t("foto_de_perfil")}
                       </label>
                       <input
                         type="text"
@@ -234,7 +233,7 @@ const UserRegister = () => {
                         value={profilepicture}
                         onChange={handleInputChange}
                         className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-                        placeholder="Insira a URL da imagem"
+                        placeholder={t("insira_a_url_da_imagem")}
                       />
                     </div>
                     <div className="flex items-start">

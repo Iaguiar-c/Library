@@ -4,10 +4,12 @@ import personalidade from "../../assets/personalidade.png";
 import seguranca from "../../assets/segurança.jpg";
 import ferramenta from "../../assets/ferramenta.jpg";
 import { Container, Description, Heading, Section } from "./styles";
+import { useTranslation } from "react-i18next";
 
 const FeatureSection = forwardRef((props, ref) => {
   const [tab, setTab] = useState(1);
   const tabs = useRef(null);
+  const { t } = useTranslation();
 
   const heightFix = () => {
     if (tabs.current && tabs.current.parentElement) {
@@ -21,21 +23,21 @@ const FeatureSection = forwardRef((props, ref) => {
 
   const solutions = [
     {
-      title: "Experiência Personalizada e Intuitiva",
+      title: t("experiencia_personalizada_e_intuitiva"),
       description:
-        "Nossa plataforma oferece uma interface amigável e fácil de usar, permitindo que você personalize seu perfil e escreva avaliações de seus livros para melhorar sua experiência de leitura.",
+        t("plataforma_oferece_uma_interface_amigavel"),
       content: personalidade,
     },
     {
-      title: "Segurança e Suporte",
+      title: t("seguranca_e_suporte"),
       description:
-        "Priorizamos a segurança dos seus dados com práticas robustas e oferecemos suporte multilíngue para atender usuários globais.",
+        t("priorizamos_a_seguranca"),
       content: seguranca,
     },
     {
-      title: "Ferramentas Avançadas de Biblioteca",
+      title: t("ferramentas_avancadas"),
       description:
-        "Com uma vasta coleção de conteúdo disponível e funcionalidades de pesquisa avançadas, você pode facilmente encontrar e adicionar novos títulos à sua biblioteca digital.",
+        t("colecao_de_conteudo_disponivel"),
       content: ferramenta,
     },
   ];
@@ -45,10 +47,10 @@ const FeatureSection = forwardRef((props, ref) => {
       <Container>
         <div className="pt-12 md:pt-20">
           <div className="max-w-3xl mx-auto text-center">
-            <Heading>Recursos Incríveis</Heading>
+            <Heading>{t("recursos_incriveis")}</Heading>
             <Description>
-              Conheça as principais funcionalidades que tornam nossa biblioteca
-              digital única e adaptada às suas necessidades.
+              {t("principais_funcionalidades")}
+              {t("digital_unica_e_adaptada")}
             </Description>
           </div>
           <div className="md:grid md:grid-cols-12 md:gap-6">

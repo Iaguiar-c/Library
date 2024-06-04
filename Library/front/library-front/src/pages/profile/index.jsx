@@ -5,10 +5,10 @@ import { useSnackbar } from "notistack";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
-import { convertToImageUrl } from "../../services/profileService";
 import LogoPadrao from "../../assets/logopadrao.png";
 import ModalGenerico from "../../components/ModalGenerico";
 import DeleteModal from "../../components/Modals/delete-book-modal";
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const { usuario, setUsuario } = useAutenticacao();
@@ -24,6 +24,7 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState("");
   const closeModal = () => setShowEditModal(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (usuario && usuario.profile) {
@@ -47,14 +48,14 @@ export default function Profile() {
 
       setUsuario((prev) => ({ ...prev, name: username, email: email,  profile: profile }));
 
-      enqueueSnackbar("Seu usuário foi alterado com sucesso.", {
+      enqueueSnackbar(t("usuario_alterado_com_sucesso"), {
         variant: "success",
       });
       setShowEditModal(false);
     } catch (error) {
       console.error(error);
 
-      const errorMessage = error.response?.data?.error || 'Não foi possível editar o usuário. Por favor, tente novamente.';
+      const errorMessage = error.response?.data?.error || t("nao_foi_possivel_editar_o_usuario");
       enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setLoading(false);
@@ -67,16 +68,16 @@ export default function Profile() {
     try {
       if (usuario?._id) {
         await deleteUsuario(usuario._id);
-        enqueueSnackbar("Usuário deletado com sucesso!", {
+        enqueueSnackbar(t("usuario_deletado_com_sucesso"), {
           variant: "success",
         });
         navigate("/login");
       } else {
-        setError("Usuário não encontrado para deleção.", { variant: "error" });
+        setError(t("usuario_nao_encontrado_para_deletar"), { variant: "error" });
       }
     } catch (error) {
-      console.error("Erro ao deletar usuário:", error);
-      setError("Ocorreu um erro ao deletar o usuário.", { variant: "error" });
+      console.error(t("erro_ao_deletar_usuario"), error);
+      setError(t("ocorreu_um_erro_ao_deletar_usuario"), { variant: "error" });
     } finally {
       setLoading(false);
     }
@@ -122,7 +123,7 @@ export default function Profile() {
         {!usuario && (
           <div className="p-6">
             <p className="text-gray-600">
-              Faça login para visualizar o perfil.
+              {t("faca_login_para_visualizar_o_perfil")}
             </p>
           </div>
         )}
@@ -144,14 +145,14 @@ export default function Profile() {
                     htmlFor="username"
                     className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                   >
-                    Nome de usuário
+                    {t("nome_de_usuario")}
                   </label>
                   <input
                     type="text"
                     name="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Editar nome de usuário"
+                    placeholder={t("editar_nome_de_usuario")}
                     className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     required
                   />
@@ -161,14 +162,14 @@ export default function Profile() {
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                   >
-                    E-mail
+                    {t("e_mail")}
                   </label>
                   <input
                     type="text"
                     name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Editar e-mail"
+                    placeholder={t("editar_email")}
                     className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     required
                   />
@@ -178,14 +179,14 @@ export default function Profile() {
                     htmlFor="profile"
                     className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                   >
-                    Foto de Perfil 
+                    {t("foto_de_perfil")}
                   </label>
                   <input
                     type="text"
                     name="profile"
                     value={profile}
                     onChange={(e) => setProfile(e.target.value)}
-                    placeholder="Editar e-mail"
+                    placeholder={t("editar_foto_de_perfil")}
                     className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     required
                   />
@@ -195,7 +196,7 @@ export default function Profile() {
                     type="submit"
                     className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
                   >
-                    Editar
+                    {t("editar")}
                   </button>
                 </div>
               </form>

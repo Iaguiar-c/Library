@@ -4,7 +4,6 @@ import { useSnackbar } from "notistack";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { useTranslation } from "react-i18next";
 import PasswordField from "../../components/PasswordField/PasswordField";
-import AnimacaoInicioBookster from "../../components/AnimacaoInicioBookster";
 import ModalGenerico from "../../components/ModalGenerico";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { customStylesModal } from "./styles";
@@ -23,7 +22,6 @@ const LoginUsuario = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [verificationModalIsOpen, setVerificationModalIsOpen] = useState(false);
@@ -35,7 +33,7 @@ const LoginUsuario = () => {
   const closeChangePasswordModal = () => setChangePasswordModalIsOpen(false);
 
   const handleSuccess = () => {
-    enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
+    enqueueSnackbar(t("login_realizado_com_sucesso"), { variant: "success" });
     setError(null);
     navigate("/home");
   };
@@ -43,7 +41,7 @@ const LoginUsuario = () => {
   const forgotPassword = async (e) => {
     e.preventDefault();
     if (email === "") {
-      enqueueSnackbar("Por favor, preencha seu e-mail", { variant: "warning" });
+      enqueueSnackbar(t("por_favor_preencha_seu_email"), { variant: "warning" });
     } else {
       await getUserExist(email);
     }
@@ -51,7 +49,7 @@ const LoginUsuario = () => {
 
   const sendEmailPassword = async (email) => {
     await sendEmail(email);
-    enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", {
+    enqueueSnackbar(t("verifique_seu_email_para_definir"), {
       variant: "success",
     });
   };
@@ -72,7 +70,7 @@ const LoginUsuario = () => {
     } catch (error) {
       console.log(error);
       setError(
-        "Não foi encontrado nenhum usuário correspondente a este e-mail"
+       t("nao_foi_encontrado_nenhum_usuario")
       );
     } finally {
       setLoading(false);
@@ -82,14 +80,14 @@ const LoginUsuario = () => {
   const handleVerificationSubmit = (e) => {
     e.preventDefault();
     if (validateVerificationCode(email, verificationCode)) {
-      enqueueSnackbar("Código de verificação validado com sucesso!", {
+      enqueueSnackbar(t("codigo_de_verificacao_validado"), {
         variant: "success",
       });
       setVerificationCode("");
       closeVerificationModal();
       setChangePasswordModalIsOpen(true);
     } else {
-      enqueueSnackbar("Código de verificação inválido. Tente novamente.", {
+      enqueueSnackbar(t("codigo_de_verificacao_invalido"), {
         variant: "error",
       });
     }
@@ -114,7 +112,7 @@ const LoginUsuario = () => {
 
         if (response.status === 200) {
           enqueueSnackbar(
-            "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
+            t("senha_alterada_com_sucesso"),
             { variant: "success" }
           );
           closeChangePasswordModal();
@@ -122,12 +120,12 @@ const LoginUsuario = () => {
           enqueueSnackbar(response.data.msg, { variant: "error" });
         }
       } else {
-        enqueueSnackbar("As senhas precisam ser iguais.", { variant: "error" });
+        enqueueSnackbar(t("as_senhas_precisam_ser_iguais"), { variant: "error" });
       }
     } catch (error) {
       enqueueSnackbar(
         error.response?.data?.msg ||
-          "Não foi possível alterar a senha. Tente novamente mais tarde.",
+          t("nao_foi_possivel_alterar_a_senha"),
         { variant: "error" }
       );
     } finally {
@@ -147,11 +145,11 @@ const LoginUsuario = () => {
         setError(null);
         handleSuccess();
       } else {
-        setError("Credenciais inválidas. Por favor, tente novamente.");
+        setError(t("credenciais_invalidas"));
       }
     } catch (error) {
       console.log(error);
-      setError("Credenciais inválidas. Por favor, tente novamente.");
+      setError(t("credenciais_invalidas"));
     } finally {
       setLoading(false);
     }
@@ -182,10 +180,10 @@ const LoginUsuario = () => {
         >
           <div className="text-center m-4">
             <SectionDescription>
-              Abra a capa para aventuras sem fim em
+              {t("abra_a_capa_para_aventuras")}
             </SectionDescription>
             <SectionHeading>BOOKSTER</SectionHeading>
-            <SectionHeading>Digital Library</SectionHeading>
+            <SectionHeading>{t("biblioteca_digital_minusculo")}</SectionHeading>
           </div>
 
           <div class="md:max-w-md w-full py-4">
@@ -250,7 +248,7 @@ const LoginUsuario = () => {
                       >
                         {loading ? (
                           <div className="flex items-center justify-center">
-                            <span className="mr-2">Entrando...</span>
+                            <span className="mr-2">{t("entrando")}</span>
                             <svg
                               className="animate-spin h-5 w-5 text-primary-950"
                               xmlns="http://www.w3.org/2000/svg"
@@ -278,13 +276,13 @@ const LoginUsuario = () => {
                       </button>
                     </div>
                     <p className="text-sm font-light text-primary-950 dark:text-primary-400">
-                      Ainda não tem uma conta?{" "}
+                      {t("ainda_nao_tem_uma_conta")}{" "}
                       <a
                         href="register"
                         className="font-medium text-primary-500 hover:underline dark:text-primary-500"
                         onClick={handleRegisterClick}
                       >
-                        Registre-se
+                        {t("registre_se")}
                       </a>
                     </p>
                   </form>
@@ -306,14 +304,14 @@ const LoginUsuario = () => {
                   htmlFor="verificationCode"
                   className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                 >
-                  Informe o código de verificação
+                  {t("informe_o_codigo_de_verificacao")}
                 </label>
                 <input
                   type="text"
                   name="verificationCode"
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  placeholder="Digite o código de verificação"
+                  placeholder={t("digite_o_codigo_de_verificacao")}
                   className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required
                 />
@@ -323,10 +321,10 @@ const LoginUsuario = () => {
                   type="submit"
                   className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
                 >
-                  Verificar
+                  {t("verificar")}
                 </button>
                 <button onClick={() => sendEmailPassword(email)}>
-                  Reenviar e-mail
+                  {t("reenviar_email")}
                 </button>
               </div>
             </form>
@@ -345,14 +343,14 @@ const LoginUsuario = () => {
                   htmlFor="newPassword"
                   className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                 >
-                  Nova Senha
+                  {t("nova_senha")}
                 </label>
                 <input
                   type="password"
                   name="newPassword"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Nova senha"
+                  placeholder={t("nova_senha")}
                   className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required
                 />
@@ -362,14 +360,14 @@ const LoginUsuario = () => {
                   htmlFor="confirmNewPassword"
                   className="block mb-2 text-sm font-medium text-primary-950 dark:text-primary"
                 >
-                  Confirmar Nova Senha
+                  {t("confirmar_nova_senha")}
                 </label>
                 <input
                   type="password"
                   name="confirmNewPassword"
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  placeholder="Confirmar nova senha"
+                  placeholder={t("confirmar_nova_senha")}
                   className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-primary-700 dark:border-primary-600 dark:placeholder-primary-400 dark:text-primary dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required
                 />
@@ -379,7 +377,7 @@ const LoginUsuario = () => {
                   type="submit"
                   className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
                 >
-                  Alterar Senha
+                  {t("alterar_senha")}
                 </button>
               </div>
             </form>
