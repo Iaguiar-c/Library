@@ -86,7 +86,7 @@ export const HeroSection = styled.div`
   padding-bottom: 4rem;
   &:before {
     content: "";
-    ${tw`absolute inset-0 bg-black opacity-35`}
+    ${tw`absolute inset-0 bg-primary-950 opacity-30`}
   }
 `;
 

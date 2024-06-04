@@ -9,6 +9,8 @@ import ModalGenerico from "../../components/ModalGenerico";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import { customStylesModal } from "./styles";
 import { useEmail } from "../../contextos/EmailProvider/EmailProvider";
+import backgroundImage from "../../assets/backgroundLandingPage.png";
+import { SectionHeading, SectionDescription } from "../landingPage/styles";
 
 const LoginUsuario = () => {
   const { t } = useTranslation();
@@ -25,7 +27,8 @@ const LoginUsuario = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [verificationModalIsOpen, setVerificationModalIsOpen] = useState(false);
-  const [changePasswordModalIsOpen, setChangePasswordModalIsOpen] = useState(false);
+  const [changePasswordModalIsOpen, setChangePasswordModalIsOpen] =
+    useState(false);
   const [verificationCode, setVerificationCode] = useState("");
 
   const closeVerificationModal = () => setVerificationModalIsOpen(false);
@@ -51,10 +54,10 @@ const LoginUsuario = () => {
     enqueueSnackbar("Verifique seu e-mail para definir uma nova senha.", {
       variant: "success",
     });
-  }
+  };
 
   const getUserExist = async (email) => {
-    console.log(email)
+    console.log(email);
     setLoading(true);
     setError(null);
 
@@ -100,13 +103,20 @@ const LoginUsuario = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
       if (newPassword === confirmNewPassword) {
-        const response = await updatePassword(email, newPassword, confirmNewPassword);
-        
+        const response = await updatePassword(
+          email,
+          newPassword,
+          confirmNewPassword
+        );
+
         if (response.status === 200) {
-          enqueueSnackbar("Sua senha foi alterada com sucesso! Por favor, faça login novamente", { variant: "success" });
+          enqueueSnackbar(
+            "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
+            { variant: "success" }
+          );
           closeChangePasswordModal();
         } else {
           enqueueSnackbar(response.data.msg, { variant: "error" });
@@ -115,12 +125,15 @@ const LoginUsuario = () => {
         enqueueSnackbar("As senhas precisam ser iguais.", { variant: "error" });
       }
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.msg || "Não foi possível alterar a senha. Tente novamente mais tarde.", { variant: "error" });
+      enqueueSnackbar(
+        error.response?.data?.msg ||
+          "Não foi possível alterar a senha. Tente novamente mais tarde.",
+        { variant: "error" }
+      );
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -157,107 +170,127 @@ const LoginUsuario = () => {
   }, [error, enqueueSnackbar, usuario]);
 
   return (
-    <section className="bg-gradient-to-tl from-purple-950 to-purple-400 min-h-screen flex flex-row items-center justify-center">
-      <AnimacaoInicioBookster />
+    <section className="bg-gradient-to-tl from-purple-950 to-purple-800 min-h-screen flex flex-row items-center justify-center">
+      <div class="min-h-screen flex flex-col items-center justify-center">
+        <div
+          class="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full p-4 m-4 shadow rounded-md"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="text-center m-4">
+            <SectionDescription>
+              Abra a capa para aventuras sem fim em
+            </SectionDescription>
+            <SectionHeading>BOOKSTER</SectionHeading>
+            <SectionHeading>Digital Library</SectionHeading>
+          </div>
 
-      <div className="flex-auto max-w-xs">
-        <div className="flex justify-center items-center mb-8">
-          <img
-            src={require("../../assets/logoBom.png")}
-            alt="Logo"
-            style={{ width: "10rem", height: "11rem" }}
-          />
-        </div>
-
-        <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <div className="sm:mx-auto sm:w-full">
-              <h2 className="text-center text-2xl font-bold leading-9 text-primary-950">
-                {t("entre_na_sua_conta")}
-              </h2>
-            </div>
-
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-primary-950"
-                >
-                  {t("email")}
-                </label>
-                <div className="mt=2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                  />
-                </div>
+          <div class="md:max-w-md w-full py-4">
+            <div className="flex-auto">
+              <div className="flex justify-center items-center mb-8">
+                <img
+                  src={require("../../assets/logoBom.png")}
+                  alt="Logo"
+                  style={{ width: "10rem", height: "11rem" }}
+                />
               </div>
 
-              <div className="mt-2">
-                <PasswordField passwordRef={passwordRef} />
-                <div className="text-sm text-right py-1.5">
-                  <button
-                    type="button"
-                    className="font-semibold text-primary-500 hover:text-primary-500"
-                    onClick={forgotPassword}
-                  >
-                    {t("esqueceu_a_senha")}
-                  </button>
-                </div>
-              </div>
-              <p className="text-sm font-light text-primary-950 dark:text-primary-400">
-                  Ainda não tem uma conta? {" "}
-                  <a
-                    href="register"
-                    className="font-medium text-primary-500 hover:underline dark:text-primary-500"
-                    onClick={handleRegisterClick}
-                  >
-                      Registre-se
-                  </a>
-                </p>
+              <div className="w-full bg-primary-100 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-primary-800 dark:border-primary-700">
+                <div className="p-6 space-y-4 md:space-y-6 ">
+                  <div className="sm:mx-auto sm:w-full">
+                    <h2 className="text-center text-2xl font-bold leading-9 text-primary-950">
+                      {t("entre_na_sua_conta")}
+                    </h2>
+                  </div>
 
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <div className="flex items-center justify-center">
-                      <span className="mr-2">Entrando...</span>
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium leading-6 text-primary-950"
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        ></path>
-                      </svg>
+                        {t("email")}
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full rounded-md border-0 py-2 px-3 text-primary-900 shadow-sm ring-1 ring-inset ring-primary-300 placeholder-text-primary-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                        />
+                      </div>
                     </div>
-                  ) : (
-                    t("entrar")
-                  )}
-                </button>
+
+                    <div className="mt-2">
+                      <PasswordField passwordRef={passwordRef} />
+                      <div className="text-sm text-right py-1.5">
+                        <button
+                          type="button"
+                          className="font-semibold text-primary-500 hover:text-primary-500"
+                          onClick={forgotPassword}
+                        >
+                          {t("esqueceu_a_senha")}
+                        </button>
+                      </div>
+                    </div>
+                  
+
+                    <div className="mt-6">
+                      <button
+                        type="submit"
+                        className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <div className="flex items-center justify-center">
+                            <span className="mr-2">Entrando...</span>
+                            <svg
+                              className="animate-spin h-5 w-5 text-primary-950"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                              ></path>
+                            </svg>
+                          </div>
+                        ) : (
+                          t("entrar")
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-sm font-light text-primary-950 dark:text-primary-400">
+                      Ainda não tem uma conta?{" "}
+                      <a
+                        href="register"
+                        className="font-medium text-primary-500 hover:underline dark:text-primary-500"
+                        onClick={handleRegisterClick}
+                      >
+                        Registre-se
+                      </a>
+                    </p>
+                  </form>
+                </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -292,7 +325,9 @@ const LoginUsuario = () => {
                 >
                   Verificar
                 </button>
-                <button onClick={() => sendEmailPassword(email)}>Reenviar e-mail</button>
+                <button onClick={() => sendEmailPassword(email)}>
+                  Reenviar e-mail
+                </button>
               </div>
             </form>
           </>

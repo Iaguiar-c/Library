@@ -52,6 +52,7 @@ const tabs = [
   { label: "Lido", value: "read" },
   { label: "Lendo", value: "reading" },
   { label: "Quero Ler", value: "to-read" },
+  
 ];
 
 const TabComponent = ({ onTabChange }) => {
