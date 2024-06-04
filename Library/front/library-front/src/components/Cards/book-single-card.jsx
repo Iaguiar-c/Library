@@ -1,8 +1,6 @@
-// BookSingleCard.js
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
-import { Api } from "../../services/api";
 import DeleteModal from "../Modals/delete-book-modal";
 import InfoModal from "../Modals/info-book-modal";
 import EditModal from "../Modals/edit-book-modal";
@@ -15,45 +13,10 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const { usuario, token } = useAutenticacao();
   const bookId = book._id;
 
-  const handleDeleteBook = async (userId) => {
-    try {
-      if (!usuario || !token) {
-        console.error(
-          "Token ou usuário não disponível. Realize o login novamente."
-        );
-        return;
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      await Api.delete(`/${userId}/books/${bookId}`, config);
-
-      if (onBookDeleted) {
-        onBookDeleted();
-      }
-    } catch (error) {
-      console.error("Erro ao excluir livro:", error.message);
-    }
-  };
-
-  const refreshPage = () => {
-    window.location.reload();
-  };
-
-  const handleConfirmDelete = () => {
-    handleDeleteBook(usuario._id);
-    setShowDeleteModal(false);
-    refreshPage();
-  };
-
   return (
     <div>
       <div
-        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[400px] flex flex-col justify-between"
+        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[500px] flex flex-col justify-between"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -128,7 +91,14 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
       <DeleteModal
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleConfirmDelete}
+        onConfirm={() => {
+          setShowDeleteModal(false);
+          if (onBookDeleted) onBookDeleted();
+        }}
+        bookId={bookId}
+        userId={usuario._id}
+        token={token}
+        isUserDelete={false}
       />
       <InfoModal
         showModal={showInfoModal}

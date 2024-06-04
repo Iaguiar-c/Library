@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import BookCard from "../Cards/modal-book-card";
 
-const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, showNotification }) => {
+const GoogleBooksModal = ({
+  isOpen,
+  onClose,
+  onSelectBook,
+  onCloseSelectModal,
+  showNotification,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +24,7 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, s
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&maxResults=20`,
+        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&maxResults=20`
       );
       if (response.data.items && response.data.items.length > 0) {
         setSearchResults(response.data.items);
@@ -37,7 +43,7 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, s
   const handleBookSelection = (book) => {
     onClose();
     onSelectBook(book);
-    if (typeof showNotification === 'function') {
+    if (typeof showNotification === "function") {
       showNotification("Livro adicionado com sucesso!", "success");
     }
   };
@@ -53,15 +59,16 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, s
       id="default-modal"
       tabIndex="-1"
       aria-hidden={!isOpen}
-      className={`modal fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50 z-50 overflow-y-auto`}
+      className={`modal fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center z-50 overflow-y-auto `}
       onClick={onCloseSelectModal}
     >
       <div
-        className="modal-container bg-primary-100 rounded-lg shadow-lg w-full max-w-2xl p-4 md:p-5"
+        className="modal-container bg-primary-100 rounded-lg shadow-lg w-full max-w-2xl p-4 md:p-5 "
+        style={{ minHeight: "400px", maxHeight: "80vh" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-header flex justify-between border-b pb-3 mb-3">
-        <button
+        <div className="modal-header flex justify-between border-b pb-3 mb-3 ">
+          <button
             type="button"
             className="text-primary-800 hover:text-primary-950"
             onClick={onClose}
@@ -123,18 +130,20 @@ const GoogleBooksModal = ({ isOpen, onClose, onSelectBook, onCloseSelectModal, s
           </button>
           {error && <div className="mt-2 text-primary-800">{error}</div>}
 
-          <div className="mt-4 max-h-96 overflow-y-auto">
+          <div className="mt-4 max-h-96 overflow-y-auto custom-scrollbar">
             {searchResults.map((book) => (
               <div
                 key={book.id}
-                className="cursor-pointer p-4 border rounded-lg mb-2 bg-primary-50 hover:bg-primary-100"
+                className="cursor-pointer p-4 border rounded-lg mb-2 bg-primary-100 hover:bg-primary-50 "
                 onClick={() => handleBookSelection(book)}
               >
                 <BookCard book={book} />
               </div>
             ))}
             {searchResults.length === 0 && !loading && !error && (
-              <div className="text-center text-primary-800">Nenhum resultado encontrado.</div>
+              <div className="text-center text-primary-800">
+                Nenhum resultado encontrado.
+              </div>
             )}
           </div>
         </div>

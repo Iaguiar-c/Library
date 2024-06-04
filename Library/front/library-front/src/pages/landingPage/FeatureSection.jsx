@@ -44,7 +44,7 @@ const FeatureSection = forwardRef((props, ref) => {
     <Section ref={ref}>
       <Container>
         <div className="pt-12 md:pt-20">
-          <div className="max-w-3xl mx-auto text-center pb-12 md:pb-16">
+          <div className="max-w-3xl mx-auto text-center">
             <Heading>Recursos Incríveis</Heading>
             <Description>
               Conheça as principais funcionalidades que tornam nossa biblioteca
@@ -93,7 +93,7 @@ const FeatureSection = forwardRef((props, ref) => {
                 ))}
               </div>
             </div>
-            <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-5 lg:col-span-6 mb-8 md:mb-0 md:order-1">
+            <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-5 ">
               <div className="transition-all">
                 <div
                   className="relative flex flex-col text-center lg:text-right"
@@ -115,15 +115,15 @@ const FeatureSection = forwardRef((props, ref) => {
                       unmount={false}
                     >
                       <div className="inline-flex flex-col">
-                        <div className="max-w-full md:max-w-none mx-auto w-full h-96 mb-4 mt-20 card-zoom">
+                        <div className="h-200 mb-6 mt-20 rounded-lg overflow-hidden">
                           <div
-                            className="card-zoom-image"
-                            style={{ width: "100%", height: "100%" }}
+                            className=""
+                            style={{ width: "100%", height: "200%" }}
                           >
                             <img
                               src={solution.content}
                               alt={solution.title}
-                              className="max-w-full max-h-full object-cover"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                         </div>

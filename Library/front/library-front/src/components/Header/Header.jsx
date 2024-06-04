@@ -41,10 +41,8 @@ export default function Header() {
   }, [traducao]);
 
   useEffect(() => {
-    if (usuario && usuario.profile && usuario.profile.data) {
-      const byteArray = usuario.profile.data;
-      const url = convertToImageUrl(byteArray);
-      setProfileUrl(url);
+    if (usuario && usuario.profile) {
+      setProfileUrl(usuario.profile);
     } else {
       setProfileUrl(LogoPadrao)
     }
@@ -73,7 +71,7 @@ export default function Header() {
   return (
     <>
       <div className="min-h-full">
-        <nav className={`bg-gray-800-${darkMode ? "dark" : ""}`}>
+        <nav className={`bg-primary-800-${darkMode ? "dark" : ""}`}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
@@ -89,7 +87,7 @@ export default function Header() {
                   <div className="ml-10 flex items-baseline space-x-4">
                     <a
                       href="home"
-                      className="bg-primary-700 text-white rounded-md px-3 py-2 text-sm font-medium"
+                      className="bg-primary-700 text-primary-50 rounded-md px-3 py-2 text-sm font-medium"
                       aria-current="page"
                     >
                       Home
@@ -101,7 +99,7 @@ export default function Header() {
                 <div className="ml-4 flex items-center md:ml-6">
                   <button
                     type="button"
-                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="relative rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
                   >
                     <span className="absolute -inset-1.5"></span>
                     <span className="sr-only">View notifications</span>
@@ -125,7 +123,7 @@ export default function Header() {
                     <div>
                       <button
                         type="button"
-                        className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        className="relative flex max-w-xs items-center rounded-full bg-primary-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
                         id="user-menu-button"
                         aria-expanded={open ? "true" : "false"}
                         aria-haspopup="true"
@@ -147,7 +145,7 @@ export default function Header() {
                     <div>
                       <button
                         type="button"
-                        className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        className="relative flex max-w-xs items-center rounded-full bg-primary-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
                         id="user-menu-button"
                         aria-expanded={open ? "true" : "false"}
                         aria-haspopup="true"
@@ -157,7 +155,7 @@ export default function Header() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={profileUrl}
+                          src={profileUrl || ""}
                           alt="foto do usuário"
                         />
                       </button>
@@ -165,7 +163,7 @@ export default function Header() {
 
                     {open ? (
                       <div
-                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-primary-100 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                         role="menu"
                         aria-orientation="vertical"
                         aria-labelledby="user-menu-button"
@@ -173,14 +171,14 @@ export default function Header() {
                       >
                         <button
                           onClick={() => navigate("/profile")}
-                          className="block px-4 py-2 text-sm text-gray-700"
+                          className="block px-4 py-2 text-sm text-primary-700"
                         >
                           Your Profile
                         </button>
 
                         <button
                           onClick={(event) => doLogout(event)}
-                          className="block px-4 py-2 text-sm text-gray-700"
+                          className="block px-4 py-2 text-sm text-primary-700"
                         >
                           Sign out
                         </button>
@@ -194,7 +192,7 @@ export default function Header() {
               <div className="-mr-2 flex md:hidden">
                 <button
                   type="button"
-                  className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="relative inline-flex items-center justify-center rounded-md bg-primary-800 p-2 text-primary-400 hover:bg-primary-700 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
                   aria-controls="mobile-menu"
                   aria-expanded="false"
                 >
@@ -237,37 +235,37 @@ export default function Header() {
             <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
               <a
                 href="#"
-                className="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                className="bg-primary-900 text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
                 aria-current="page"
               >
                 Dashboard
               </a>
               <a
                 href="#"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                className="text-primary-300 hover:bg-primary-700 hover:text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
               >
                 Team
               </a>
               <a
                 href="#"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                className="text-primary-300 hover:bg-primary-700 hover:text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
               >
                 Projects
               </a>
               <a
                 href="#"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                className="text-primary-300 hover:bg-primary-700 hover:text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
               >
                 Calendar
               </a>
               <a
                 href="#"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                className="text-primary-300 hover:bg-primary-700 hover:text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
               >
                 Reports
               </a>
             </div>
-            <div className="border-t border-gray-700 pb-3 pt-4">
+            <div className="border-t border-primary-700 pb-3 pt-4">
               <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
                   <img
@@ -277,16 +275,16 @@ export default function Header() {
                   />
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium leading-none text-white">
+                  <div className="text-base font-medium leading-none text-primary-900">
                     Tom Cook
                   </div>
-                  <div className="text-sm font-medium leading-none text-gray-400">
+                  <div className="text-sm font-medium leading-none text-primary-400">
                     tom@example.com
                   </div>
                 </div>
                 <button
                   type="button"
-                  className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="relative ml-auto flex-shrink-0 rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:ring-offset-2 focus:ring-offset-primary-800"
                 >
                   <span className="absolute -inset-1.5"></span>
                   <span className="sr-only">View notifications</span>
@@ -310,19 +308,19 @@ export default function Header() {
               <div className="mt-3 space-y-1 px-2">
                 <a
                   href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-primary-400 hover:bg-primary-700 hover:text-primary-900"
                 >
                   Your Profile
                 </a>
                 <a
                   href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-primary-400 hover:bg-primary-700 hover:text-primary-900"
                 >
                   Settings
                 </a>
                 <a
                   href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-primary-400 hover:bg-primary-700 hover:text-primary-900"
                 >
                   Sign out
                 </a>

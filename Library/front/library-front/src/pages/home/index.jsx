@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import SelectModal from "../../components/Modals/select-add-books-modal";
+import ReviewModal from "./ReviewModal";
 import { Api } from "../../services/api";
 import BooksCard from "../../components/Cards/books-card";
 import BooksTable from "../../components/Table/books-table";
 import Notification from "../../components/Notification/Notification";
 import FeatureHomeSection from "../../pages/home/FeatureHomeSection";
 import TabComponent from "../../pages/home/tablist";
+import HelpModal from "./HelpModal";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const { usuario, token } = useAutenticacao();
   const [livros, setLivros] = useState([]);
   const [filteredLivros, setFilteredLivros] = useState([]);
@@ -140,25 +144,33 @@ const Home = () => {
           </button>
         </div>
         <TabComponent onTabChange={filterBooks} />
-        <button
-          className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6"
+        <div className="flex gap-2">
+          <button
+            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            onClick={() => setIsReviewModalOpen(true)}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
-        </button>
+            Avaliações
+          </button>
+          <button
+            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       {isModalOpen && (
         <SelectModal
@@ -170,7 +182,13 @@ const Home = () => {
           }
         />
       )}
-
+      {isReviewModalOpen && (
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          books={livros}
+        />
+      )}
       <div className="m-8">
         {filteredLivros.length > 0 ? (
           viewMode === "card" ? (
@@ -188,6 +206,30 @@ const Home = () => {
         message={notification.message}
         variant={notification.variant}
         show={notification.show}
+      />
+
+<div
+        className="fixed bottom-4 right-4 bg-primary-100 shadow-md rounded-full p-4 cursor-pointer"
+        onClick={() => setIsHelpModalOpen(true)} 
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="w-6 h-6 text-primary-700"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+          />
+        </svg>
+      </div>
+  
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
       />
     </section>
   );
