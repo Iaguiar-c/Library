@@ -67,13 +67,14 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
                       className="border p-4 rounded-lg shadow-md bg-primary-100"
                     >
                       <div className="flex items-center justify-between">
-                        <h4 className="text-xl font-bold">{book.title}</h4>
+                      <h4 className="text-xl font-bold" style={{ maxWidth: '320px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.title}</h4>
+
                         {book.isFavorite ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="w-6 h-6 text-primary-950"
+                            className="w-6 h-6 md:w-8 md:h-8 text-primary-950"
                           >
                             <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                           </svg>
@@ -84,7 +85,7 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="currentColor"
-                            className="w-6 h-6 text-primary-950"
+                            className="w-6 h-6 md:w-8 md:h-8 text-primary-950"
                           >
                             <path
                               strokeLinecap="round"
@@ -102,12 +103,12 @@ const ReviewModal = ({ isOpen, onClose, books }) => {
                           .map((_, index) => (
                             <svg
                               key={index}
-                              className="w-6 h-6 text-primary-950"
+                              className="w-6 h-6 md:w-8 md:h-8 text-primary-950"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                               xmlns="http://www.w3.org/2000/svg"
                             >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.175 3.621a1 1 0 00.95.69h3.801c.969 0 1.372 1.24.588 1.81l-3.073 2.228a1 1 0 00-.364 1.118l1.175 3.621c.3.921-.755 1.688-1.54 1.118l-3.073-2.228a1 1 0 00-1.175 0l-3.073 2.228c-.784.57-1.84-.197-1.54-1.118l1.175-3.621a1 1 0 00-.364-1.118L2.34 8.048c-.784-.57-.38-1.81.588-1.81h3.801a1 1 0 00.95-.69l1.175-3.621z" />
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.175 3.621a1 1 0 00.95.69h3.801c.969 0 1.372 1.24.588 1.81l-3.073 2.228a1 1 0 00-.364 1.118l1.175 3.621c.3.921-.755 1.688-1.54 1.118l-3.073-2.228a1 1 0 00-1.175 0l-3.073 2.228c-.784.57-1.84-.197-1.54-1.118l1.175-3.621a1 1 0 0 1-.414-1.118L2.34 8.048c-.784-.57-.38-1.81.588-1.81h3.801a1 1 0 00.95-.69l1.175-3.621z" />
                             </svg>
                           ))}
                       </div>
