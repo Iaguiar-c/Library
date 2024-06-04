@@ -1,13 +1,50 @@
 import React from "react";
+import { useSnackbar } from "notistack";
+import { Api } from "../../services/api";
 
 const DeleteModal = ({
   showModal,
   onClose,
   onConfirm,
-  selectedBooksCount,
+  bookId,
+  userId,
+  token,
   isUserDelete,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   if (!showModal) return null;
+
+  const handleDeleteBook = async () => {
+    try {
+      if (!userId || !token) {
+        console.error(
+          "Token ou usuário não disponível. Realize o login novamente."
+        );
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await Api.delete(`/${userId}/books/${bookId}`, config);
+
+      if (onConfirm) {
+        onConfirm();
+      }
+
+      enqueueSnackbar("Livro deletado com sucesso", { variant: "success" });
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao excluir livro:", error.message);
+
+      enqueueSnackbar("Erro ao excluir livro", { variant: "error" });
+    }
+  };
 
   return (
     <div
@@ -61,9 +98,7 @@ const DeleteModal = ({
           ) : (
             <>
               <p className="mb-4 text-gray-500 dark:text-gray-300">
-                {selectedBooksCount > 1
-                  ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?`
-                  : "Você tem certeza que deseja deletar este livro?"}
+                Tem certeza que deseja deletar este livro?
               </p>
             </>
           )}
@@ -75,7 +110,7 @@ const DeleteModal = ({
               Não, cancelar
             </button>
             <button
-              onClick={onConfirm}
+              onClick={handleDeleteBook}
               className="py-2 px-3 text-sm font-medium text-center text-primary-50 bg-primary-700 rounded-lg hover:bg-primary-950"
             >
               Sim, tenho certeza
