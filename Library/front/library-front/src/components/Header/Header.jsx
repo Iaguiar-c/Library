@@ -79,7 +79,7 @@ export default function Header() {
                     onClick={() => goHome()}
                     className="h-20 w-20 hover:transform hover:-translate-y-0.5"
                     src={LogoPreto}
-                    alt="Your Company"
+                    alt={t("imagem_de_fundo")}
                   />
                 </div>
                 <div className="hidden md:block">
@@ -89,7 +89,7 @@ export default function Header() {
                       className="bg-primary-700 text-white rounded-md px-3 py-2 text-sm font-medium"
                       aria-current="page"
                     >
-                      Home
+                      {t("home")}
                     </a>
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export default function Header() {
                     className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     <span className="absolute -inset-1.5"></span>
-                    <span className="sr-only">View notifications</span>
+                    <span className="sr-only">{t("ver_notificacoes")}</span>
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -129,7 +129,7 @@ export default function Header() {
                         onClick={openCloseLanguageMenu}
                       >
                         <span className="absolute -inset-1.5"></span>
-                        <span className="sr-only">Linguagem</span>
+                        <span className="sr-only">{t("linguagem")}</span>
                         <img
                           className="h-8 w-8 rounded-full"
                           src={imagem}
@@ -151,11 +151,11 @@ export default function Header() {
                         onClick={openCloseUserMenu}
                       >
                         <span className="absolute -inset-1.5"></span>
-                        <span className="sr-only">Open user menu</span>
+                        <span className="sr-only">{t("abrir_menu_usuario")}</span>
                         <img
                           className="h-8 w-8 rounded-full"
                           src={profileUrl || ""}
-                          alt="foto do usuário"
+                          alt={t("foto_do_usuario")}
                         />
                       </button>
                     </div>
@@ -172,14 +172,14 @@ export default function Header() {
                           onClick={() => navigate("/profile")}
                           className="block px-4 py-2 text-sm text-gray-700"
                         >
-                          Your Profile
+                          {t("seu_perfil")}
                         </button>
 
                         <button
                           onClick={(event) => doLogout(event)}
                           className="block px-4 py-2 text-sm text-gray-700"
                         >
-                          Sign out
+                          {t("deslogar")}
                         </button>
                       </div>
                     ) : (
@@ -196,7 +196,7 @@ export default function Header() {
                   aria-expanded="false"
                 >
                   <span className="absolute -inset-0.5"></span>
-                  <span className="sr-only">Open main menu</span>
+                  <span className="sr-only">{t("abrir_menu_principal")}</span>
                   <svg
                     className="block h-6 w-6"
                     fill="none"
@@ -237,31 +237,19 @@ export default function Header() {
                 className="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
                 aria-current="page"
               >
-                Dashboard
+                {t("dashboard")}
               </a>
               <a
                 href="#"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
               >
-                Team
+                {t("team")}
               </a>
               <a
                 href="#"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
               >
-                Projects
-              </a>
-              <a
-                href="#"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-              >
-                Calendar
-              </a>
-              <a
-                href="#"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-              >
-                Reports
+                {t("projetos")}
               </a>
             </div>
             <div className="border-t border-gray-700 pb-3 pt-4">
@@ -286,7 +274,7 @@ export default function Header() {
                   className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   <span className="absolute -inset-1.5"></span>
-                  <span className="sr-only">View notifications</span>
+                  <span className="sr-only">{t("ver_notificacoes")}</span>
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -309,19 +297,19 @@ export default function Header() {
                   href="#"
                   className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                 >
-                  Your Profile
+                  {t("seu_perfil")}
                 </a>
                 <a
                   href="#"
                   className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                 >
-                  Settings
+                  {t("configuracoes")}
                 </a>
                 <a
                   href="#"
                   className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                 >
-                  Sign out
+                  {t("deslogar")}
                 </a>
               </div>
             </div>

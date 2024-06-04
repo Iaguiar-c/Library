@@ -25,7 +25,8 @@ i18n.use(initReactI18next).init({
         autor: "Author",
         publicacao: "Published",
         mais_informacoes: "More Info",
-        capa_do_livro: "Book Cover"
+        capa_do_livro: "Book Cover",
+
       },
     },
     pt: {
@@ -65,6 +66,15 @@ i18n.use(initReactI18next).init({
         foto_do_usuario: "Foto do usuário",
         seu_perfil: "Seu perfil",
         abrir_menu_principal: "Abrir menu principal", 
+        imagem_de_fundo: "Imagem de Fundo",
+        deslogar: "Sign out",
+        dashboard: "Dashboard", 
+        team: "Team", 
+        configuracoes: "Configurações",
+        mais: "Mais",
+        fechar: "Fechar",
+        
+        
       },
     },
     es: {

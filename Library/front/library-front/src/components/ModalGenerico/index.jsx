@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-modal";
 
 const ModalGenerico = ({ isOpen, onRequestClose, content,  customStyles  }) => {
+  const { t } = useTranslation();
+
   return (
     <Modal
       isOpen={isOpen}
@@ -27,7 +30,7 @@ const ModalGenerico = ({ isOpen, onRequestClose, content,  customStyles  }) => {
             borderRadius: "5px",
           }}
         >
-          Fechar
+          {t("fechar")}
         </button>
       </div>
     </Modal>
