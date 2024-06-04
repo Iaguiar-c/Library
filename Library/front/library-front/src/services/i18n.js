@@ -106,16 +106,7 @@ i18n.use(initReactI18next).init({
         ingles: "Inglês",
         espanhol: "Espanhol",
         descubra_livros: "Descubra livros, adicione-os, marque seu progresso",
-        
-        
 
-
-
-
-        
-
-        
-        
       },
     },
     es: {
