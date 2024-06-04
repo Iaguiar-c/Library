@@ -2,14 +2,14 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "react-modal";
 
-const ModalGenerico = ({ isOpen, onRequestClose, content,  customStyles  }) => {
+const ModalGenerico = ({ isOpen, onRequestClose, content  }) => {
   const { t } = useTranslation();
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      style={customStyles}
+    
       >
       {content}
       <div
@@ -33,6 +33,7 @@ const ModalGenerico = ({ isOpen, onRequestClose, content,  customStyles  }) => {
           {t("fechar")}
         </button>
       </div>
+      
     </Modal>
   );
 };
