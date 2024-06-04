@@ -8,6 +8,7 @@ import BooksTable from "../../components/Table/books-table";
 import Notification from "../../components/Notification/Notification";
 import FeatureHomeSection from "../../pages/home/FeatureHomeSection";
 import TabComponent from "../../pages/home/tablist";
+import { useTranslation } from "react-i18next";
 import HelpModal from "./HelpModal";
 
 const Home = () => {
@@ -19,6 +20,7 @@ const Home = () => {
   const [filteredLivros, setFilteredLivros] = useState([]);
   const [livroCovers, setLivroCovers] = useState({});
   const [viewMode, setViewMode] = useState("card");
+  const { t } = useTranslation();
 
   const [notification, setNotification] = useState({
     message: "",
@@ -53,13 +55,13 @@ const Home = () => {
               data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail ||
               "https://via.placeholder.com/150";
           } catch (error) {
-            console.error("Erro ao buscar capa do livro:", error.message);
+            console.error(t("erro_ao_buscar_capa_do_livro"), error.message);
           }
         })
       );
       setLivroCovers(covers);
     } catch (error) {
-      console.error("Erro ao buscar livros:", error.message);
+      console.error(t("erro_ao_buscar_livros"), error.message);
     }
   }, [usuario, token]);
 
@@ -70,7 +72,7 @@ const Home = () => {
   const handleBookAdded = () => {
     fetchLivros();
     setNotification({
-      message: "Livro adicionado com sucesso!",
+      message: t("livro_adicionado_com_sucesso"),
       variant: "success",
       show: true,
     });
@@ -149,7 +151,7 @@ const Home = () => {
             className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
             onClick={() => setIsReviewModalOpen(true)}
           >
-            Avaliações
+            {t("avaliacoes")}
           </button>
           <button
             className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
@@ -198,7 +200,7 @@ const Home = () => {
           )
         ) : (
           <p className="text-3xl text-center mt-20 text-primary-950 font-bold">
-            Você ainda não possui livros adicionados a esta seção.
+            {t("voce_ainda_nao_possuem_livros_adicionados")}
           </p>
         )}
       </div>

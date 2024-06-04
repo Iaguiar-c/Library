@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { useTraducao } from "../../contextos/TraducaoProvider/TraducaoProvider";
 
 export default function TranslationButtons() {
   const { toggleTraducao } = useTraducao();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -18,21 +20,21 @@ export default function TranslationButtons() {
             className="block px-4 py-2 text-sm text-gray-700"
             onClick={() => toggleTraducao("pt")}
           >
-            Português
+            {t("portugues")}
           </button>
           <button
             type="submit"
             className="block px-4 py-2 text-sm text-gray-700"
             onClick={() => toggleTraducao("en")}
           >
-            Inglês
+            {t("ingles")}
           </button>
           <button
             type="submit"
             className="block px-4 py-2 text-sm text-gray-700"
             onClick={() => toggleTraducao("es")}
           >
-            Espanhol
+            {t("espanhol")}
           </button>
         </div>
       </div>

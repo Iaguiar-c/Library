@@ -7,11 +7,11 @@ import {
   SectionHeading,
 } from "./styles";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
+import { useTranslation } from "react-i18next";
 
-const FeatureHomeSection = ({
-  description2 = "Descubra livros, adicione-os, marque seu progresso",
-}) => {
+const FeatureHomeSection = () => {
   const { usuario } = useAutenticacao();
+  const { t } = useTranslation();
 
   return (
     <HeroSection>
@@ -28,14 +28,14 @@ const FeatureHomeSection = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              {`Olá, ${usuario?.name || "bem-vindo ao Bookster"}!`}
+              {`${t("ola")}, ${usuario?.name || t("bem_vindo_ao")}!`}
             </SectionHeading>
             <SectionDescription
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
             >
-              {description2}
+              {t("descubra_livros")}
             </SectionDescription>
           </div>
         </ContentWithVerticalPadding>

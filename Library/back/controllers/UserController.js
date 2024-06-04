@@ -157,59 +157,64 @@ export class UserController {
   async updateUser(req, res) {
     const id = req.params.id;
     const { name, email, password, confirmpassword, profile } = req.body;
-
-    if (!name || !email || !profile) {
+  
+    if (!name && !email && !profile && !password) {
       return res
         .status(422)
-        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+        .json({ msg: "Por favor, forneça pelo menos um campo para atualização." });
     }
-
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(email)) {
-    //   return res.status(422).json({ msg: "Formato de email inválido." });
-    // }
-
-    // if (password) {
-    //   const passwordRegex =
-    //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-    //   if (!passwordRegex.test(password)) {
-    //     return res.status(422).json({
-    //       msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
-    //     });
-    //   }
-
-    //   if (password !== confirmpassword) {
-    //     return res.status(422).json({ msg: "As senhas precisam ser iguais." });
-    //   }
-    // }
-
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      return res.status(422).json({ msg: "Formato de email inválido." });
+    }
+  
+    if (password) {
+      const passwordRegex =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        return res.status(422).json({
+          msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+        });
+      }
+  
+      if (password !== confirmpassword) {
+        return res.status(422).json({ msg: "As senhas precisam ser iguais." });
+      }
+    }
+  
     try {
       const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
-
-      const existingUser = await User.findOne({ email });
-      if (existingUser && existingUser._id.toString() !== id) {
-        return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
+  
+      if (email) {
+        const existingUser = await User.findOne({ email });
+        if (existingUser && existingUser._id.toString() !== id) {
+          return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
+        }
       }
-
-      const updates = { name, email, profile };
-      // if (password) {
-      //   const salt = await bcrypt.genSalt(12);
-      //   const passwordHash = await bcrypt.hash(password, salt);
-      //   updates.password = passwordHash;
-      // }
-
+  
+      const updates = {};
+      if (name) updates.name = name;
+      if (email) updates.email = email;
+      if (profile) updates.profile = profile;
+      if (password) {
+        const salt = await bcrypt.genSalt(12);
+        const passwordHash = await bcrypt.hash(password, salt);
+        updates.password = passwordHash;
+      }
+  
       await User.findByIdAndUpdate(id, updates);
-
+  
       res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error.message);
       res.status(500).json({ msg: "Erro no servidor ao atualizar usuário." });
     }
   }
-
+  
   async deleteUser(req, res) {
     const Id = req.params.id;
 
