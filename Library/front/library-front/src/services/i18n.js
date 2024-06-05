@@ -211,6 +211,8 @@ i18n.use(initReactI18next).init({
         carregar_mais: "Load More",
         seu_perfil: "Your Profile",
         editar_perfil: "Edit Profile",
+        erro_ao_criar_livro: "Error creating book:",
+        detalhes_do_error: "Error details",
         
       },
     },
@@ -424,6 +426,8 @@ i18n.use(initReactI18next).init({
         question5: "Para excluir o seu perfil, clique no seu ícone de usuário no canto superior direito da tela e selecione a opção 'Seu Perfil'. Lá você verá um ícone de lixeira e poderá excluir o seu Perfil.",
         carregar_mais: "Carregar Mais",
         seu_perfil: "Seu Perfil",
+        erro_ao_criar_livro: "Erro ao criar livro:",
+        detalhes_do_error: "Detalhes do erro",
       },
     },
     es: {
@@ -636,6 +640,8 @@ i18n.use(initReactI18next).init({
         carregar_mais: "Cargar Más",
         seu_perfil: "Tu Perfil",
         editar_perfil: "Editar Perfil",
+        erro_ao_criar_livro: "Error al crear libro:",
+        detalhes_do_error: "Detalles del error",
       },
     },
   },

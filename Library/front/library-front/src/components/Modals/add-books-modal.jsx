@@ -160,9 +160,9 @@ const ModalForm = ({
       if (onBookAdded) onBookAdded();
       onClose();
     } catch (error) {
-      console.error("Erro ao criar livro:", error.message);
+      console.error(t("erro_ao_criar_livro"), error.message);
       if (error.response) {
-        console.error("Detalhes do erro:", error.response.data);
+        console.error(t("detalhes_do_error"), error.response.data);
       }
     }
   };
