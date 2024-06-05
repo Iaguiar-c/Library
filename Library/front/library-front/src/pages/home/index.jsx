@@ -8,8 +8,8 @@ import BooksTable from "../../components/Table/books-table";
 import Notification from "../../components/Notification/Notification";
 import FeatureHomeSection from "../../pages/home/FeatureHomeSection";
 import TabComponent from "../../pages/home/tablist";
-import { useTranslation } from "react-i18next";
 import HelpModal from "./HelpModal";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +20,8 @@ const Home = () => {
   const [filteredLivros, setFilteredLivros] = useState([]);
   const [livroCovers, setLivroCovers] = useState({});
   const [viewMode, setViewMode] = useState("card");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { t } = useTranslation();
 
   const [notification, setNotification] = useState({
@@ -28,42 +30,53 @@ const Home = () => {
     show: false,
   });
 
-  const fetchLivros = useCallback(async () => {
-    if (!usuario || !token) return;
-    try {
-      const response = await Api.get("/books", {
-        params: { userId: usuario._id },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const books = response.data.books;
-      setLivros(books);
-      setFilteredLivros(books);
+  const fetchLivros = useCallback(
+    async (page = 1) => {
+      if (!usuario || !token) return;
+      try {
+        const response = await Api.get("/books", {
+          params: { userId: usuario._id, page },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const { books, pagination } = response.data;
+        const { totalPages } = pagination;
 
-      const covers = {};
-      await Promise.all(
-        books.map(async (livro) => {
-          try {
-            const googleBooksResponse = await fetch(
-              `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-                livro.title
-              )}&key=AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY`
-            );
-            const data = await googleBooksResponse.json();
-            covers[livro._id] =
-              data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail ||
-              "https://via.placeholder.com/150";
-          } catch (error) {
-            console.error(t("erro_ao_buscar_capa_do_livro"), error.message);
-          }
-        })
-      );
-      setLivroCovers(covers);
-    } catch (error) {
-      console.error(t("erro_ao_buscar_livros"), error.message);
-    }
-  }, [usuario, token]);
+        setLivros((prevBooks) =>
+          page === 1 ? books : [...prevBooks, ...books]
+        );
+        setFilteredLivros((prevBooks) =>
+          page === 1 ? books : [...prevBooks, ...books]
+        );
+        setCurrentPage(page);
+        setTotalPages(totalPages);
+
+        const covers = {};
+        await Promise.all(
+          books.map(async (livro) => {
+            try {
+              const googleBooksResponse = await fetch(
+                `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+                  livro.title
+                )}&key=AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY`
+              );
+              const data = await googleBooksResponse.json();
+              covers[livro._id] =
+                data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail ||
+                "https://via.placeholder.com/150";
+            } catch (error) {
+              console.error(t("erro_ao_buscar_capa_do_livro"), error.message);
+            }
+          })
+        );
+        setLivroCovers((prevCovers) => ({ ...prevCovers, ...covers }));
+      } catch (error) {
+        console.error(t("erro_ao_buscar_livros"), error.message);
+      }
+    },
+    [usuario, token]
+  );
 
   useEffect(() => {
     fetchLivros();
@@ -72,10 +85,14 @@ const Home = () => {
   const handleBookAdded = () => {
     fetchLivros();
     setNotification({
-      message: t("livro_adicionado_com_sucesso"),
+      message: "Livro adicionado com sucesso!",
       variant: "success",
       show: true,
     });
+  };
+
+  const handleTabChange = (status) => {
+    filterBooks(status);
   };
 
   const filterBooks = useCallback(
@@ -88,6 +105,12 @@ const Home = () => {
     },
     [livros]
   );
+
+  const loadMoreBooks = () => {
+    if (currentPage < totalPages) {
+      fetchLivros(currentPage + 1);
+    }
+  };
 
   return (
     <section className="bg-primary-50">
@@ -140,21 +163,30 @@ const Home = () => {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
+                d="M3.375 19.5h17.25m-17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125M12 7.125v9.75m0-9.75c0-.621-.504-1.125-1.125-1.125h-7.5c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5c-.621 0-1.125.504-1.125 1.125M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
               />
             </svg>
           </button>
         </div>
-        <TabComponent onTabChange={filterBooks} />
+        <TabComponent onTabChange={handleTabChange} />{" "}
+        {/* Corrigindo passagem da função onTabChange */}
         <div className="flex gap-2">
           <button
-            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            className="block text-white bg-primary-700 hover
+                focus
+                focus
+                focus
+                font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
             onClick={() => setIsReviewModalOpen(true)}
           >
-            {t("avaliacoes")}
+            Avaliações
           </button>
           <button
-            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            className="block text-white bg-primary-700 hover
+                focus
+                focus
+                focus
+                font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
             onClick={() => setIsModalOpen(true)}
           >
             <svg
@@ -193,11 +225,23 @@ const Home = () => {
       )}
       <div className="m-8">
         {filteredLivros.length > 0 ? (
-          viewMode === "card" ? (
-            <BooksCard books={filteredLivros} covers={livroCovers} />
-          ) : (
-            <BooksTable books={filteredLivros} />
-          )
+          <>
+            {viewMode === "card" ? (
+              <BooksCard books={filteredLivros} livroCovers={livroCovers} />
+            ) : (
+              <BooksTable books={filteredLivros} />
+            )}
+            {currentPage < totalPages && (
+              <div className="flex justify-center mt-4">
+                <button
+                  className="bg-primary-700 text-white font-medium rounded-lg text-sm px-5 py-2.5"
+                  onClick={loadMoreBooks}
+                >
+                  Carregar Mais
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <p className="text-3xl text-center mt-20 text-primary-950 font-bold">
             {t("voce_ainda_nao_possuem_livros_adicionados")}
@@ -208,31 +252,14 @@ const Home = () => {
         message={notification.message}
         variant={notification.variant}
         show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
       />
-
-<div
-        className="fixed bottom-4 right-4 bg-primary-100 shadow-md rounded-full p-4 cursor-pointer"
-        onClick={() => setIsHelpModalOpen(true)} 
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="w-6 h-6 text-primary-700"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
-          />
-        </svg>
-      </div>
-  
-      <HelpModal
-        isOpen={isHelpModalOpen}
-        onClose={() => setIsHelpModalOpen(false)}
-      />
+      {isHelpModalOpen && (
+        <HelpModal
+          isOpen={isHelpModalOpen}
+          onClose={() => setIsHelpModalOpen(false)}
+        />
+      )}
     </section>
   );
 };
