@@ -169,7 +169,6 @@ const Home = () => {
           </button>
         </div>
         <TabComponent onTabChange={handleTabChange} />{" "}
-   
         <div className="flex gap-2">
           <button
             className="block text-white bg-primary-700 hover
@@ -179,7 +178,7 @@ const Home = () => {
                 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
             onClick={() => setIsReviewModalOpen(true)}
           >
-            Avaliações
+            {t("avaliacoes")}
           </button>
           <button
             className="block text-white bg-primary-700 hover
@@ -224,30 +223,30 @@ const Home = () => {
         />
       )}
       <div className="m-8">
-  {filteredLivros.length > 0 ? (
-    <>
-      {viewMode === "card" ? (
-        <BooksCard books={filteredLivros} livroCovers={livroCovers} />
-      ) : (
-        <BooksTable books={filteredLivros} />
-      )}
-      {viewMode !== "table" && currentPage < totalPages && (
-        <div className="flex justify-center mt-4">
-          <button
-            className="bg-primary-700 text-white font-medium rounded-lg text-sm px-5 py-2.5"
-            onClick={loadMoreBooks}
-          >
-            Carregar Mais
-          </button>
-        </div>
-      )}
-    </>
-  ) : (
-    <p className="text-3xl text-center mt-20 text-primary-950 font-bold">
-      {t("voce_ainda_nao_possuem_livros_adicionados")}
-    </p>
-  )}
-</div>
+        {filteredLivros.length > 0 ? (
+          <>
+            {viewMode === "card" ? (
+              <BooksCard books={filteredLivros} livroCovers={livroCovers} />
+            ) : (
+              <BooksTable books={filteredLivros} />
+            )}
+            {viewMode !== "table" && currentPage < totalPages && (
+              <div className="flex justify-center mt-4">
+                <button
+                  className="bg-primary-700 text-white font-medium rounded-lg text-sm px-5 py-2.5"
+                  onClick={loadMoreBooks}
+                >
+                  Carregar Mais
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-3xl text-center mt-20 text-primary-950 font-bold">
+            {t("voce_ainda_nao_possuem_livros_adicionados")}
+          </p>
+        )}
+      </div>
       <Notification
         message={notification.message}
         variant={notification.variant}
@@ -255,9 +254,9 @@ const Home = () => {
         onClose={() => setNotification({ ...notification, show: false })}
       />
 
-<div
+      <div
         className="fixed bottom-4 right-4 bg-primary-100 shadow-md rounded-full p-4 cursor-pointer"
-        onClick={() => setIsHelpModalOpen(true)} 
+        onClick={() => setIsHelpModalOpen(true)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

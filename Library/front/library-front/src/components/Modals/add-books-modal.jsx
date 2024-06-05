@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
 import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
+import { useTranslation } from "react-i18next";
 
 const ModalForm = ({
   isOpen,
@@ -29,6 +30,7 @@ const ModalForm = ({
   const [isCategoryManual, setIsCategoryManual] = useState(true);
   const [isDescriptionManual, setIsDescriptionManual] = useState(true);
   const { categorias, pegarCategorias, pegarStatus, status } = useLivros();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -226,7 +228,7 @@ const ModalForm = ({
           </button>
         </div>
         <p className="mt-1 text-sm leading-6 text-primary-800">
-          Complete as informações abaixo:
+        {t("complete_as_informacoes_do_livro")}
         </p>
 
         <form className="mt-4 space-y-8" onSubmit={handleSubmit}>
@@ -238,7 +240,7 @@ const ModalForm = ({
                     htmlFor="titulo"
                     className="block text-sm font-medium leading-6 text-primary-950"
                   >
-                    Título
+                    {t("titulo")}
                   </label>
                   <div className="mt-2">
                     <input
@@ -259,7 +261,7 @@ const ModalForm = ({
                     htmlFor="autor"
                     className="block text-sm font-medium leading-6 text-primary-950"
                   >
-                    Autor
+                    {t("autor")}
                   </label>
                   <div className="mt-2">
                     <input
@@ -280,7 +282,7 @@ const ModalForm = ({
                     htmlFor="ano"
                     className="block text-sm font-medium leading-6 text-primary-950"
                   >
-                    Ano de Publicação
+                    {t("publicacao")}
                   </label>
                   <div className="mt-2">
                     <input
@@ -301,7 +303,7 @@ const ModalForm = ({
                     htmlFor="categoria"
                     className="block text-sm font-medium leading-6 text-primary-950"
                   >
-                    Categoria
+                    {t("genero")}
                   </label>
                   <div className="mt-2">
                     {!showManualUrlInput && !isCategoryManual ? (
@@ -364,7 +366,7 @@ const ModalForm = ({
                       id="status"
                       name="status"
                       className="py-1.5 px-2 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6"
-                      value={status}
+                      value={statusSelected}
                       onChange={(e) => setStatusSelected(e.target.value)}
                     >
                       <option value="">Selecione um status</option>

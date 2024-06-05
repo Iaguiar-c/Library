@@ -14,7 +14,7 @@ const UserRegister = () => {
   const [confirmpassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [profilepicture, setProfilepicture] = useState("");
-  const [setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { postUsuario } = useUsuario();

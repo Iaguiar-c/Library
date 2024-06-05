@@ -174,6 +174,8 @@ i18n.use(initReactI18next).init({
         você_ja_esta_utilizando_este_valor:
           "You cannot change the value to the same value saved previously",
         livro_deletado_com_sucesso: "Book deleted successfully",
+        editar_livro: "Edit Book",
+        complete_as_informacoes_do_livro: "Complete the book information",
       },
     },
     pt: {
@@ -350,7 +352,9 @@ i18n.use(initReactI18next).init({
         voce_ja_esta_utilizando_este_valor:
           "Você não pode alterar o valor para o mesmo valor salvo anteriormente",
         livro_deletado_com_sucesso: "Livro deletado com sucesso",
-        editar_perfil: "Editar Perfil"
+        editar_perfil: "Editar Perfil",
+        editar_livro: "Editar Livro",
+        complete_as_informacoes_do_livro: "Complete as informações do livro",
       },
     },
     es: {
@@ -527,6 +531,8 @@ i18n.use(initReactI18next).init({
         você_ja_esta_utilizando_este_valor:
           "No puedes cambiar el valor al mismo valor guardado anteriormente",
         livro_deletado_com_sucesso: "Libro borrado con éxito",
+        editar_livro: "Editar Libro",
+        complete_as_informacoes_do_livro: "Completa la información del libro",
       },
     },
   },

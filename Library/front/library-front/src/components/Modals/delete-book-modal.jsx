@@ -1,52 +1,13 @@
 import React from "react";
-import { useSnackbar } from "notistack";
-import { Api } from "../../services/api";
-import { useTranslation } from "react-i18next";
 
 const DeleteModal = ({
   showModal,
   onClose,
   onConfirm,
-  bookId,
-  userId,
-  token,
+  selectedBooksCount,
   isUserDelete,
 }) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const { t } = useTranslation();
-
   if (!showModal) return null;
-
-  const handleDeleteBook = async () => {
-    try {
-      if (!userId || !token) {
-        console.error(
-          t("realize_o_login_novamente")
-        );
-        return;
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      await Api.delete(`/${userId}/books/${bookId}`, config);
-
-      if (onConfirm) {
-        onConfirm();
-      }
-
-      enqueueSnackbar(t("livro_deletado_com_sucesso"), { variant: "success" });
-
-      window.location.reload();
-    } catch (error) {
-      console.error(t("erro_ao_excluir_livro"), error.message);
-
-      enqueueSnackbar(t("erro_ao_excluir_livro"), { variant: "error" });
-    }
-  };
 
   return (
     <div
@@ -75,7 +36,7 @@ const DeleteModal = ({
                 clipRule="evenodd"
               ></path>
             </svg>
-            <span className="sr-only">{t("fechar")}</span>
+            <span className="sr-only">Fechar</span>
           </button>
           <svg
             className="text-primary-950 dark:text-primary-500 w-11 h-11 mb-3.5 mx-auto"
@@ -94,13 +55,15 @@ const DeleteModal = ({
           {isUserDelete ? (
             <>
               <p className="mb-4 text-gray-500 dark:text-gray-300">
-              {t("excluir_usuario")}
+                Tem certeza que deseja excluir este usuário?
               </p>
             </>
           ) : (
             <>
               <p className="mb-4 text-gray-500 dark:text-gray-300">
-                {t("voce_certeza_deletar")}
+                {selectedBooksCount > 1
+                  ? `Você tem certeza que deseja deletar esses ${selectedBooksCount} livros?`
+                  : "Você tem certeza que deseja deletar este livro?"}
               </p>
             </>
           )}
@@ -109,13 +72,13 @@ const DeleteModal = ({
               onClick={onClose}
               className="py-2 px-3 text-sm font-medium text-primary-950 bg-primary-200 rounded-lg border border-primary-200 hover:bg-primary-100 focus:ring-4"
             >
-              {t("nao_cancelar")}
+              Não, cancelar
             </button>
             <button
-              onClick={handleDeleteBook}
+              onClick={onConfirm}
               className="py-2 px-3 text-sm font-medium text-center text-primary-50 bg-primary-700 rounded-lg hover:bg-primary-950"
             >
-              {t("sim_tenho_certeza")}
+              Sim, tenho certeza
             </button>
           </div>
         </div>
