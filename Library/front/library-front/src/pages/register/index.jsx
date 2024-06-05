@@ -119,7 +119,7 @@ const UserRegister = () => {
     <section className="bg-gradient-to-tl from-purple-950 to-purple-800 min-h-screen flex flex-row items-center justify-center">
       <div class="min-h-screen flex flex-col items-center justify-center">
         <div
-          class="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full p-4 m-4 shadow rounded-md"
+          class="grid md:grid-cols-2 items-center gap-4 max-w-8xl w-full p-4 m-4 shadow rounded-md"
           style={{
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: "cover",

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import GoogleBooksModal from "./add-book-google-modal";
 import ModalForm from "./add-books-modal";
+import { useTranslation } from "react-i18next";
 
 const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showGoogleBooksModal, setShowGoogleBooksModal] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
   const [showManualUrlInput, setShowManualUrlInput] = useState(false);
+  const { t } = useTranslation(); 
 
   const handleAutomatedFillClick = () => {
     setShowGoogleBooksModal(true);
@@ -64,7 +66,9 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
           >
             <div className="flex items-center justify-between pb-3 mb-3 border-b">
               <h3 className="text-lg font-semibold text-primary-950">
-                Adicionar Livros
+                
+                {t("adiconar_livro")}
+                
               </h3>
               <button
                 type="button"
@@ -89,7 +93,7 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
             </div>
             <div className="p-4 md:p-5">
               <p className="text-primary-950 mb-4">
-                Escolha a forma como deseja adicionar:
+                {t("escolha_a_forma_que_deseja_adicionar")}
               </p>
               <ul className="space-y-4 mb-4">
                 <li>
@@ -105,9 +109,10 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
                     className="inline-flex items-center justify-between w-full p-5 text-primary-950 bg-primary-50 border rounded-lg cursor-pointer hover:text-primary-900 hover:bg-primary-300"
                   >
                     <div>
-                      <div className="text-lg font-semibold">Manualmente</div>
+                      <div className="text-lg font-semibold">{t("manualmente")}</div>
                       <div className="text-primary-800">
-                        Completando todas as informações
+                      {t("completando_as_informacoes_do_livro")}
+                       
                       </div>
                     </div>
                     <svg
@@ -141,10 +146,11 @@ const SelectModal = ({ isOpen, onClose, onBookAdded }) => {
                   >
                     <div>
                       <div className="text-lg font-semibold">
-                        Preenchimento automático
+                        {t("preenchimento_automatico")}
+                    
                       </div>
                       <div className="text-primary-800">
-                        Utilizando o Google Livros
+                        {t("utilizando_google_livros")}
                       </div>
                     </div>
                     <svg

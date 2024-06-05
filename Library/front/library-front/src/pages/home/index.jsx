@@ -85,7 +85,7 @@ const Home = () => {
   const handleBookAdded = () => {
     fetchLivros();
     setNotification({
-      message: "Livro adicionado com sucesso!",
+      message: t("livro_adicionado"),
       variant: "success",
       show: true,
     });
@@ -236,7 +236,7 @@ const Home = () => {
                   className="bg-primary-700 text-white font-medium rounded-lg text-sm px-5 py-2.5"
                   onClick={loadMoreBooks}
                 >
-                  Carregar Mais
+                  {t("carregar_mais")}
                 </button>
               </div>
             )}
