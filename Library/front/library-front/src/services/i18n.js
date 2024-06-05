@@ -209,6 +209,9 @@ i18n.use(initReactI18next).init({
         question4: "To edit your profile, click on your user icon in the top right corner of the screen and select the 'Your Profile' option. There you will see an edit icon and you can edit your username, email and Profile Picture.",
         question5: "To delete your profile, click on your user icon in the top right corner of the screen and select the 'Your Profile' option. There you will see a trash icon and you can delete your Profile.",
         carregar_mais: "Load More",
+        seu_perfil: "Your Profile",
+        editar_perfil: "Edit Profile",
+        
       },
     },
     pt: {
@@ -420,6 +423,7 @@ i18n.use(initReactI18next).init({
         question4: "Para editar o seu perfil, clique no seu ícone de usuário no canto superior direito da tela e selecione a opção 'Seu Perfil'. Lá você verá um ícone de edição e poderá editar o seu nome de usuário, email e Foto de Perfil.",
         question5: "Para excluir o seu perfil, clique no seu ícone de usuário no canto superior direito da tela e selecione a opção 'Seu Perfil'. Lá você verá um ícone de lixeira e poderá excluir o seu Perfil.",
         carregar_mais: "Carregar Mais",
+        seu_perfil: "Seu Perfil",
       },
     },
     es: {
@@ -630,6 +634,8 @@ i18n.use(initReactI18next).init({
         question4: "Para editar tu perfil, haz clic en tu icono de usuario en la esquina superior derecha de la pantalla y selecciona la opción 'Tu perfil'. Allí verás un icono de edición y podrás editar tu nombre de usuario, correo electrónico y foto de perfil.",
         question5: "Para eliminar tu perfil, haz clic en tu icono de usuario en la esquina superior derecha de la pantalla y selecciona la opción 'Tu perfil'. Allí verás un icono de papelera y podrás eliminar tu perfil.",
         carregar_mais: "Cargar Más",
+        seu_perfil: "Tu Perfil",
+        editar_perfil: "Editar Perfil",
       },
     },
   },
