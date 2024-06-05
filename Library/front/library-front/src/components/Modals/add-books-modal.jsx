@@ -203,7 +203,7 @@ const ModalForm = ({
       >
         <div className="flex justify-between items-center border-b ">
           <h2 className="text-xl font-semibold text-primary-950">
-            Adicionar Livro
+          {t("adiconar_livro")}
           </h2>
 
           <button
@@ -324,7 +324,7 @@ const ModalForm = ({
                         value={category}
                         onChange={handleCategoryChange}
                       >
-                        <option value="">Selecione uma categoria</option>
+                        <option value="">{t("selecione_uma_categoria")}</option>
                         {categorias.map((categoria, index) => (
                           <option key={index} value={categoria}>
                             {categoria}
@@ -339,7 +339,7 @@ const ModalForm = ({
                     htmlFor="sinopse"
                     className="block text-sm font-medium leading-6 text-primary-950"
                   >
-                    Descrição
+                    {t("descricao")}
                   </label>
                   <div className="mt-2">
                     <textarea
@@ -359,7 +359,7 @@ const ModalForm = ({
                     htmlFor="status"
                     className="block text-sm font-medium leading-6 text-primary-950"
                   >
-                    Status
+                    {t("status")}
                   </label>
                   <div className="mt-2">
                     <select
@@ -369,7 +369,7 @@ const ModalForm = ({
                       value={statusSelected}
                       onChange={(e) => setStatusSelected(e.target.value)}
                     >
-                      <option value="">Selecione um status</option>
+                      <option value="">{t("selecione_um_status")}</option>
                       {status.map((statu, index) => (
                         <option key={index} value={statu}>
                           {statu}
@@ -384,7 +384,7 @@ const ModalForm = ({
                       htmlFor="imagem"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      URL da Imagem
+                      {t("insira_a_url_da_imagem")}
                     </label>
                     <div className="mt-2">
                       <input
@@ -405,7 +405,7 @@ const ModalForm = ({
                       htmlFor="imagemURL"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Capa do Livro
+                      {t("capa_do_livro")}
                     </label>
                     <div className="mt-2">
                       {book?.volumeInfo?.imageLinks?.thumbnail && (
@@ -422,7 +422,7 @@ const ModalForm = ({
             </div>
             {statusSelected === "read" && (
               <h2 className="text-xl font-semibold text-primary-950">
-                Avalie o Livro
+                {t("avalie_o_livro")}
               </h2>
             )}
             <div className="space-y-12">
@@ -433,7 +433,7 @@ const ModalForm = ({
                       htmlFor="comments"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Comentários
+                      {t("comentarios")}
                     </label>
                     <div className="mt-2">
                       <textarea
@@ -456,7 +456,7 @@ const ModalForm = ({
                         htmlFor="isFavorite"
                         className="block text-sm font-medium leading-6 text-primary-950"
                       >
-                        Favorito
+                        {t("favorito")}
                       </label>
                       <input
                         type="checkbox"
@@ -473,7 +473,7 @@ const ModalForm = ({
                         htmlFor="rating"
                         className="block text-sm font-medium leading-6 text-primary-950"
                       >
-                        Avaliação
+                        {t("avaliacao")}
                       </label>
                       <div className="ml-2 flex space-x-1">{renderStars()}</div>
                     </div>
@@ -489,13 +489,13 @@ const ModalForm = ({
               onClick={onClose}
               className="text-sm font-semibold leading-6 text-primary-950"
             >
-              Cancelar
+              {t("cancelar")}
             </button>
             <button
               type="submit"
               className="rounded-md bg-primary-800 hover:bg-primary-900 text-primary-50 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Adicionar
+              {t("adiconar_livro")}
             </button>
           </div>
         </form>

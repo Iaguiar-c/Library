@@ -260,7 +260,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="sinopse"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Descrição
+                      {t("descricao")}
                     </label>
                     <div className="mt-2">
                       <textarea
@@ -279,7 +279,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="status"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Status
+                      {t("status")}
                     </label>
                     <div className="mt-2">
                       <select
@@ -301,7 +301,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="imagemURL"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      URL da Imagem
+                      {t("insira_a_url_da_imagem")}
                     </label>
                     <div className="mt-2">
                       <input
@@ -322,7 +322,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
               {status === "read" && (
                 <>
                   <h2 className="text-xl py-4 font-semibold text-primary-950">
-                    Editar avaliação do livro
+                  {t("editar_avaliacao_do_livro")}
                   </h2>
                   <div className="space-y-12">
                     <div className="sm:col-span-3">
@@ -330,7 +330,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                         htmlFor="comments"
                         className="block text-sm font-medium leading-6 text-primary-950"
                       >
-                        Comentários
+                        {t("comentarios")}
                       </label>
                       <textarea
                         id="comments"
@@ -349,7 +349,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                             htmlFor="isFavorite"
                             className="block text-sm font-medium leading-6 text-primary-950"
                           >
-                            Favorito
+                            {t("favorito")}
                           </label>
                           <input
                             type="checkbox"
@@ -366,7 +366,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                             htmlFor="rating"
                             className="block text-sm font-medium leading-6 text-primary-950"
                           >
-                            Avaliação
+                            {t("avaliacao")}
                           </label>
                           <div className="ml-2 flex space-x-1">
                             {renderStars()}
@@ -384,13 +384,13 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                 onClick={onClose}
                 className="text-sm font-semibold leading-6 text-primary-950"
               >
-                Cancelar
+                {t("cancelar")}
               </button>
               <button
                 type="submit"
                 className="rounded-md bg-primary-800 hover:bg-primary-900 text-primary-50 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Salvar
+                {t("salvar")}
               </button>
             </div>
           </form>
