@@ -13,7 +13,7 @@ Esse projeto foi criado como método avaliativo na Faculdade de Tecnologia do Es
 * [Isabella Oliveira](https://github.com/isabellacoliveira)​ (front-end development, back-end devlopment, documentation, TL)
   * [LinkedIn](https://www.linkedin.com/in/isabella-cruz-de-oliveira-b761b7233?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app)
     
-* [Maria Eduarda Santos](https://github.com/Mariajesus65) (front-end development, tester, research, documentation)
+* [Maria Eduarda Santos](https://github.com/Mariajesus65) (tester, research, documentation)
   * [LinkedIn](https://www.linkedin.com/in/maria-eduarda-de-jesus-b24b86200?trk=contact-info)
     
 * [Rafaela Cristina](https://github.com/rafaela-css)​ (front-end development, tester, UX/UI, documentation)
