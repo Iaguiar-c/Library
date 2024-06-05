@@ -22,7 +22,7 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
       >
         <div className="bg-primary-300 opacity-50 absolute inset-0 rounded-lg z-0"></div>
         <div className="relative p-4 z-10">
-          <div className="w-full h-[250px] overflow-hidden rounded-lg flex justify-center items-center">
+          <div className="w-full h-[290px] overflow-hidden rounded-lg flex justify-center items-center">
             <img
               src={coverUrl || "https://via.placeholder.com/150"}
               alt={book.title}
