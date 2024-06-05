@@ -188,6 +188,7 @@ i18n.use(initReactI18next).init({
         selecione_uma_categoria: "Select a category",
         selecione_um_status: "Select a status",
         avalie_o_livro: "Rate the book",
+        
       },
     },
     pt: {
