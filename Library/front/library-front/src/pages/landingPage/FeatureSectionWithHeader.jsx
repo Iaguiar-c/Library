@@ -2,15 +2,31 @@ import React, { useRef } from "react";
 import tw from "twin.macro";
 import logoImage from "../../assets/logoBom.png";
 import FeatureSection from "./FeatureSection";
-import { Container2, ContentWithVerticalPadding, Header, HeroContent, HeroSection, NavLink, NavLinks, PrimaryButton, PrimaryLink, SectionDescription, SectionHeading } from "./styles";
+import {
+  Container2,
+  ContentWithVerticalPadding,
+  Header,
+  HeroContent,
+  HeroSection,
+  NavLink,
+  NavLinks,
+  PrimaryButton,
+  PrimaryLink,
+  SectionDescription,
+  SectionHeading
+} from "./styles";
 import { useTranslation } from "react-i18next";
+import TranslationButtons from "../../components/TranslationButtons";
 
 const HeaderComponent = ({ links }) => (
   <Header>
     <Container2>
       <nav className="flex justify-between items-center">
         <img src={logoImage} alt="Logo" style={{ maxWidth: "100px" }} />
-        <NavLinks>{links}</NavLinks>
+        <div className="flex items-center">
+          <NavLinks>{links}</NavLinks>
+          <TranslationButtons /> 
+        </div>
       </nav>
     </Container2>
   </Header>
@@ -78,12 +94,12 @@ export default function FeatureSectionWithHeader({
                 </SectionDescription>
                 <div className="flex flex-col items-center">
                   <PrimaryButton
-                     onClick={scrollToFeatureSection}
-                     css={buttonRoundedCss}
-                     whileTap={{ scale: 0.95 }}
-                     initial={{ opacity: 0, y: 20 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     transition={{ duration: 0.5, delay: 0.8 }}
+                    onClick={scrollToFeatureSection}
+                    css={buttonRoundedCss}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.8 }}
                   >
                     {t("saber_mais")}
                   </PrimaryButton>

@@ -107,7 +107,7 @@ i18n.use(initReactI18next).init({
           "Discover the main features that make our digital library",
         digital_unica_e_adaptada: "unique and tailored to your needs.",
         entrar: "Enter",
-        cadastre_se: "Sign Up",
+        sign_up: "Sign Up",
         abra_a_capa_para_aventuras_sem_fim:
           "Open the cover for endless adventures in",
         biblioteca_digital: "DIGITAL LIBRARY",
@@ -125,7 +125,6 @@ i18n.use(initReactI18next).init({
           "Invalid verification code. Please try again.",
         senha_alterada_com_sucesso:
           "Your password has been successfully changed! Please log in again",
-        as_senhas_precisam_ser_iguais: "Passwords need to be the same.",
         nao_foi_possivel_alterar_a_senha:
           "Couldn't change the password. Please try again later.",
         credenciais_invalidas: "Invalid credentials. Please try again.",
@@ -187,7 +186,6 @@ i18n.use(initReactI18next).init({
         senha: "Senha",
         esqueceu_a_senha: "Esqueceu a Senha?",
         nao_tem_conta: "Não tem uma conta ainda?",
-        cadastre_se: "Cadastre-se!",
         criar_conta: "Criar Conta",
         usuario: "Usuário",
         email: "Email",
@@ -302,7 +300,6 @@ i18n.use(initReactI18next).init({
           "Código de verificação inválido. Tente novamente.",
         senha_alterada_com_sucesso:
           "Sua senha foi alterada com sucesso! Por favor, faça login novamente",
-        as_senhas_precisam_ser_iguais: "As senhas precisam ser iguais.",
         nao_foi_possivel_alterar_a_senha:
           "Não foi possível alterar a senha. Tente novamente mais tarde.",
         credenciais_invalidas:
@@ -462,7 +459,6 @@ i18n.use(initReactI18next).init({
           "Conoce las principales funcionalidades que hacen nuestra biblioteca",
         digital_unica_e_adaptada: "digital única y adaptada a tus necesidades.",
         entrar: "Entrar",
-        cadastre_se: "Regístrate",
         abra_a_capa_para_aventuras_sem_fim:
           "Abre la tapa para aventuras sin fin en",
         biblioteca_digital: "BIBLIOTECA DIGITAL",
@@ -481,7 +477,6 @@ i18n.use(initReactI18next).init({
           "Código de verificación inválido. Inténtalo de nuevo.",
         senha_alterada_com_sucesso:
           "¡Tu contraseña ha sido cambiada con éxito! Por favor, inicia sesión de nuevo",
-        as_senhas_precisam_ser_iguais: "Las contraseñas deben ser iguales.",
         nao_foi_possivel_alterar_a_senha:
           "No se pudo cambiar la contraseña. Inténtalo de nuevo más tarde.",
         credenciais_invalidas:

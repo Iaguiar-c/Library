@@ -5,7 +5,6 @@ export function useEmail() {
   const contextoEmail = useContext(EmailContext);
   return contextoEmail;
 }
-
 const EmailContext = createContext({});
 EmailContext.displayName = "Email Context";
 

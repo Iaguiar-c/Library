@@ -11,7 +11,7 @@ export const useTraducao = () => {
 };
 
 export function TraducaoProvider({ children }) {
-  const [traducao, setTraducao] = useState('en'); 
+  const [traducao, setTraducao] = useState(''); 
 
   const toggleTraducao = (novoIdioma) => {
     setTraducao(novoIdioma);

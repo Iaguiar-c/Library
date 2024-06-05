@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Outlet, useNavigate } from "react-router-dom";
 import ThemeButton from "../ThemeButton/ThemeButton";
@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 import Brasil from "../../assets/brasil.png";
 import Espanha from "../../assets/espanha.png";
 import Usa from "../../assets/usa.png";
-import { useEffect } from "react";
 import LogoPreto from "../../assets/logoPreto.png";
 import LogoBranco from "../../assets/logoBom.png";
 import TranslationButtons from "../TranslationButtons";
@@ -21,9 +20,9 @@ export default function Header() {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
   const { t } = useTranslation();
-  const { traducao } = useTraducao();
+  const { traducao, setTraducao } = useTraducao(); // Adicionando a função setTraducao para atualizar o estado de tradução
   const [profileUrl, setProfileUrl] = useState(null);
-  const [imagem, setImagem] = useState(Usa);
+  const [imagem, setImagem] = useState();
 
   useEffect(() => {
     const changeImage = () => {
@@ -35,7 +34,7 @@ export default function Header() {
         setImagem(Usa);
       }
     };
-
+    console.log(traducao);
     changeImage();
   }, [traducao]);
 
@@ -43,9 +42,17 @@ export default function Header() {
     if (usuario && usuario.profile) {
       setProfileUrl(usuario.profile);
     } else {
-      setProfileUrl(LogoPadrao)
+      setProfileUrl(LogoPadrao);
     }
   }, [usuario]);
+
+  useEffect(() => {
+    // Recuperando o idioma do armazenamento local ao carregar a página
+    const storedLanguage = localStorage.getItem("language");
+    if (storedLanguage) {
+      setTraducao(storedLanguage);
+    }
+  }, [setTraducao]);
 
   function openCloseUserMenu() {
     setOpen(!open);
@@ -57,7 +64,7 @@ export default function Header() {
     setOpen(false);
   }
 
-  function goHome(){
+  function goHome() {
     navigate('/home');
   }
 
@@ -65,6 +72,12 @@ export default function Header() {
     event.preventDefault();
     logout();
     navigate("/login");
+  }
+
+  // Adicionando a função para atualizar o idioma e armazená-lo no armazenamento local
+  function changeLanguage(lang) {
+    setTraducao(lang);
+    localStorage.setItem("language", lang);
   }
 
   return (
@@ -137,7 +150,7 @@ export default function Header() {
                         />
                       </button>
                     </div>
-                    {openLanguage ? <TranslationButtons /> : ""}
+                    {openLanguage ? <TranslationButtons changeLanguage={changeLanguage} /> : ""}
                   </div>
 
                   <div className="relative ml-3">
