@@ -20,7 +20,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useTheme();
   const { t } = useTranslation();
-  const { traducao, setTraducao } = useTraducao(); // Adicionando a função setTraducao para atualizar o estado de tradução
+  const { traducao, setTraducao } = useTraducao();
   const [profileUrl, setProfileUrl] = useState(null);
   const [imagem, setImagem] = useState();
 
@@ -64,7 +64,7 @@ export default function Header() {
   }
 
   function goHome() {
-    navigate('/home');
+    navigate("/home");
   }
 
   function doLogout(event) {
@@ -73,7 +73,6 @@ export default function Header() {
     navigate("/login");
   }
 
-  // Adicionando a função para atualizar o idioma e armazená-lo no armazenamento local
   function changeLanguage(lang) {
     setTraducao(lang);
     localStorage.setItem("language", lang);
@@ -149,7 +148,11 @@ export default function Header() {
                         />
                       </button>
                     </div>
-                    {openLanguage ? <TranslationButtons changeLanguage={changeLanguage} /> : ""}
+                    {openLanguage ? (
+                      <TranslationButtons changeLanguage={changeLanguage} />
+                    ) : (
+                      ""
+                    )}
                   </div>
 
                   <div className="relative ml-3">
@@ -163,7 +166,9 @@ export default function Header() {
                         onClick={openCloseUserMenu}
                       >
                         <span className="absolute -inset-1.5"></span>
-                        <span className="sr-only">{t("abrir_menu_usuario")}</span>
+                        <span className="sr-only">
+                          {t("abrir_menu_usuario")}
+                        </span>
                         <img
                           className="h-8 w-8 rounded-full"
                           src={profileUrl || ""}

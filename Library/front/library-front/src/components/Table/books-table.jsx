@@ -5,6 +5,7 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Api } from "../../services/api";
 import EditModal from "../Modals/edit-book-modal";
 import { useTranslation } from "react-i18next";
+import { useSnackbar } from "notistack";
 
 const BooksTable = ({ books, book, onBookDeleted }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,13 +20,12 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
   const bookId = book ? book._id : null;
   const booksPerPage = 5;
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleDeleteBook = async (userId, bookId) => {
     try {
       if (!usuario || !token) {
-        console.error(
-          t("token")
-        );
+        console.error(t("token"));
         return;
       }
 
@@ -92,8 +92,14 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
           onBookDeleted();
         }
       }
+
+      enqueueSnackbar("Livro(s) deletado(s) com sucesso!", {
+        variant: "success",
+      });
     } catch (error) {
       console.error("Erro ao excluir livro:", error.message);
+
+      enqueueSnackbar("Erro ao deletar o livro", { variant: "error" });
     }
     refreshPage();
 
@@ -197,22 +203,22 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
               Nº
             </th>
             <th scope="col" className="px-6 py-3">
-            {t("titulo")}
+              {t("titulo")}
             </th>
             <th scope="col" className="px-6 py-3">
-            {t("autor")}
+              {t("autor")}
             </th>
             <th scope="col" className="px-6 py-3">
-            {t("genero")}
+              {t("genero")}
             </th>
             <th scope="col" className="px-6 py-3">
-            {t("status")}
+              {t("status")}
             </th>
             <th scope="col" className="px-6 py-3">
-            {t("avaliacao")}
+              {t("avaliacao")}
             </th>
             <th scope="col" className="px-6 py-3">
-            {t("acoes")}
+              {t("acoes")}
             </th>
           </tr>
         </thead>
@@ -296,7 +302,7 @@ const BooksTable = ({ books, book, onBookDeleted }) => {
         aria-label="Page navigation example"
       >
         <p className="text-primary-950">
-        {t("mostrar")}{" "}
+          {t("mostrar")}{" "}
           <strong>
             {indexOfFirstBook + 1}-
             {Math.min(indexOfLastBook, filteredBooks.length)}

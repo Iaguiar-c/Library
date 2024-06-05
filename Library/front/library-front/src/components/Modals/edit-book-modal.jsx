@@ -3,6 +3,7 @@ import { useAutenticacao } from "../../contextos/AutenticacaoProvider/Autenticac
 import { Api } from "../../services/api";
 import { useSnackbar } from "notistack";
 import Notification from "../Notification/Notification";
+import { useTranslation } from "react-i18next";
 
 const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
   const [title, setTitle] = useState("");
@@ -19,6 +20,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
   const modalRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
   const [showNotification, setShowNotification] = useState(false);
+  const { t } = useTranslation();
 
   const refreshPage = () => {
     window.location.reload();
@@ -77,7 +79,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
 
       setShowNotification(true);
       onClose();
-        refreshPage();
+      refreshPage();
     } catch (error) {
       console.error("Erro ao atualizar livro:", error.message);
       if (error.response) {
@@ -140,7 +142,8 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
         >
           <div className="flex justify-between items-center border-b pb-4">
             <h2 className="text-xl font-semibold text-primary-950">
-              Editar Livro
+             
+              {t("editar_livro")}
             </h2>
             <button
               type="button"
@@ -164,7 +167,8 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
             </button>
           </div>
           <p className="mt-1 text-sm leading-6 text-primary-800">
-            Complete as informações abaixo:
+            {t("complete_as_informacoes_do_livro")}
+            
           </p>
 
           <form className="mt-4 space-y-8" onSubmit={handleSubmit}>
@@ -176,7 +180,8 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="titulo"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Título
+                      {t("titulo")}
+                     
                     </label>
                     <div className="mt-2">
                       <input
@@ -196,7 +201,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="autor"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Autor
+                      {t("autor")}
                     </label>
                     <div className="mt-2">
                       <input
@@ -216,7 +221,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="ano"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Ano de Publicação
+                      {t("publicacao")}
                     </label>
                     <div className="mt-2">
                       <input
@@ -236,7 +241,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="categoria"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Categoria
+                      {t("genero")}
                     </label>
                     <div className="mt-2">
                       <input
@@ -255,7 +260,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="sinopse"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Descrição
+                      {t("descricao")}
                     </label>
                     <div className="mt-2">
                       <textarea
@@ -274,7 +279,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="status"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      Status
+                      {t("status")}
                     </label>
                     <div className="mt-2">
                       <select
@@ -296,7 +301,7 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                       htmlFor="imagemURL"
                       className="block text-sm font-medium leading-6 text-primary-950"
                     >
-                      URL da Imagem
+                      {t("insira_a_url_da_imagem")}
                     </label>
                     <div className="mt-2">
                       <input
@@ -312,58 +317,66 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                   </div>
                 </div>
               </div>
-              <h2 className="text-xl font-semibold text-primary-950">
-                Editar avaliação do livro
-              </h2>
             </div>
-            <div className="space-y-12">
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="comments"
-                  className="block text-sm font-medium leading-6 text-primary-950"
-                >
-                  Comentários
-                </label>
-                <textarea
-                  id="comments"
-                  name="comments"
-                  rows="3"
-                  className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6 custom-scrollbar"
-                  value={comments}
-                  onChange={(e) => setComments(e.target.value)}
-                />
-              </div>
-
-              <div className="border-b border-primary-900/10 pb-12">
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="sm:col-span-3 flex items-center">
+            <div className="">
+              {status === "read" && (
+                <>
+                  <h2 className="text-xl py-4 font-semibold text-primary-950">
+                  {t("editar_avaliacao_do_livro")}
+                  </h2>
+                  <div className="space-y-12">
+                    <div className="sm:col-span-3">
                       <label
-                        htmlFor="isFavorite"
+                        htmlFor="comments"
                         className="block text-sm font-medium leading-6 text-primary-950"
                       >
-                        Favorito
+                        {t("comentarios")}
                       </label>
-                      <input
-                        type="checkbox"
-                        id="isFavorite"
-                        name="isFavorite"
-                        className={`ml-2 h-4 w-4 accent-primary-900 focus:ring-primary-500 border-gray-300 rounded`}
-                        checked={isFavorite}
-                        onChange={(e) => setIsFavorite(e.target.checked)}
+                      <textarea
+                        id="comments"
+                        name="comments"
+                        rows="3"
+                        className="py-2 px-3 block w-full rounded-md border border-primary-800 focus:border-primary-800 focus:outline-none py-1.5 text-primary-950 shadow-sm placeholder:text-primary-400 sm:text-sm sm:leading-6 custom-scrollbar"
+                        value={comments}
+                        onChange={(e) => setComments(e.target.value)}
                       />
                     </div>
 
-                    <div className="sm:col-span-3 flex items-center">
-                      <label
-                        htmlFor="rating"
-                        className="block text-sm font-medium leading-6 text-primary-950"
-                      >
-                        Avaliação
-                      </label>
-                      <div className="ml-2 flex space-x-1">{renderStars()}</div>
+                    <div className="border-b border-primary-900/10 pb-12">
+                      <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-3 flex items-center">
+                          <label
+                            htmlFor="isFavorite"
+                            className="block text-sm font-medium leading-6 text-primary-950"
+                          >
+                            {t("favorito")}
+                          </label>
+                          <input
+                            type="checkbox"
+                            id="isFavorite"
+                            name="isFavorite"
+                            className={`ml-2 h-4 w-4 accent-primary-900 focus:ring-primary-500 border-gray-300 rounded`}
+                            checked={isFavorite}
+                            onChange={(e) => setIsFavorite(e.target.checked)}
+                          />
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center">
+                          <label
+                            htmlFor="rating"
+                            className="block text-sm font-medium leading-6 text-primary-950"
+                          >
+                            {t("avaliacao")}
+                          </label>
+                          <div className="ml-2 flex space-x-1">
+                            {renderStars()}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </>
+              )}
             </div>
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <button
@@ -371,13 +384,13 @@ const EditModal = ({ showModal, onClose, book, onBookUpdated }) => {
                 onClick={onClose}
                 className="text-sm font-semibold leading-6 text-primary-950"
               >
-                Cancelar
+                {t("cancelar")}
               </button>
               <button
                 type="submit"
                 className="rounded-md bg-primary-800 hover:bg-primary-900 text-primary-50 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Salvar
+                {t("salvar")}
               </button>
             </div>
           </form>

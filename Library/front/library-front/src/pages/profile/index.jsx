@@ -138,7 +138,7 @@ export default function Profile() {
             <div className="p-8">
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-4xl font-semibold text-primary-950 m-6">
-                  Seu Perfil
+                 {t("seu_perfil")}
                 </h1>
                 <div className="flex items-center">
                   <FontAwesomeIcon
@@ -161,7 +161,7 @@ export default function Profile() {
                 />
                 <div>
                   <h2 className="text-3xl font-semibold text-primary-950">
-                    Olá, {usuario.name}!
+                    {t("ola")}, {usuario.name}!
                   </h2>
                   <p className="text-xl text-primary-900 mt-2">
                     {usuario.email}

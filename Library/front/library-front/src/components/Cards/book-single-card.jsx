@@ -1,8 +1,12 @@
-import { useState } from "react";
+// BookSingleCard.js
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
+import { Api } from "../../services/api";
 import DeleteModal from "../Modals/delete-book-modal";
 import InfoModal from "../Modals/info-book-modal";
 import EditModal from "../Modals/edit-book-modal";
+import { useSnackbar } from "notistack";
 
 const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -10,12 +14,59 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const { usuario, token } = useAutenticacao();
+  const [isFavorite, setIsFavorite] = useState(false);
   const bookId = book._id;
+  const { enqueueSnackbar } = useSnackbar();
+
+  
+
+  
+
+  const handleDeleteBook = async (userId) => {
+    try {
+      if (!usuario || !token) {
+        console.error(
+          "Token ou usuário não disponível. Realize o login novamente."
+        );
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await Api.delete(`/${userId}/books/${bookId}`, config);
+
+      if (onBookDeleted) {
+        onBookDeleted();
+      }
+    } catch (error) {
+      console.error("Erro ao excluir livro:", error.message);
+    }
+  };
+
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await handleDeleteBook(usuario._id);
+      setShowDeleteModal(false);
+      refreshPage();
+      enqueueSnackbar("Livro deletado com sucesso!", { variant: "success" });
+    } catch (error) {
+      console.error("Erro ao excluir livro:", error.message);
+      enqueueSnackbar("Erro ao deletar o livro", { variant: "error" });
+    }
+  };
 
   return (
     <div>
       <div
-        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[500px] flex flex-col justify-between"
+        className="relative shadow-md rounded-lg transition-transform transform hover:scale-105 max-w-xs min-h-[400px] flex flex-col justify-between"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -84,19 +135,15 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
                 />
               </svg>
             </button>
+            
+            
           </div>
         </div>
       </div>
       <DeleteModal
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
-        onConfirm={() => {
-          setShowDeleteModal(false);
-          if (onBookDeleted) onBookDeleted();
-        }}
-        bookId={bookId}
-        userId={usuario._id}
-        token={token}
+        onConfirm={handleConfirmDelete}
         isUserDelete={false}
       />
       <InfoModal

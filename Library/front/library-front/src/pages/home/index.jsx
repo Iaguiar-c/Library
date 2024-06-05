@@ -8,8 +8,8 @@ import BooksTable from "../../components/Table/books-table";
 import Notification from "../../components/Notification/Notification";
 import FeatureHomeSection from "../../pages/home/FeatureHomeSection";
 import TabComponent from "../../pages/home/tablist";
-import { useTranslation } from "react-i18next";
 import HelpModal from "./HelpModal";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +20,8 @@ const Home = () => {
   const [filteredLivros, setFilteredLivros] = useState([]);
   const [livroCovers, setLivroCovers] = useState({});
   const [viewMode, setViewMode] = useState("card");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { t } = useTranslation();
 
   const [notification, setNotification] = useState({
@@ -28,42 +30,53 @@ const Home = () => {
     show: false,
   });
 
-  const fetchLivros = useCallback(async () => {
-    if (!usuario || !token) return;
-    try {
-      const response = await Api.get("/books", {
-        params: { userId: usuario._id },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const books = response.data.books;
-      setLivros(books);
-      setFilteredLivros(books);
+  const fetchLivros = useCallback(
+    async (page = 1) => {
+      if (!usuario || !token) return;
+      try {
+        const response = await Api.get("/books", {
+          params: { userId: usuario._id, page },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const { books, pagination } = response.data;
+        const { totalPages } = pagination;
 
-      const covers = {};
-      await Promise.all(
-        books.map(async (livro) => {
-          try {
-            const googleBooksResponse = await fetch(
-              `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-                livro.title
-              )}&key=AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY`
-            );
-            const data = await googleBooksResponse.json();
-            covers[livro._id] =
-              data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail ||
-              "https://via.placeholder.com/150";
-          } catch (error) {
-            console.error(t("erro_ao_buscar_capa_do_livro"), error.message);
-          }
-        })
-      );
-      setLivroCovers(covers);
-    } catch (error) {
-      console.error(t("erro_ao_buscar_livros"), error.message);
-    }
-  }, [usuario, token]);
+        setLivros((prevBooks) =>
+          page === 1 ? books : [...prevBooks, ...books]
+        );
+        setFilteredLivros((prevBooks) =>
+          page === 1 ? books : [...prevBooks, ...books]
+        );
+        setCurrentPage(page);
+        setTotalPages(totalPages);
+
+        const covers = {};
+        await Promise.all(
+          books.map(async (livro) => {
+            try {
+              const googleBooksResponse = await fetch(
+                `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+                  livro.title
+                )}&key=AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY`
+              );
+              const data = await googleBooksResponse.json();
+              covers[livro._id] =
+                data.items?.[0]?.volumeInfo?.imageLinks?.thumbnail ||
+                "https://via.placeholder.com/150";
+            } catch (error) {
+              console.error(t("erro_ao_buscar_capa_do_livro"), error.message);
+            }
+          })
+        );
+        setLivroCovers((prevCovers) => ({ ...prevCovers, ...covers }));
+      } catch (error) {
+        console.error(t("erro_ao_buscar_livros"), error.message);
+      }
+    },
+    [usuario, token]
+  );
 
   useEffect(() => {
     fetchLivros();
@@ -72,10 +85,14 @@ const Home = () => {
   const handleBookAdded = () => {
     fetchLivros();
     setNotification({
-      message: t("livro_adicionado_com_sucesso"),
+      message: t("livro_adicionado"),
       variant: "success",
       show: true,
     });
+  };
+
+  const handleTabChange = (status) => {
+    filterBooks(status);
   };
 
   const filterBooks = useCallback(
@@ -88,6 +105,12 @@ const Home = () => {
     },
     [livros]
   );
+
+  const loadMoreBooks = () => {
+    if (currentPage < totalPages) {
+      fetchLivros(currentPage + 1);
+    }
+  };
 
   return (
     <section className="bg-primary-50">
@@ -145,16 +168,24 @@ const Home = () => {
             </svg>
           </button>
         </div>
-        <TabComponent onTabChange={filterBooks} />
+        <TabComponent onTabChange={handleTabChange} />{" "}
         <div className="flex gap-2">
           <button
-            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            className="block text-white bg-primary-700 hover
+                focus
+                focus
+                focus
+                font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
             onClick={() => setIsReviewModalOpen(true)}
           >
             {t("avaliacoes")}
           </button>
           <button
-            className="block text-white bg-primary-700 hover:bg-primary-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
+            className="block text-white bg-primary-700 hover
+                focus
+                focus
+                focus
+                font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1"
             onClick={() => setIsModalOpen(true)}
           >
             <svg
@@ -193,11 +224,23 @@ const Home = () => {
       )}
       <div className="m-8">
         {filteredLivros.length > 0 ? (
-          viewMode === "card" ? (
-            <BooksCard books={filteredLivros} covers={livroCovers} />
-          ) : (
-            <BooksTable books={filteredLivros} />
-          )
+          <>
+            {viewMode === "card" ? (
+              <BooksCard books={filteredLivros} livroCovers={livroCovers} />
+            ) : (
+              <BooksTable books={filteredLivros} />
+            )}
+            {viewMode !== "table" && currentPage < totalPages && (
+              <div className="flex justify-center mt-4">
+                <button
+                  className="bg-primary-700 text-white font-medium rounded-lg text-sm px-5 py-2.5"
+                  onClick={loadMoreBooks}
+                >
+                  {t("carregar_mais")}
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <p className="text-3xl text-center mt-20 text-primary-950 font-bold">
             {t("voce_ainda_nao_possuem_livros_adicionados")}
@@ -208,11 +251,12 @@ const Home = () => {
         message={notification.message}
         variant={notification.variant}
         show={notification.show}
+        onClose={() => setNotification({ ...notification, show: false })}
       />
 
-<div
+      <div
         className="fixed bottom-4 right-4 bg-primary-100 shadow-md rounded-full p-4 cursor-pointer"
-        onClick={() => setIsHelpModalOpen(true)} 
+        onClick={() => setIsHelpModalOpen(true)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -228,11 +272,12 @@ const Home = () => {
           />
         </svg>
       </div>
-  
-      <HelpModal
-        isOpen={isHelpModalOpen}
-        onClose={() => setIsHelpModalOpen(false)}
-      />
+      {isHelpModalOpen && (
+        <HelpModal
+          isOpen={isHelpModalOpen}
+          onClose={() => setIsHelpModalOpen(false)}
+        />
+      )}
     </section>
   );
 };
