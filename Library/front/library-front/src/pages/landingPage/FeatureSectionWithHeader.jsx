@@ -25,7 +25,7 @@ const HeaderComponent = ({ links }) => (
         <img src={logoImage} alt="Logo" style={{ maxWidth: "100px" }} />
         <div className="flex items-center">
           <NavLinks>{links}</NavLinks>
-          <TranslationButtons /> 
+          {/* <TranslationButtons />  */}
         </div>
       </nav>
     </Container2>

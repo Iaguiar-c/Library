@@ -350,7 +350,8 @@ i18n.use(initReactI18next).init({
         voce_ja_esta_utilizando_este_valor:
           "Você não pode alterar o valor para o mesmo valor salvo anteriormente",
         livro_deletado_com_sucesso: "Livro deletado com sucesso",
-        editar_perfil: "Editar Perfil"
+        editar_perfil: "Editar Perfil",
+        livro_ou_url_nao_definidos: "Livro ou URL da capa não definidos"
       },
     },
     es: {

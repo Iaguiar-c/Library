@@ -47,7 +47,6 @@ export default function Header() {
   }, [usuario]);
 
   useEffect(() => {
-    // Recuperando o idioma do armazenamento local ao carregar a página
     const storedLanguage = localStorage.getItem("language");
     if (storedLanguage) {
       setTraducao(storedLanguage);

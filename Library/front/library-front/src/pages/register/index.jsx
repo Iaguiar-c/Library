@@ -40,7 +40,6 @@ const UserRegister = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
 
     try {
       await forgotPasswordCheckUser(email);
@@ -53,9 +52,7 @@ const UserRegister = () => {
       );
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
-    }
+    } 
 
     if (!username || !email || !password || !confirmpassword) {
       setLoading(false);

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useAutenticacao } from "../../contextos/AutenticacaoProvider/AutenticacaoProvider";
 import { Api } from "../../services/api";
 import { useLivros } from "../../contextos/LivrosProvider/LivrosProvider";
+import { useTranslation } from "react-i18next";
 
 const ModalForm = ({
   isOpen,
@@ -29,6 +30,7 @@ const ModalForm = ({
   const [isCategoryManual, setIsCategoryManual] = useState(true);
   const [isDescriptionManual, setIsDescriptionManual] = useState(true);
   const { categorias, pegarCategorias, pegarStatus, status } = useLivros();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setModalOpen(isOpen);
@@ -127,7 +129,7 @@ const ModalForm = ({
 
     if (!token || !usuario) {
       console.error(
-        "Token ou usuário não disponível. Realize o login novamente."
+        t("realize_o_login_novamente")
       );
       return;
     }

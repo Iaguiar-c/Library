@@ -5,7 +5,7 @@ const HomeBookCard = ({ livro, coverUrl }) => {
   const { t } = useTranslation();
 
   if (!livro || !coverUrl) {
-    console.error("Livro ou URL da capa não definidos");
+    console.error(t("livro_ou_url_nao_definidos"));
     return null;
   }
 
