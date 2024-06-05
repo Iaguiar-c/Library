@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import tw from "twin.macro";
 import logoImage from "../../assets/logoBom.png";
 import FeatureSection from "./FeatureSection";
@@ -18,18 +18,24 @@ import {
 import { useTranslation } from "react-i18next";
 import TranslationButtons from "../../components/TranslationButtons";
 
-const HeaderComponent = ({ links }) => (
+const HeaderComponent = ({ links, showTranslationButtons, toggleTranslationButtons }) => (
   <Header>
-    <Container2>
-      <nav className="flex justify-between items-center">
-        <img src={logoImage} alt="Logo" style={{ maxWidth: "100px" }} />
-        <div className="flex items-center">
-          <NavLinks>{links}</NavLinks>
-          <TranslationButtons /> 
-        </div>
-      </nav>
-    </Container2>
-  </Header>
+  <Container2>
+    <nav className="flex justify-between items-center">
+      <img src={logoImage} alt="Logo" style={{ maxWidth: "100px" }} />
+      <div className="flex items-center">
+        <NavLinks>{links}</NavLinks>
+        <button onClick={toggleTranslationButtons} css={tw`ml-4`} className="icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </button>
+        {showTranslationButtons && <TranslationButtons />}
+      </div>
+    </nav>
+    
+  </Container2>
+</Header>
 );
 
 export default function FeatureSectionWithHeader({
@@ -38,6 +44,11 @@ export default function FeatureSectionWithHeader({
   const featureSectionRef = useRef(null);
   const buttonRoundedCss = buttonRounded ? tw`rounded-full` : "";
   const { t } = useTranslation();
+  const [showTranslationButtons, setShowTranslationButtons] = useState(false);
+
+  const toggleTranslationButtons = () => {
+    setShowTranslationButtons(!showTranslationButtons);
+  };
 
   const scrollToFeatureSection = () => {
     if (featureSectionRef.current) {
@@ -59,8 +70,9 @@ export default function FeatureSectionWithHeader({
   return (
     <>
       <HeroSection>
-        <HeaderComponent links={navLinks} />
+        <HeaderComponent links={navLinks} showTranslationButtons={showTranslationButtons} toggleTranslationButtons={toggleTranslationButtons} />
         <HeroContent>
+        
           <Container2>
             <ContentWithVerticalPadding>
               <div className="max-w-screen-2xl mx-auto sm:px-8 text-center">
@@ -109,6 +121,7 @@ export default function FeatureSectionWithHeader({
           </Container2>
         </HeroContent>
       </HeroSection>
+      
       <FeatureSection ref={featureSectionRef} />
     </>
   );
