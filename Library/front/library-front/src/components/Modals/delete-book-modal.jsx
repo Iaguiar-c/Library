@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const DeleteModal = ({
   showModal,
@@ -7,6 +8,9 @@ const DeleteModal = ({
   selectedBooksCount,
   isUserDelete,
 }) => {
+
+
+  const { t } = useTranslation();
   if (!showModal) return null;
 
   return (
@@ -55,7 +59,7 @@ const DeleteModal = ({
           {isUserDelete ? (
             <>
               <p className="mb-4 text-gray-500 dark:text-gray-300">
-                Tem certeza que deseja excluir este usuário?
+                {t("excluir_usuario")}
               </p>
             </>
           ) : (
@@ -72,13 +76,13 @@ const DeleteModal = ({
               onClick={onClose}
               className="py-2 px-3 text-sm font-medium text-primary-950 bg-primary-200 rounded-lg border border-primary-200 hover:bg-primary-100 focus:ring-4"
             >
-              Não, cancelar
+              {t("nao_cancelar")}
             </button>
             <button
               onClick={onConfirm}
               className="py-2 px-3 text-sm font-medium text-center text-primary-50 bg-primary-700 rounded-lg hover:bg-primary-950"
             >
-              Sim, tenho certeza
+             {t("sim_tenho_certeza")}
             </button>
           </div>
         </div>
