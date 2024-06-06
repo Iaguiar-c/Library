@@ -1,4 +1,4 @@
 // chaves da API Google
-const googleBooksApiKey = 'AIzaSyD1OLIIXQQ2-MAph8BvBZakkWQ-drye1tM';
+const googleBooksApiKey = 'AIzaSyDx3Qf677VRiBXwgR_13EFb3ecUSEG6iMY';
 
 export default googleBooksApiKey;

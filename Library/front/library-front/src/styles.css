@@ -1,0 +1,51 @@
+.dark-mode {
+    background-color: #222;
+    color: #fff;
+    padding-left: 10px;
+}
+
+.light-mode {
+    background-color: #fff;
+    color: #222;
+    padding-left: 10px;
+}
+
+.bg-gray-800-dark {
+    --tw-bg-opacity: 1;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
+
+.card-zoom {
+    @apply relative overflow-hidden shadow-xl w-80 h-80 rounded-2xl; 
+    left: -20px; 
+  }
+  
+  .card-zoom-image {
+    @apply absolute w-full h-full transition-all duration-500 ease-in-out transform bg-center;
+  }
+  
+  .card-zoom:hover .card-zoom-image {
+    @apply scale-150;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #F6ECFB;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #622F74;
+    border-radius: 5px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #431853;
+  }
+
+  
+  .transition-all {
+    transition: all 0.5s ease-in-out;
+  }

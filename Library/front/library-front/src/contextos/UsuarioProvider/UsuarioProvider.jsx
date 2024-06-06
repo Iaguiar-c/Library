@@ -12,15 +12,62 @@ UsuarioContext.displayName = "Usuario Context";
 
 export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState([]);
-  const { config } = useAutenticacao();
+  const [userExist, setUserExist] = useState([]);
+  const [isPasswordUpdated, setIsPasswordUpdated] = useState([]);
+  const { config, logout } = useAutenticacao();
 
-  async function postUsuario(name, email, password, confirmpassword) {
+  async function postUsuario(userData) {
     try {
-      const response = await Api.post("user/register", { name, email, password, confirmpassword }, config);
-      console.log("contexto Usuario:", response);
+      const response = await Api.post("user/register", userData);
+      console.log('userData', userData)
       setUsuario(response.data);
     } catch (error) {
+      throw error; 
+    }
+  }
+
+  async function getUserById(id) {
+    try {
+      const response = await Api.get(`user/${id}`, config);
+      return response.data.user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function editUsuario(id, userData){
+    try{
+      const response = await Api.put(`user/update/${id}`, userData, config)
+      return response;
+    } catch (error){
+      throw error; 
+    }
+  }
+  
+  async function deleteUsuario(id) {
+    try {
+      await Api.delete(`user/delete/${id}`, config);
+      logout();
+    } catch (error) {
       console.log(error);
+    }
+  }
+  
+  async function forgotPasswordCheckUser(email){
+    try {      
+      const response = await Api.get(`user/check-email/${email}`);
+      setUserExist(response)
+    } catch (error){
+      throw error; 
+    }
+  }
+
+  async function updatePassword(email, newPassword, confirmNewPassword){
+    try{
+      const response = await Api.post('user/change-password',  { email, newPassword, confirmNewPassword });
+      return response
+    } catch (error){
+      throw error; 
     }
   }
 
@@ -28,8 +75,16 @@ export function UsuarioProvider({ children }) {
     <UsuarioContext.Provider
       value={{
         postUsuario,
+        deleteUsuario,
         usuario,
         setUsuario,
+        userExist,
+        forgotPasswordCheckUser,
+        updatePassword,
+        isPasswordUpdated,
+        setIsPasswordUpdated,
+        editUsuario,
+        getUserById
       }}
     >
       {children}
