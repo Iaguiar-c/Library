@@ -391,6 +391,7 @@ i18n.use(initReactI18next).init({
           "Você não pode alterar o valor para o mesmo valor salvo anteriormente",
         livro_deletado_com_sucesso: "Livro deletado com sucesso",
         editar_perfil: "Editar Perfil",
+        livro_ou_url_nao_definidos: "Livro ou URL da capa não definidos",
         editar_livro: "Editar Livro",
         complete_as_informacoes_do_livro: "Complete as informações do livro",
         descricao: "Descrição",

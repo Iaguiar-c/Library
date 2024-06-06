@@ -11,7 +11,9 @@ export const useAutenticacao = () => {
 };
 
 export const AutenticacaoProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(null);
+  const [usuario, setUsuario] = useState(() => {
+    return getUsuarioNoLocalStorage();
+  });
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [config, setConfig] = useState({});
 

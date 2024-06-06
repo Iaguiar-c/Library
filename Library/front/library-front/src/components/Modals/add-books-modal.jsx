@@ -129,7 +129,7 @@ const ModalForm = ({
 
     if (!token || !usuario) {
       console.error(
-        "Token ou usuário não disponível. Realize o login novamente."
+        t("realize_o_login_novamente")
       );
       return;
     }

@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsuario } from "../../contextos/UsuarioProvider/UsuarioProvider";
 import LogoPadrao from "../../assets/logopadrao.png";
-import ModalGenerico from "../../components/ModalGenerico";
 import DeleteModal from "../../components/Modals/delete-book-modal";
 import { useTranslation } from "react-i18next";
 
@@ -15,7 +14,7 @@ export default function Profile() {
   const { enqueueSnackbar } = useSnackbar();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { deleteUsuario, editUsuario } = useUsuario();
+  const { deleteUsuario, editUsuario, getUserById } = useUsuario();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [profileUrl, setProfileUrl] = useState(LogoPadrao);
@@ -33,10 +32,11 @@ export default function Profile() {
     } else {
       setProfileUrl(LogoPadrao);
     }
-
+    
     setUsername(usuario?.name || "");
     setEmail(usuario?.email || "");
     setProfile(usuario?.profile || "");
+
   }, [usuario]);
 
   const handleEditChangeSubmit = async (e) => {
@@ -84,7 +84,7 @@ export default function Profile() {
       setShowEditModal(false);
     } catch (error) {
       console.error(error);
-
+  
       const errorMessage =
         error.response?.data?.msg || t("nao_foi_possivel_editar_o_usuario");
       enqueueSnackbar(errorMessage, { variant: "error" });
@@ -93,6 +93,7 @@ export default function Profile() {
     }
     handleCloseEditModal();
   };
+  
 
   const handleDeleteProfile = async () => {
     setLoading(true);

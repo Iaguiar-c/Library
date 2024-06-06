@@ -14,56 +14,59 @@ export class UserController {
   }
 
   async register(req, res) {
-      const { name, email, password, confirmpassword, profile } = req.body;
+    const { name, email, password, confirmpassword, profile } = req.body;
 
-      if (!name || !email || !password || !confirmpassword) {
-        return res.status(422).json({ msg: "Por favor, forneça todos os campos obrigatórios." });
-      }
+    if (!name || !email || !password || !confirmpassword) {
+      return res
+        .status(422)
+        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+    }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return res.status(422).json({ msg: "Formato de email inválido." });
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(422).json({ msg: "Formato de email inválido." });
+    }
 
-      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-      if (!passwordRegex.test(password)) {
+    const passwordRegex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(422).json({
+        msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+      });
+    }
+
+    if (password !== confirmpassword) {
+      return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
+    }
+
+    try {
+      const userExists = await User.findOne({ email });
+
+      if (userExists) {
         return res.status(422).json({
-          msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+          msg: "Este email já está cadastrado. Por favor, use outro email.",
         });
       }
 
-      if (password !== confirmpassword) {
-        return res.status(422).json({ msg: "As senhas precisam ser iguais!" });
-      }
-      
-      try {
-        const userExists = await User.findOne({ email });
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(password, salt);
 
-        if (userExists) {
-          return res.status(422).json({
-            msg: "Este email já está cadastrado. Por favor, use outro email.",
-          });
-        }
+      const user = new User({
+        name,
+        email,
+        password: passwordHash,
+        profile,
+      });
 
-        const salt = await bcrypt.genSalt(12);
-        const passwordHash = await bcrypt.hash(password, salt);
+      await user.save();
 
-        const user = new User({
-          name,
-          email,
-          password: passwordHash,
-          profile,
-        });
-
-        await user.save();
-
-        res.status(201).json({ msg: "Usuário registrado com sucesso!" });
-      } catch (error) {
-        console.error("Erro ao registrar usuário:", error.message);
-        res.status(500).json({
-          msg: "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
-        });
-      }
+      res.status(201).json({ msg: "Usuário registrado com sucesso!" });
+    } catch (error) {
+      console.error("Erro ao registrar usuário:", error.message);
+      res.status(500).json({
+        msg: "Houve um erro no servidor ao registrar o usuário. Por favor, tente novamente mais tarde.",
+      });
+    }
   }
 
   async login(req, res) {
@@ -170,8 +173,7 @@ export class UserController {
     }
   
     if (password) {
-      const passwordRegex =
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
       if (!passwordRegex.test(password)) {
         return res.status(422).json({
           msg: "A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
@@ -189,32 +191,39 @@ export class UserController {
         return res.status(404).json({ msg: "Usuário não encontrado." });
       }
   
-      if (email) {
-        const existingUser = await User.findOne({ email });
-        if (existingUser && existingUser._id.toString() !== id) {
-          return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
-        }
+      // if (email) {
+      //   const existingUser = await User.findOne({ email });
+      //   if (existingUser && existingUser._id.toString() !== id) {
+      //     return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
+      //   }
+      // }
+  
+      // const updates = {};
+      // if (name) updates.name = name;
+      // if (email) updates.email = email;
+      // if (profile) updates.profile = profile;
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== id) {
+        return res.status(422).json({ msg: "Email já está em uso por outro usuário." });
       }
   
-      const updates = {};
-      if (name) updates.name = name;
-      if (email) updates.email = email;
-      if (profile) updates.profile = profile;
+      const updates = { name, email, profile };
       if (password) {
         const salt = await bcrypt.genSalt(12);
         const passwordHash = await bcrypt.hash(password, salt);
         updates.password = passwordHash;
       }
   
-      await User.findByIdAndUpdate(id, updates);
+      const updatedUser = await User.findByIdAndUpdate(id, updates);
   
-      res.status(200).json({ msg: "Usuário atualizado com sucesso!" });
+      res.status(200).json({ msg: "Usuário atualizado com sucesso!", user: updatedUser });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error.message);
       res.status(500).json({ msg: "Erro no servidor ao atualizar usuário." });
     }
   }
   
+
   async deleteUser(req, res) {
     const Id = req.params.id;
 

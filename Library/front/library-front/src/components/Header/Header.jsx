@@ -22,7 +22,7 @@ export default function Header() {
   const { t } = useTranslation();
   const { traducao, setTraducao } = useTraducao();
   const [profileUrl, setProfileUrl] = useState(null);
-  const [imagem, setImagem] = useState();
+  const [imagem, setImagem] = useState(Brasil);
 
   useEffect(() => {
     const changeImage = () => {
@@ -112,7 +112,6 @@ export default function Header() {
                     className="relative rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
                   >
                     <span className="absolute -inset-1.5"></span>
-                    <span className="sr-only">{t("ver_notificacoes")}</span>
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -291,7 +290,6 @@ export default function Header() {
                   className="relative ml-auto flex-shrink-0 rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:ring-offset-2 focus:ring-offset-primary-800"
                 >
                   <span className="absolute -inset-1.5"></span>
-                  <span className="sr-only">{t("ver_notificacoes")}</span>
                   <svg
                     className="h-6 w-6"
                     fill="none"

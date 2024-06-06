@@ -26,6 +26,15 @@ export function UsuarioProvider({ children }) {
     }
   }
 
+  async function getUserById(id) {
+    try {
+      const response = await Api.get(`user/${id}`, config);
+      return response.data.user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function editUsuario(id, userData){
     try{
       const response = await Api.put(`user/update/${id}`, userData, config)
@@ -74,7 +83,8 @@ export function UsuarioProvider({ children }) {
         updatePassword,
         isPasswordUpdated,
         setIsPasswordUpdated,
-        editUsuario
+        editUsuario,
+        getUserById
       }}
     >
       {children}
