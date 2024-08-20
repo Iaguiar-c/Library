@@ -25,7 +25,7 @@ const dbPassword = process.env.DB_PASS;
 
 mongoose
   .connect(
-    `mongodb+srv://${dbUser}:${dbPassword}@cluster0.s4ttksz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+    `mongodb+srv://${dbUser}:${dbPassword}@cluster0.8j7si.mongodb.net/bookstertcc?retryWrites=true&w=majority`
   )
   .then(() => {
     const PORT = process.env.PORT || 3001;
@@ -37,4 +37,4 @@ mongoose
       exec(`${openCommand} http://localhost:${PORT}/api-docs`);
     });
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.log('Erro ao conectar ao MongoDB:', err));

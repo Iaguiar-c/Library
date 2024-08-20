@@ -47,10 +47,8 @@ export default function Header() {
   }, [usuario]);
 
   useEffect(() => {
-    const storedLanguage = localStorage.getItem("language");
-    if (storedLanguage) {
+    const storedLanguage = localStorage.getItem("language") | 'pt';
       setTraducao(storedLanguage);
-    }
   }, [setTraducao]);
 
   function openCloseUserMenu() {
@@ -80,138 +78,118 @@ export default function Header() {
 
   return (
     <>
-      <div className="min-h-full">
-        <nav className={`bg-primary-800-${darkMode ? "dark" : ""}`}>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className={`min-h-full ${darkMode ? "bg-primary-800" : "bg-white"}`}>
+        <nav className={`bg-primary-800 ${darkMode ? "dark" : ""}`}>
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <img
                     onClick={() => goHome()}
-                    className="h-20 w-20 hover:transform hover:-translate-y-0.5"
+                    className="h-16 w-16 cursor-pointer"
                     src={LogoPreto}
                     alt={t("imagem_de_fundo")}
                   />
                 </div>
-                <div className="hidden md:block">
-                  <div className="ml-10 flex items-baseline space-x-4">
-                    <a
-                      href="home"
-                      className="bg-primary-700 text-primary-50 rounded-md px-3 py-2 text-sm font-medium"
-                      aria-current="page"
-                    >
-                      {t("home")}
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <div className="ml-4 flex items-center md:ml-6">
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
+                <div className="hidden md:flex md:ml-10 md:space-x-4">
+                  <a
+                    href="home"
+                    className="bg-primary-700 text-primary-50 rounded-md px-3 py-2 text-sm font-medium"
+                    aria-current="page"
                   >
-                    <span className="absolute -inset-1.5"></span>
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                      />
-                    </svg>
-                  </button>
-                  <ThemeButton />
-                  <div className="relative ml-3">
-                    <div>
-                      <button
-                        type="button"
-                        className="relative flex max-w-xs items-center rounded-full bg-primary-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
-                        id="user-menu-button"
-                        aria-expanded={open ? "true" : "false"}
-                        aria-haspopup="true"
-                        onClick={openCloseLanguageMenu}
-                      >
-                        <span className="absolute -inset-1.5"></span>
-                        <span className="sr-only">{t("linguagem")}</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src={imagem}
-                          alt=""
-                        />
-                      </button>
-                    </div>
-                    {openLanguage ? (
-                      <TranslationButtons changeLanguage={changeLanguage} />
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="relative ml-3">
-                    <div>
-                      <button
-                        type="button"
-                        className="relative flex max-w-xs items-center rounded-full bg-primary-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
-                        id="user-menu-button"
-                        aria-expanded={open ? "true" : "false"}
-                        aria-haspopup="true"
-                        onClick={openCloseUserMenu}
-                      >
-                        <span className="absolute -inset-1.5"></span>
-                        <span className="sr-only">
-                          {t("abrir_menu_usuario")}
-                        </span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src={profileUrl || ""}
-                          alt={t("foto_do_usuario")}
-                        />
-                      </button>
-                    </div>
-
-                    {open ? (
-                      <div
-                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-primary-100 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="user-menu-button"
-                        tabIndex="-1"
-                      >
-                        <button
-                          onClick={() => navigate("/profile")}
-                          className="block px-4 py-2 text-sm text-primary-700"
-                        >
-                          {t("seu_perfil")}
-                        </button>
-
-                        <button
-                          onClick={(event) => doLogout(event)}
-                          className="block px-4 py-2 text-sm text-primary-700"
-                        >
-                          {t("deslogar")}
-                        </button>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                    {t("home")}
+                  </a>
                 </div>
               </div>
-              <div className="-mr-2 flex md:hidden">
+              <div className="hidden md:flex md:items-center">
                 <button
                   type="button"
-                  className="relative inline-flex items-center justify-center rounded-md bg-primary-800 p-2 text-primary-400 hover:bg-primary-700 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
-                  aria-controls="mobile-menu"
-                  aria-expanded="false"
+                  className="relative rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
+                  onClick={toggleDarkMode}
                 >
-                  <span className="absolute -inset-0.5"></span>
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                    />
+                  </svg>
+                </button>
+                <ThemeButton />
+                <div className="relative ml-3">
+                  <button
+                    type="button"
+                    className="flex items-center rounded-full bg-primary-800 text-sm focus:outline-none"
+                    id="language-menu-button"
+                    aria-expanded={openLanguage ? "true" : "false"}
+                    aria-haspopup="true"
+                    onClick={openCloseLanguageMenu}
+                  >
+                    <img
+                      className="h-8 w-8 rounded-full"
+                      src={imagem}
+                      alt={t("linguagem")}
+                    />
+                  </button>
+                  {openLanguage && (
+                    <TranslationButtons changeLanguage={changeLanguage} />
+                  )}
+                </div>
+                <div className="relative ml-3">
+                  <button
+                    type="button"
+                    className="flex items-center rounded-full bg-primary-800 text-sm focus:outline-none"
+                    id="user-menu-button"
+                    aria-expanded={open ? "true" : "false"}
+                    aria-haspopup="true"
+                    onClick={openCloseUserMenu}
+                  >
+                    <img
+                      className="h-8 w-8 rounded-full"
+                      src={profileUrl || ""}
+                      alt={t("foto_do_usuario")}
+                    />
+                  </button>
+                  {open && (
+                    <div
+                      className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-primary-100 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="user-menu-button"
+                      tabIndex="-1"
+                    >
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="block px-4 py-2 text-sm text-primary-700"
+                      >
+                        {t("seu_perfil")}
+                      </button>
+                      <button
+                        onClick={doLogout}
+                        className="block px-4 py-2 text-sm text-primary-700"
+                      >
+                        {t("deslogar")}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* style="margin: 0.5rem;" */}
+              <div className="-mr-2 flex md:hidden" >
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-md bg-primary-800 p-2 text-primary-400 hover:bg-primary-700 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:ring-offset-2 focus:ring-offset-primary-800"
+                  aria-controls="mobile-menu"
+                  aria-expanded={open ? "true" : "false"}
+                  onClick={() => setOpen(!open)}
+                >
                   <span className="sr-only">{t("abrir_menu_principal")}</span>
                   <svg
                     className="block h-6 w-6"
@@ -245,51 +223,29 @@ export default function Header() {
               </div>
             </div>
           </div>
-
-          <div className="md:hidden" id="mobile-menu">
-            <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-              <a
-                href="#"
-                className="bg-primary-900 text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
-                aria-current="page"
-              >
-                {t("dashboard")}
-              </a>
-              <a
-                href="#"
-                className="text-primary-300 hover:bg-primary-700 hover:text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
-              >
-                {t("team")}
-              </a>
-              <a
-                href="#"
-                className="text-primary-300 hover:bg-primary-700 hover:text-primary-900 block rounded-md px-3 py-2 text-base font-medium"
-              >
-                {t("projetos")}
-              </a>
-            </div>
+          <div className={`${open ? "block" : "hidden"} md:hidden`} id="mobile-menu">
             <div className="border-t border-primary-700 pb-3 pt-4">
               <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
+                    src={profileUrl || ""}
+                    alt={t("foto_do_usuario")}
                   />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium leading-none text-primary-900">
-                    Tom Cook
+                    {usuario?.name || t("usuario")}
                   </div>
                   <div className="text-sm font-medium leading-none text-primary-400">
-                    tom@example.com
+                    {usuario?.email || "email@example.com"}
                   </div>
                 </div>
                 <button
                   type="button"
-                  className="relative ml-auto flex-shrink-0 rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:ring-offset-2 focus:ring-offset-primary-800"
+                  className="ml-auto rounded-full bg-primary-800 p-1 text-primary-400 hover:text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-900 focus:ring-offset-2 focus:ring-offset-primary-800"
+                  onClick={toggleDarkMode}
                 >
-                  <span className="absolute -inset-1.5"></span>
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -298,7 +254,6 @@ export default function Header() {
                     stroke="currentColor"
                     aria-hidden="true"
                   >
-                    {usuario?.name}
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -309,19 +264,19 @@ export default function Header() {
               </div>
               <div className="mt-3 space-y-1 px-2">
                 <a
-                  href="#"
+                  href="/profile"
                   className="block rounded-md px-3 py-2 text-base font-medium text-primary-400 hover:bg-primary-700 hover:text-primary-900"
                 >
                   {t("seu_perfil")}
                 </a>
-                <a
+                {/* <a
                   href="#"
                   className="block rounded-md px-3 py-2 text-base font-medium text-primary-400 hover:bg-primary-700 hover:text-primary-900"
                 >
                   {t("configuracoes")}
-                </a>
+                </a> */}
                 <a
-                  href="#"
+                  onClick={doLogout}
                   className="block rounded-md px-3 py-2 text-base font-medium text-primary-400 hover:bg-primary-700 hover:text-primary-900"
                 >
                   {t("deslogar")}
@@ -330,14 +285,14 @@ export default function Header() {
             </div>
           </div>
         </nav>
-
-        <header className="">
+        <header>
           <Outlet />
         </header>
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8"></div>
         </main>
       </div>
+
     </>
   );
 }

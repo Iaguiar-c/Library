@@ -53,6 +53,10 @@ export const SectionHeading = styled(motion.h2)`
   font-size: 4.5rem;
   padding-bottom: 4rem;
   margin-top: 1rem;
+
+  @media (min-width: 400px) {
+    font-size: 3rem!important; 
+  }
 `;
 
 export const SectionDescription = styled(motion.p)`

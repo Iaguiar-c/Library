@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const TraducaoContext = createContext();
 
@@ -11,14 +11,20 @@ export const useTraducao = () => {
 };
 
 export function TraducaoProvider({ children }) {
-  const [traducao, setTraducao] = useState(''); 
+  const [traducao, setTraducao] = useState(() => {
+    return sessionStorage.getItem("language") || 'pt';
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("language", traducao);
+  }, [traducao]);
 
   const toggleTraducao = (novoIdioma) => {
     setTraducao(novoIdioma);
   };
 
   return (
-    <TraducaoContext.Provider value={{ traducao, toggleTraducao }}>
+    <TraducaoContext.Provider value={{ traducao, setTraducao, toggleTraducao }}>
       {children}
     </TraducaoContext.Provider>
   );

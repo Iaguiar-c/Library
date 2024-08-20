@@ -127,160 +127,158 @@ export default function Profile() {
   };
 
   const handleEditClick = () => {
-    setIsOpen(true); // Abrir o modal de edição
+    setIsOpen(true); 
   };
 
   return (
     <>
-      <div className="flex justify-center items-center h-screen">
-        <div className="max-w-3xl w-full mx-auto bg-primary-100 shadow-md rounded-lg overflow-hidden">
-          {usuario && (
-            <div className="p-8">
-              <div className="flex items-center justify-between mb-4">
-                <h1 className="text-4xl font-semibold text-primary-950 m-6">
-                 {t("seu_perfil")}
-                </h1>
-                <div className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faEdit}
-                    className="text-primary-700 cursor-pointer mr-4 text-2xl"
-                    onClick={handleEditClick}
-                  />
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className="text-primary-700 cursor-pointer text-2xl"
-                    onClick={() => setShowDeleteModal(true)}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center mb-6">
-                <img
-                  src={profileUrl || ""}
-                  alt="Avatar"
-                  className="h-50 w-48 rounded-full object-cover mr-6"
-                />
-                <div>
-                  <h2 className="text-3xl font-semibold text-primary-950">
-                    {t("ola")}, {usuario.name}!
-                  </h2>
-                  <p className="text-xl text-primary-900 mt-2">
-                    {usuario.email}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+<div className="flex justify-center items-center min-h-screen p-4">
+  <div className="w-full max-w-4xl mx-auto bg-primary-100 shadow-md rounded-lg overflow-hidden">
+    {usuario && (
+      <div className="p-4 sm:p-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-primary-950 mb-4 sm:mb-0">
+            {t("seu_perfil")}
+          </h1>
+          <div className="flex items-center space-x-4">
+            <FontAwesomeIcon
+              icon={faEdit}
+              className="text-primary-700 cursor-pointer text-xl sm:text-2xl"
+              onClick={handleEditClick}
+            />
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="text-primary-700 cursor-pointer text-xl sm:text-2xl"
+              onClick={() => setShowDeleteModal(true)}
+            />
+          </div>
         </div>
-        {!usuario && (
-          <div className="p-6">
-            <p className="text-primary-900">
-              {t("faca_login_para_visualizar_o_perfil")}
+        <div className="flex flex-col sm:flex-row items-center mb-6">
+          <img
+            src={profileUrl || ""}
+            alt="Avatar"
+            className="h-32 w-32 sm:h-48 sm:w-48 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6"
+          />
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-primary-950">
+              {t("ola")}, {usuario.name}!
+            </h2>
+            <p className="text-lg sm:text-xl text-primary-900 mt-2">
+              {usuario.email}
             </p>
           </div>
-        )}
-
-        <DeleteModal
-          showModal={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleDeleteProfile}
-          isUserDelete={true}
-        />
-
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-950 bg-opacity-30">
-            <div
-              className="p-8 bg-primary-100 shadow-md rounded-lg"
-              style={{ width: "50%" }}
-            >
-              <div className="flex justify-between mb-4">
-                <h1 className="text-2xl font-semibold text-primary-950">
-                  {t("editar_perfil")}
-                </h1>
-                <button
-                  onClick={handleCloseEditModal}
-                  className="text-primary-700 hover:text-primary-900 focus:outline-none"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <form className="space-y-4" onSubmit={handleEditChangeSubmit}>
-                <div>
-                  <label
-                    htmlFor="username"
-                    className="block mb-1 text-sm font-medium text-primary-950"
-                  >
-                    {t("nome_de_usuario")}
-                  </label>
-                  <input
-                    type="text"
-                    name="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder={t("editar_nome_de_usuario")}
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-1 text-sm font-medium text-primary-950"
-                  >
-                    {t("e_mail")}
-                  </label>
-                  <input
-                    type="text"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t("editar_email")}
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="profile"
-                    className="block mb-1 text-sm font-medium text-primary-950"
-                  >
-                    {t("foto_de_perfil")}
-                  </label>
-                  <input
-                    type="text"
-                    name="profile"
-                    value={profile}
-                    onChange={(e) => setProfile(e.target.value)}
-                    placeholder={t("editar_foto_de_perfil")}
-                    className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5"
-                    required
-                  />
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-primary-100 shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
-                  >
-                    {t("editar")}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
+    )}
+    {!usuario && (
+      <div className="p-4 sm:p-6">
+        <p className="text-primary-900">
+          {t("faca_login_para_visualizar_o_perfil")}
+        </p>
+      </div>
+    )}
+
+    <DeleteModal
+      showModal={showDeleteModal}
+      onClose={() => setShowDeleteModal(false)}
+      onConfirm={handleDeleteProfile}
+      isUserDelete={true}
+    />
+
+    {isOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-950 bg-opacity-30 p-4">
+        <div className="bg-primary-100 shadow-md rounded-lg w-full max-w-md p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl sm:text-2xl font-semibold text-primary-950">
+              {t("editar_perfil")}
+            </h1>
+            <button
+              onClick={handleCloseEditModal}
+              className="text-primary-700 hover:text-primary-900 focus:outline-none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <form className="space-y-4" onSubmit={handleEditChangeSubmit}>
+            <div>
+              <label
+                htmlFor="username"
+                className="block mb-1 text-sm font-medium text-primary-950"
+              >
+                {t("nome_de_usuario")}
+              </label>
+              <input
+                type="text"
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={t("editar_nome_de_usuario")}
+                className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block mb-1 text-sm font-medium text-primary-950"
+              >
+                {t("e_mail")}
+              </label>
+              <input
+                type="text"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("editar_email")}
+                className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="profile"
+                className="block mb-1 text-sm font-medium text-primary-950"
+              >
+                {t("foto_de_perfil")}
+              </label>
+              <input
+                type="text"
+                name="profile"
+                value={profile}
+                onChange={(e) => setProfile(e.target.value)}
+                placeholder={t("editar_foto_de_perfil")}
+                className="bg-primary-50 border border-primary-300 text-primary-950 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                required
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="w-full bg-primary-700 py-2 px-4 rounded-md text-sm font-semibold text-primary-100 shadow-sm hover:bg-primary-700 focus:outline-none"
+              >
+                {t("editar")}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
     </>
   );
 }

@@ -20,6 +20,11 @@ export const HeroSection = styled.div`
     content: "";
     ${tw`absolute inset-0 bg-black opacity-35`}
   }
+  @media (max-width: 640px) {
+    .mobile-margin {
+      margin: 10px;
+    }
+  }
 `;
 
 export const SectionHeading = styled(motion.h2)`
