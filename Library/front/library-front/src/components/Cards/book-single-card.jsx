@@ -14,13 +14,8 @@ const BookSingleCard = ({ book, coverUrl, onBookDeleted }) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const { usuario, token } = useAutenticacao();
-  const [isFavorite, setIsFavorite] = useState(false);
   const bookId = book._id;
   const { enqueueSnackbar } = useSnackbar();
-
-  
-
-  
 
   const handleDeleteBook = async (userId) => {
     try {

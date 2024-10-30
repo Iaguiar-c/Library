@@ -130,6 +130,10 @@ const swaggerDefinition = {
                   type: "string",
                   description: "Imagem de perfil do usuário",
                 },
+                usertype: {
+                  type: "string",
+                  description: "'a' para admin e 'c' para cliente",
+                },
               },
               required: ["name", "email", "password", "confirmpassword"],
             },

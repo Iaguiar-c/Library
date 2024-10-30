@@ -14,9 +14,9 @@ export class UserController {
   }
 
   async register(req, res) {
-    const { name, email, password, confirmpassword, profile } = req.body;
+    const { name, email, user_type, password, confirmpassword, profile } = req.body;
 
-    if (!name || !email || !password || !confirmpassword) {
+    if (!name || !email || !password || !confirmpassword || !user_type) {
       return res
         .status(422)
         .json({ msg: "Por favor, forneça todos os campos obrigatórios." });

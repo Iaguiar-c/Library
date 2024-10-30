@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import UserType from "../enums/UserType.js";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  user_type: { type: String, enum: Object.values(UserType.USERTYPE), required: true },
   books: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book',

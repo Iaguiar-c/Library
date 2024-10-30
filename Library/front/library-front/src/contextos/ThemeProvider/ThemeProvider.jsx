@@ -1,6 +1,4 @@
-import { useAutenticacao } from "../AutenticacaoProvider/AutenticacaoProvider";
 import { createContext, useContext, useState } from "react";
-
 
 export function useTheme() {
     const contextoTheme = useContext(ThemeContext);
