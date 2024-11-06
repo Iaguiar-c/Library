@@ -130,7 +130,7 @@ const swaggerDefinition = {
                   type: "string",
                   description: "Imagem de perfil do usuário",
                 },
-                usertype: {
+                user_type: {
                   type: "string",
                   description: "'a' para admin e 'c' para cliente",
                 },

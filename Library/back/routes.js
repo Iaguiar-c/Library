@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   UserController,
-  uploadMiddleware,
+  uploadMiddleware
 } from "./controllers/UserController.js";
 import { BookController } from "./controllers/BookController.js";
 import { authenticateToken } from "./middlewares/authenticateToken.js";

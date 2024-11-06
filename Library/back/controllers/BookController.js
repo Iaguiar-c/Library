@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator";
-import { User } from "../models/User.js";
+import User from "../models/User.js"; // Use importação padrão
 import { Book } from "../models/Book.js";
 import Categoria from "../enums/Categoria.js";
 import Status from "../enums/Status.js";
