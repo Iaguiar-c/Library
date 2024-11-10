@@ -1,8 +1,8 @@
 class Status {
     static STATUS = {
-        TO_READ: 'to-read',
-        READING: 'reading',
-        READ: 'read',
+        AVAILABLE: 'AVAILABLE',
+        CHECKED_OUT: 'CHECKED_OUT',
+        RESERVED: 'RESERVED',
     };
 
     static isValid(status) {

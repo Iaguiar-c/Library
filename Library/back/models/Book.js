@@ -1,41 +1,76 @@
-import mongoose from "mongoose";
-import Categoria from "../enums/Categoria.js";
-import Status from "../enums/Status.js";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/sequelizeConfig.js'; // Certifique-se de que o caminho para a configuração do Sequelize está correto
+import Status from '../enums/Status.js';
+import Categoria from '../enums/Categoria.js';
+import User from './User.js'; // Relacionamento com a tabela User
 
-const Schema = mongoose.Schema;
+class Book extends Model {}
 
-const bookSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    author: { type: String },
-    publicationYear: { type: Number },
-    category: { type: String },
-    isGoogle: { type: Boolean, required: false },
-    description: { type: String },
-    imageURL: { type: String },
-    status: {
-      type: String,
-      enum: Object.values(Status.STATUS),
-      required: true,
-    },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    rating: { type: Number, min: 0, max: 5 },
-    isFavorite: { type: Boolean, default: false },
-    comments: { type: String, required: false },
+Book.init({
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-  { timestamps: true }
-);
-
-bookSchema.pre("validate", function (next) {
-  if (!this.isGoogle) {
-    const isValidCategoria = Categoria.isValid(this.category);
-    if (!isValidCategoria) {
-      this.invalidate("category", "Categoria inválida");
-    }
-  }
-  next();
+  author: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  publicationYear: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    validate: {
+      isIn: [Object.values(Categoria.CATEGORIES)],
+    },
+  },
+  isGoogle: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  imageURL: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [Object.values(Status.STATUS)], // Validação para o enum Status
+    },
+  },
+  rating: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    validate: {
+      min: 0,
+      max: 5,
+    },
+  },
+  isFavorite: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  comments: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+}, {
+  sequelize,
+  modelName: 'Book',
+  tableName: 'books',
+  timestamps: true, // Campos createdAt e updatedAt
 });
 
-const Book = mongoose.model("Book", bookSchema);
+// Configuração do relacionamento com a tabela User
+Book.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(Book, { foreignKey: 'user_id', as: 'books' });
 
-export { Book };
+export default Book;
