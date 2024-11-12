@@ -138,6 +138,7 @@ export class BookController {
       return handleErrors(res, err);
     }
   }
+  
   async getAllCategories(req, res) {
     try {
       const categories = Object.values(Categoria.CATEGORIES); // Obtém todas as categorias de Categoria.CATEGORIES
@@ -181,15 +182,9 @@ export class BookController {
     }
   }
 
-  // nao ta funcionando
   async updateBook(req, res) {
     try {
-      // Verifica erros de validação
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-  
+      const { userId, bookId } = req.params;
       const {
         title,
         author,
@@ -198,67 +193,91 @@ export class BookController {
         description,
         imageURL,
         status,
+        isGoogle,
         isFavorite,
         rating,
-        comments
+        comments,
       } = req.body;
   
-      // Busca o livro pelo ID
-      const book = await Book.findByPk(req.params.bookId);
-  
-      if (!book) {
-        return res.status(404).json({ msg: "Book not found" });
+      // Verifica se o usuário existe
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({ msg: "Usuário não encontrado" });
       }
   
-      // Verifica se o usuário é o dono do livro
-      if (book.userId !== req.params.userId) {
-        return res.status(401).json({ msg: "Unauthorized" });
-      }
-  
-      // Atualiza o livro
-      await book.update({
-        title,
-        author,
-        publicationYear,
-        category,
-        description,
-        imageURL,
-        status,
-        isFavorite,
-        rating,
-        comments
+      // Verifica se o livro existe e pertence ao usuário
+      const book = await Book.findOne({
+        where: { id: bookId, user_id: userId },
       });
   
-      // Retorna o livro atualizado
-      res.status(200).json(book);
-    } catch (err) {
-      return handleErrors(res, err);
-    }
-  }
-  
-  async deleteBook(req, res) {
-    try {
-      // Busca o livro pelo ID
-      const book = await Book.findByPk(req.params.bookId);
-  
       if (!book) {
-        return res.status(404).json({ msg: "Book not found" });
+        return res.status(404).json({ msg: "Livro não encontrado ou não pertence ao usuário" });
       }
   
-      // Verifica se o usuário é o dono do livro
-      if (book.userId !== req.params.userId) {
-        return res.status(401).json({ msg: "Unauthorized" });
+      // Valida a categoria e status, caso não seja do Google
+      if (!isGoogle) {
+        if (!Categoria.isValid(category)) {
+          return res.status(400).json({ error: "Categoria Inválida" });
+        }
+  
+        if (!Status.isValid(status)) {
+          return res.status(400).json({ error: "Status Inválido" });
+        }
+      }
+  
+      // Atualiza os dados do livro
+      book.title = title || book.title;
+      book.author = author || book.author;
+      book.publicationYear = publicationYear || book.publicationYear;
+      book.category = category || book.category;
+      book.description = description || book.description;
+      book.imageURL = imageURL || book.imageURL;
+      book.status = status || book.status;
+      book.isGoogle = isGoogle !== undefined ? isGoogle : book.isGoogle;
+      book.isFavorite = isFavorite !== undefined ? isFavorite : book.isFavorite;
+      book.rating = rating || book.rating;
+      book.comments = comments || book.comments;
+  
+      await book.save();
+  
+      res.status(200).json({ msg: "Livro atualizado com sucesso", book });
+    } catch (err) {
+      console.error("Erro ao atualizar o livro:", err);
+      return res.status(500).json({
+        error: "Ocorreu um erro ao atualizar o livro. Por favor, tente novamente mais tarde.",
+      });
+    }
+  }
+
+  async deleteBook(req, res) {
+    try {
+      const { userId, bookId } = req.params;
+  
+      // Verifica se o usuário existe
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({ msg: "Usuário não encontrado" });
+      }
+  
+      // Busca o livro pelo ID e verifica se ele pertence ao usuário
+      const book = await Book.findOne({ where: { id: bookId, user_id: userId } });
+      
+      if (!book) {
+        return res.status(404).json({ msg: "Livro não encontrado ou não pertence ao usuário" });
       }
   
       // Deleta o livro
       await book.destroy();
   
       // Retorna a resposta de sucesso
-      res.status(200).json({ msg: "Book deleted" });
+      res.status(200).json({ msg: "Livro deletado com sucesso" });
     } catch (err) {
-      return handleErrors(res, err);
+      console.error("Erro ao deletar o livro:", err);
+      return res.status(500).json({
+        error: "Ocorreu um erro ao deletar o livro. Por favor, tente novamente mais tarde.",
+      });
     }
-  }  
+  }
 
   async createMultipleBooks(req, res) {
     try {
@@ -272,15 +291,18 @@ export class BookController {
   
       // Verifica se os livros foram passados corretamente
       if (!Array.isArray(books) || books.length === 0) {
-        return res
-          .status(400)
-          .json({ error: "Books must be a non-empty array." });
+        return res.status(400).json({ error: "Books must be a non-empty array." });
       }
   
       // Verifica se o usuário existe
-      const user = await User.findById(userId);
+      const user = await User.findByPk(userId);  // Altere aqui para findByPk
       if (!user) {
         return res.status(404).json({ msg: "Usuário não encontrado" });
+      }
+  
+      // Inicializa a propriedade `books` se não estiver presente
+      if (!user.books) {
+        user.books = []; // Garante que `user.books` seja um array
       }
   
       // Criação do array de livros a serem inseridos
@@ -329,10 +351,10 @@ export class BookController {
       }
   
       // Utiliza o método insertMany para inserir todos os livros de uma vez
-      const createdBooks = await Book.insertMany(booksToInsert);
+      const createdBooks = await Book.bulkCreate(booksToInsert);
   
       // Atualiza o usuário com os livros criados (se necessário)
-      user.books.push(...createdBooks.map(book => book._id));
+      user.books.push(...createdBooks.map(book => book.id)); // Agora `books` é um array
       await user.save();
   
       // Retorna a resposta com os livros criados
@@ -344,5 +366,4 @@ export class BookController {
       });
     }
   }
-  
 }

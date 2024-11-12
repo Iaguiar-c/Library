@@ -212,7 +212,6 @@ export class UserController {
     res.status(200).json({ msg: "Usuário desconectado com sucesso!" });
   }
 
-  // nao funcionam 
   async checkUserByEmail(req, res) {
     const { email } = req.params;
   
@@ -238,6 +237,66 @@ export class UserController {
     }
   }
 
+  async changePassword(req, res) {
+    const { email, newPassword, confirmNewPassword } = req.body;
+  
+    // Validação dos campos obrigatórios
+    if (!email || !newPassword || !confirmNewPassword) {
+      return res
+        .status(422)
+        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
+    }
+  
+    // Verifica se as senhas coincidem
+    if (newPassword !== confirmNewPassword) {
+      return res
+        .status(422)
+        .json({ msg: "As novas senhas precisam ser iguais." });
+    }
+  
+    // Validação do formato da senha
+    const passwordRegex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(422).json({
+        msg: "A nova senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
+      });
+    }
+  
+    try {
+      // Encontrar o usuário pelo email
+      const user = await User.findOne({ where: { email } }); // Corrigido a consulta
+  
+      // Verifica se o usuário existe
+      if (!user) {
+        return res.status(404).json({ msg: "Usuário não encontrado." });
+      }
+  
+      // Verifica se a nova senha é a mesma da atual
+      const isSamePassword = await bcrypt.compare(newPassword, user.password);
+      if (isSamePassword) {
+        return res
+          .status(422)
+          .json({ msg: "A nova senha não pode ser igual à senha atual." });
+      }
+  
+      // Criptografar a nova senha
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(newPassword, salt);
+  
+      // Atualizar a senha do usuário
+      user.password = passwordHash;
+      await user.save();
+  
+      // Resposta de sucesso
+      return res.status(200).json({ msg: "Senha alterada com sucesso!" });
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error.message);
+      return res.status(500).json({ msg: "Erro no servidor ao alterar senha." });
+    }
+  }
+  
+  
   async updateUser(req, res) {
     const id = req.params.id;
     const { name, email, password, confirmpassword, profile } = req.body;
@@ -305,66 +364,6 @@ export class UserController {
       res.status(500).json({ msg: "Erro no servidor ao atualizar usuário." });
     }
   }
-
-  async changePassword(req, res) {
-    const { email, newPassword, confirmNewPassword } = req.body;
-
-    // Validação dos campos obrigatórios
-    if (!email || !newPassword || !confirmNewPassword) {
-      return res
-        .status(422)
-        .json({ msg: "Por favor, forneça todos os campos obrigatórios." });
-    }
-
-    // Verifica se as senhas coincidem
-    if (newPassword !== confirmNewPassword) {
-      return res
-        .status(422)
-        .json({ msg: "As novas senhas precisam ser iguais." });
-    }
-
-    // Validação do formato da senha
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-    if (!passwordRegex.test(newPassword)) {
-      return res.status(422).json({
-        msg: "A nova senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.",
-      });
-    }
-
-    try {
-      // Encontrar o usuário pelo email
-      const user = await User.findOne({ email });
-
-      // Verifica se o usuário existe
-      if (!user) {
-        return res.status(404).json({ msg: "Usuário não encontrado." });
-      }
-
-      // Verifica se a nova senha é a mesma da atual
-      const isSamePassword = await bcrypt.compare(newPassword, user.password);
-      if (isSamePassword) {
-        return res
-          .status(422)
-          .json({ msg: "A nova senha não pode ser igual à senha atual." });
-      }
-
-      // Criptografar a nova senha
-      const salt = await bcrypt.genSalt(12);
-      const passwordHash = await bcrypt.hash(newPassword, salt);
-
-      // Atualizar a senha do usuário
-      user.password = passwordHash;
-      await user.save();
-
-      // Resposta de sucesso
-      res.status(200).json({ msg: "Senha alterada com sucesso!" });
-    } catch (error) {
-      console.error("Erro ao alterar senha:", error.message);
-      res.status(500).json({ msg: "Erro no servidor ao alterar senha." });
-    }
-  }
-
 }
 
 export const userController = new UserController();
