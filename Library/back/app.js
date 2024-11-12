@@ -1,50 +1,44 @@
-
-const express = require("express");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const sgTransport = require("nodemailer-sendgrid-transport");
-const crypto = require("crypto");
-const cors = require('cors');
-
-
-require("dotenv").config(); 
+import express from 'express';
+import cors from 'cors';
+import { exec } from 'child_process';
+import routes from './routes.js';
+import { swaggerUi, swaggerDocs } from './swagger/swaggerSetup.js'; 
+import sequelize from './config/sequelizeConfig.js';
 
 const app = express();
 
-// Config JSON response
+// Configuração do CORS
+const corsOptions = {
+  origin: 'http://localhost:3000', // Permite apenas requisições do frontend em localhost:3000
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Authorization', 'Content-Type'], // Cabeçalhos permitidos
+};
+
+app.use(cors(corsOptions));
+
+// Middleware para servir a interface do Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Redirecionar para a rota do Swagger
+app.get("/", (req, res) => {
+  res.redirect("/api-docs");
+});
+
 app.use(express.json());
+app.use(routes);
 
-// Models
-const User = require("./models/User");
+const PORT = process.env.PORT || 3001;
 
-// Controllers
-const userController = require("./controllers/UsuarioController");
-const senhaController = require("./controllers/SenhaController");
-const { bookRoutes } = require('./controllers/LivroController');
-
-
-// CORS
-app.use(cors());
-
-// Use as controllers como middlewares
-app.use("/password", senhaController);
-app.use("/auth", userController);
-app.use("/user", userController);
-bookRoutes(app);  
-
-
-// Credenciais
-const dbUser = process.env.DB_USER;
-const dbPassword = process.env.DB_PASS;
-
-mongoose
-  .connect(
-    `mongodb+srv://${dbUser}:${dbPassword}@cluster0.s4ttksz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-  )
+// Conectar ao MySQL e iniciar o servidor
+sequelize.authenticate()
   .then(() => {
-    app.listen(3001);
-    console.log("Conectado");
+    console.log('Conectado ao banco de dados MySQL.');
+    app.listen(PORT, () => {
+      console.log(`Servidor iniciado na porta ${PORT}`);
+      
+      // Abrir servidor automaticamente
+      const openCommand = process.platform === "win32" ? "start" : "open";
+      exec(`${openCommand} http://localhost:${PORT}/api-docs`);
+    });
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.error('Erro ao conectar ao MySQL:', err));

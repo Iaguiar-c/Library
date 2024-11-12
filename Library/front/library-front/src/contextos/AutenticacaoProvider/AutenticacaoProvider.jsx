@@ -11,15 +11,18 @@ export const useAutenticacao = () => {
 };
 
 export const AutenticacaoProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || '' || null || undefined);
+  const [usuario, setUsuario] = useState(() => {
+    return getUsuarioNoLocalStorage();
+  });
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [config, setConfig] = useState({});
 
   useEffect(() => {
     async function pegaToken() {
       const res = await http.pegaToken();
-      setToken(res || '');
+      setToken(res || "");
     }
+
     pegaToken();
   }, []);
 
@@ -32,33 +35,38 @@ export const AutenticacaoProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    if (usuario) {
-      const usuario = getUsuarioNoLocalStorage();
-      setUsuario(usuario);
+    const usuarioLocal = getUsuarioNoLocalStorage();
+    if (usuarioLocal) {
+      setUsuario(usuarioLocal);
     }
   }, []);
 
   async function login(email, password) {
     try {
-      const response = await Api.post("auth/login", { email, password }, config);
+      const response = await Api.post(
+        "user/login",
+        { email, password },
+        config
+      );
       const user = response.data.user;
       const token = response.data.token;
+      
       setUsuario(user);
       setToken(token);
       await setUsuarioNoLocalStorage(user, token);
     } catch (error) {
-      return null;
+      console.error("Erro ao fazer login:", error.message);
     }
   }
 
   function logout() {
     setUsuario(null);
-    setToken('');
+    setToken("");
     localStorage.clear();
   }
 
   return (
-    <UsuarioContext.Provider value={{ usuario, login, logout, config, token }}>
+    <UsuarioContext.Provider value={{ usuario, login, logout, config, token, setUsuario }}>
       {children}
     </UsuarioContext.Provider>
   );
